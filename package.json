@@ -22,6 +22,8 @@
     "got": "^11.5.0"
   },
   "devDependencies": {
+    "@commitlint/cli": "latest",
+    "@commitlint/config-conventional": "latest",
     "@types/deepmerge": "latest",
     "@types/fs-extra": "latest",
     "@types/got": "latest",
@@ -35,6 +37,7 @@
     "eslint-plugin-node": "latest",
     "eslint-plugin-promise": "latest",
     "eslint-plugin-standard": "latest",
+    "husky": "latest",
     "jest": "latest",
     "rollup-plugin-typescript2": "latest",
     "standard-version": "latest",
