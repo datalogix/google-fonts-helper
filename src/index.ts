@@ -34,8 +34,10 @@ export default class GoogleFontsHelper {
       query.display = display
     }
 
-    if (subsets) {
-      query.subset = (Array.isArray(subsets) ? subsets : [subsets]).join(',')
+    const subset = (Array.isArray(subsets) ? subsets : [subsets]).filter(Boolean)
+
+    if (subset.length > 0) {
+      query.subset = subset.join(',')
     }
 
     return unescape(format({
