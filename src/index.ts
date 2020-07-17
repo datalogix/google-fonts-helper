@@ -5,7 +5,7 @@ import { outputFile, pathExistsSync } from 'fs-extra'
 import { all } from 'deepmerge'
 import got from 'got'
 import { isValidDisplay, convertFamiliesObject, convertFamiliesToArray, parseFontsFromCss } from './utils'
-import { GoogleFonts } from './types'
+import { GoogleFonts, DownloadOptions } from './types'
 
 export default class GoogleFontsHelper {
   private fonts: GoogleFonts
@@ -35,11 +35,7 @@ export default class GoogleFontsHelper {
     }
 
     if (subsets) {
-      const subset = (Array.isArray(subsets) ? subsets : [subsets])
-
-      if (subset.length > 0) {
-        query.subset = subset.join(',')
-      }
+      query.subset = (Array.isArray(subsets) ? subsets : [subsets]).join(',')
     }
 
     return unescape(format({
@@ -97,22 +93,25 @@ export default class GoogleFontsHelper {
     return new GoogleFontsHelper(result)
   }
 
-  static async download (url: string, options = {
-    base64: false,
-    overwriting: false,
-    outputDir: './',
-    stylePath: 'fonts.css',
-    fontsDir: 'fonts',
-    fontsPath: './fonts'
-  }): Promise<void> {
+  static async download (url: string, options?: Partial<DownloadOptions>): Promise<void> {
     if (!GoogleFontsHelper.isValidURL(url)) {
-      throw new Error('Invalid Google Fonts URl')
+      throw new Error('Invalid Google Fonts URL')
     }
 
-    const stylePath = resolve(options.outputDir, options.stylePath)
-    const fontsDir = resolve(options.outputDir, options.fontsDir)
+    const config: DownloadOptions = {
+      base64: false,
+      overwriting: false,
+      outputDir: './',
+      stylePath: 'fonts.css',
+      fontsDir: 'fonts',
+      fontsPath: './fonts',
+      ...options
+    }
 
-    if (!options.overwriting && pathExistsSync(stylePath)) {
+    const stylePath = resolve(config.outputDir, config.stylePath)
+    const fontsDir = resolve(config.outputDir, config.fontsDir)
+
+    if (!config.overwriting && pathExistsSync(stylePath)) {
       return
     }
 
@@ -126,13 +125,13 @@ export default class GoogleFontsHelper {
 
     let { body: css } = await got(url, { headers })
 
-    const fonts = parseFontsFromCss(css, options.fontsPath)
+    const fonts = parseFontsFromCss(css, config.fontsPath)
 
     for (const font of fonts) {
       const response = got(font.inputFont)
       const buffer = await response.buffer()
 
-      if (options.base64) {
+      if (config.base64) {
         const mime = (await response).headers['content-type'] ?? 'font/woff2'
         const content = buffer.toString('base64')
 

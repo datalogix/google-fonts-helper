@@ -25,12 +25,15 @@
     "@commitlint/cli": "latest",
     "@commitlint/config-conventional": "latest",
     "@types/deepmerge": "latest",
+    "@types/del": "latest",
     "@types/fs-extra": "latest",
     "@types/got": "latest",
     "@types/jest": "latest",
     "@types/node": "latest",
+    "@types/tempy": "latest",
     "@typescript-eslint/eslint-plugin": "latest",
     "bili": "latest",
+    "del": "latest",
     "eslint": "latest",
     "eslint-config-standard-with-typescript": "latest",
     "eslint-plugin-import": "latest",
@@ -41,6 +44,7 @@
     "jest": "latest",
     "rollup-plugin-typescript2": "latest",
     "standard-version": "latest",
+    "tempy": "latest",
     "ts-jest": "latest",
     "typescript": "latest"
   }

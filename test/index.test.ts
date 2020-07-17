@@ -1,48 +1,56 @@
+import { join } from 'path'
+import del from 'del'
+import tempy from 'tempy'
 import GoogleFontsHelper from '../src'
+import { pathExistsSync } from 'fs-extra'
 
 describe('Google Fonts Helper', () => {
   test('getFonts', () => {
     const googleFontsHelper = new GoogleFontsHelper({
-      families: {
-        Roboto: true
-      }
+      families: { Roboto: true }
     })
 
     expect(googleFontsHelper.getFonts()).toStrictEqual({
-      families: {
-        Roboto: true
-      }
+      families: { Roboto: true }
     })
   })
 
   test('constructURL', () => {
-    const googleFontsHelper = new GoogleFontsHelper({
-      families: {
-        Roboto: true
-      }
-    })
+    expect(new GoogleFontsHelper({
+      families: { Roboto: true }
+    }).constructURL()).toEqual('https://fonts.googleapis.com/css2?family=Roboto')
 
-    expect(googleFontsHelper.constructURL()).toEqual(
-      'https://fonts.googleapis.com/css2?family=Roboto'
-    )
-  })
-
-  test('constructURL full', () => {
-    const googleFontsHelper = new GoogleFontsHelper({
-      families: {
-        Roboto: true
-      },
+    expect(new GoogleFontsHelper({
+      families: { Roboto: true, Lato: false },
       display: 'swap',
       subsets: 'cyrillic'
-    })
+    }).constructURL()).toEqual('https://fonts.googleapis.com/css2?family=Roboto&display=swap&subset=cyrillic')
 
-    expect(googleFontsHelper.constructURL()).toEqual(
-      'https://fonts.googleapis.com/css2?family=Roboto&display=swap&subset=cyrillic'
-    )
+    expect(new GoogleFontsHelper({
+      families: { Roboto: true, Lato: [100] },
+      subsets: ['foo', 'bar']
+    }).constructURL()).toEqual('https://fonts.googleapis.com/css2?family=Roboto&family=Lato:wght@100&subset=foo,bar')
+
+    expect(new GoogleFontsHelper({
+      families: {
+        '': true,
+        Roboto: true,
+        Lato: {
+          wght: 100
+        },
+        Raleway: {
+          ital: [100, 400],
+          wght: [400]
+        }
+      }
+    }).constructURL()).toEqual('https://fonts.googleapis.com/css2?family=Roboto&family=Lato:wght@100&family=Raleway:ital,wght@0,100;0,400;1,400')
   })
 
-  test('invalid constructURL', () => {
+  test('constructURL invalid', () => {
     expect(new GoogleFontsHelper().constructURL()).toBe(false)
+    expect(new GoogleFontsHelper({ display: 'swap' }).constructURL()).toBe(false)
+    expect(new GoogleFontsHelper({ subsets: 'foo' }).constructURL()).toBe(false)
+    expect(new GoogleFontsHelper({ subsets: ['foo', 'bar'] }).constructURL()).toBe(false)
   })
 
   test('merge', () => {
@@ -58,9 +66,6 @@ describe('Google Fonts Helper', () => {
       }
     })
 
-    expect(googleFontsHelper.constructURL()).toEqual(
-      'https://fonts.googleapis.com/css2?family=Roboto&family=Lato:wght@100;400'
-    )
     expect(googleFontsHelper.getFonts()).toStrictEqual({
       families: {
         Roboto: true,
@@ -83,23 +88,19 @@ describe('Google Fonts Helper', () => {
     }), {
       families: {
         Raleway: {
-          wght: [400],
-          ital: [100, 400]
+          ital: [100, 400],
+          wght: [400]
         }
       }
     })
-
-    expect(googleFontsHelper.constructURL()).toEqual(
-      'https://fonts.googleapis.com/css2?family=Roboto&family=Lato:wght@100;400&family=Raleway:wght,ital@0,400;1,100;1,400'
-    )
 
     expect(googleFontsHelper.getFonts()).toStrictEqual({
       families: {
         Roboto: true,
         Lato: [100, 400],
         Raleway: {
-          wght: [400],
-          ital: [100, 400]
+          ital: [100, 400],
+          wght: [400]
         }
       }
     })
@@ -119,7 +120,7 @@ describe('Google Fonts Helper', () => {
       display: 'swap'
     })
 
-    expect(GoogleFontsHelper.parse('https://fonts.googleapis.com/css2?family=Roboto&display=swap&subset=cyrillic').getFonts()).toStrictEqual({
+    expect(GoogleFontsHelper.parse('https://fonts.googleapis.com/css2?family=Roboto&family=Lato:&display=swap&subset=cyrillic').getFonts()).toStrictEqual({
       families: {
         Roboto: true
       },
@@ -127,16 +128,62 @@ describe('Google Fonts Helper', () => {
       subsets: ['cyrillic']
     })
 
-    expect(GoogleFontsHelper.parse('https://fonts.googleapis.com/css2?family=Roboto&display=xxx&subset=foo,bar').getFonts()).toStrictEqual({
+    expect(GoogleFontsHelper.parse('https://fonts.googleapis.com/css2?family=Roboto&family=Lato:wght@100;400&family=Raleway:ital,wght@0,100;0,400;1,400').getFonts()).toStrictEqual({
       families: {
-        Roboto: true
-      },
-      subsets: ['foo', 'bar']
+        Roboto: true,
+        Lato: {
+          wght: [100, 400]
+        },
+        Raleway: {
+          wght: [400],
+          ital: [100, 400]
+        }
+      }
     })
   })
 
-  test('invalid parse', () => {
+  test('parse invalid', () => {
+    expect(GoogleFontsHelper.parse('https://fonts.googleapis.com/css2?family=')).toStrictEqual(new GoogleFontsHelper())
     expect(GoogleFontsHelper.parse('https://foo.bar')).toStrictEqual(new GoogleFontsHelper())
     expect(GoogleFontsHelper.parse('https://fonts.googleapis.com/css')).toStrictEqual(new GoogleFontsHelper())
+  })
+
+  test('download', async () => {
+    const outputDir = tempy.directory()
+    const stylePath = 'font.css'
+    const fontsDir = 'fonts'
+
+    await GoogleFontsHelper.download('https://fonts.googleapis.com/css2?family=Roboto&family=Lato:wght@100;400&family=Raleway:ital,wght@0,100;0,400;1,400', {
+      outputDir,
+      stylePath,
+      fontsDir
+    })
+
+    expect(pathExistsSync(join(outputDir, stylePath))).toBe(true)
+    expect(pathExistsSync(join(outputDir, fontsDir))).toBe(true)
+
+    await del(outputDir, { force: true })
+  })
+
+  test('download base64', async () => {
+    const outputDir = tempy.directory()
+    const stylePath = 'font.css'
+    const fontsDir = 'fonts'
+
+    await GoogleFontsHelper.download('https://fonts.googleapis.com/css2?family=Roboto', {
+      base64: true,
+      outputDir,
+      stylePath,
+      fontsDir
+    })
+
+    expect(pathExistsSync(join(outputDir, stylePath))).toBe(true)
+    expect(pathExistsSync(join(outputDir, fontsDir))).toBe(false)
+
+    await del(outputDir, { force: true })
+  })
+
+  test('download invalid', async () => {
+    await expect(GoogleFontsHelper.download('https://foo.bar')).rejects.toEqual(new Error('Invalid Google Fonts URL'))
   })
 })

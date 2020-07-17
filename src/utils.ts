@@ -9,6 +9,10 @@ export function convertFamiliesObject (families: string[]): Families {
   const result: Families = {}
 
   families.forEach((family) => {
+    if (!family) {
+      return
+    }
+
     if (!family.includes(':')) {
       result[family] = true
       return
@@ -49,9 +53,14 @@ export function convertFamiliesToArray (families: Families): string[] {
   const result: string[] = []
 
   Object.entries(families).forEach(([name, values]) => {
+    if (!name) return
+
     if (Array.isArray(values) && values.length > 0) {
       result.push(`${name}:wght@${values.join(';')}`)
-    } else if (Object.keys(values).length > 0) {
+      return
+    }
+
+    if (Object.keys(values).length > 0) {
       const styles: string[] = []
       const weights: string[] = []
 
@@ -68,7 +77,10 @@ export function convertFamiliesToArray (families: Families): string[] {
       })
 
       result.push(`${name}:${styles.join(',')}@${weights.join(';')}`)
-    } else if (values) {
+      return
+    }
+
+    if (values) {
       result.push(name)
     }
   })
