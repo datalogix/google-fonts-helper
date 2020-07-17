@@ -33,6 +33,15 @@ import GoogleFontsHelper from 'google-fonts-helper'
 ```ts
 const googleFontsHelper = new GoogleFontsHelper({ families: { Roboto: true } })
 googleFontsHelper.constructURL() // https://fonts.googleapis.com/css2?family=Roboto
+
+await GoogleFontsHelper.download('https://fonts.googleapis.com/css2?family=Roboto', {
+  base64: false,
+  overwriting: false,
+  outputDir: './',
+  stylePath: 'fonts.css',
+  fontsDir: 'fonts',
+  fontsPath: './fonts'
+})
 ```
 
 ## GoogleFontsHelper class
@@ -42,7 +51,7 @@ googleFontsHelper.constructURL() // https://fonts.googleapis.com/css2?family=Rob
 ### `merge(...values: Array<GoogleFonts | GoogleFontsHelper>): void`
 ### `isValidURL(url: string): boolean`
 ### `parse(url: string): GoogleFontsHelper`
-### `download(url: string, options = { base64: false, overwriting: false, outputDir: './', stylePath: 'fonts.css', fontsDir: 'fonts', fontsPath: './fonts' }): Promise<void>`
+### `download(url: string, option?: DownloadOptions): Promise<void>`
 
 ## License
 
