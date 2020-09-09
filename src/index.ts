@@ -7,7 +7,7 @@ import got from 'got'
 import { isValidDisplay, convertFamiliesObject, convertFamiliesToArray, parseFontsFromCss } from './utils'
 import { GoogleFonts, DownloadOptions } from './types'
 
-export default class GoogleFontsHelper {
+export class GoogleFontsHelper {
   private fonts: GoogleFonts
 
   constructor (fonts: GoogleFonts = {}) {
@@ -150,3 +150,5 @@ export default class GoogleFontsHelper {
     await outputFile(stylePath, css)
   }
 }
+
+export default GoogleFontsHelper
