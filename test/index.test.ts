@@ -39,8 +39,8 @@ describe('Google Fonts Helper', () => {
           wght: 100
         },
         Raleway: {
-          ital: [100, 400],
-          wght: [400]
+          wght: [400],
+          ital: [100, 400]
         }
       }
     }).constructURL()).toEqual('https://fonts.googleapis.com/css2?family=Roboto&family=Lato:wght@100&family=Raleway:ital,wght@0,100;0,400;1,400')

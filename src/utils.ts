@@ -64,17 +64,20 @@ export function convertFamiliesToArray (families: Families): string[] {
       const styles: string[] = []
       const weights: string[] = []
 
-      Object.entries(values).forEach(([style, weight], index) => {
-        styles.push(style);
+      Object
+        .entries(values)
+        .sort(([styleA], [styleB]) => styleA.localeCompare(styleB))
+        .forEach(([style, weight], index) => {
+          styles.push(style);
 
-        (Array.isArray(weight) ? weight : [weight]).forEach((value: string) => {
-          if (Object.keys(values).length === 1 && style === 'wght') {
-            weights.push(value)
-          } else {
-            weights.push(`${index},${value}`)
-          }
+          (Array.isArray(weight) ? weight : [weight]).forEach((value: string) => {
+            if (Object.keys(values).length === 1 && style === 'wght') {
+              weights.push(value)
+            } else {
+              weights.push(`${index},${value}`)
+            }
+          })
         })
-      })
 
       result.push(`${name}:${styles.join(',')}@${weights.join(';')}`)
       return
