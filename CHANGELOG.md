@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.0.2](https://github.com/ricardogobbosouza/google-fonts-helper/compare/v1.0.1...v1.0.2) (2020-09-09)
+
+
+### Bug Fixes
+
+* alphabetical order ([df220ee](https://github.com/ricardogobbosouza/google-fonts-helper/commit/df220ee4ee0c07d139cefb171e311fdec1d5b1bd))
+
 ### [1.0.1](https://github.com/ricardogobbosouza/google-fonts-helper/compare/v1.0.0...v1.0.1) (2020-07-17)
 
 
