@@ -23,9 +23,9 @@ yarn add google-fonts-helper
 Import into your Node.js project:
 
 ```js
-const GoogleFontsHelper = require('google-fonts-helper')
+const { GoogleFontsHelper } = require('google-fonts-helper')
 // or
-import GoogleFontsHelper from 'google-fonts-helper'
+import { GoogleFontsHelper } from 'google-fonts-helper'
 ```
 
 ## Usage
