@@ -1,4 +1,4 @@
-import { basename, extname, join } from 'path'
+import { basename, extname, posix } from 'path'
 import { Families, FamilyStyles, FontInputOutput } from './types'
 
 export function isValidDisplay (display: string): boolean {
@@ -131,7 +131,7 @@ export function parseFontsFromCss (content: string, fontsPath: string): FontInpu
         inputFont: url,
         outputFont: newFilename,
         inputText: forReplace,
-        outputText: `url('${join(fontsPath, newFilename)}')`
+        outputText: `url('${posix.join(fontsPath, newFilename)}')`
       })
     }
   }
