@@ -25,7 +25,12 @@ export function convertFamiliesObject (families: string[]): Families {
     }
 
     const values: FamilyStyles = {}
-    const [styles, weights] = parts[1].split('@')
+    let [styles, weights] = parts[1].split('@')
+
+    if (!weights) {
+      weights = String(styles).replace(',', ';')
+      styles = 'wght'
+    }
 
     styles.split(',').forEach((style, index) => {
       values[style] = weights.split(';').map((weight) => {

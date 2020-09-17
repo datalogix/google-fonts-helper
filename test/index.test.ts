@@ -120,6 +120,22 @@ describe('Google Fonts Helper', () => {
       display: 'swap'
     })
 
+    expect(GoogleFontsHelper.parse('https://fonts.googleapis.com/css2?family=Roboto:100').getFonts()).toStrictEqual({
+      families: {
+        Roboto: {
+          wght: [100]
+        }
+      }
+    })
+
+    expect(GoogleFontsHelper.parse('https://fonts.googleapis.com/css2?family=Roboto:100,300').getFonts()).toStrictEqual({
+      families: {
+        Roboto: {
+          wght: [100, 300]
+        }
+      }
+    })
+
     expect(GoogleFontsHelper.parse('https://fonts.googleapis.com/css2?family=Roboto&family=Lato:&display=swap&subset=cyrillic').getFonts()).toStrictEqual({
       families: {
         Roboto: true
