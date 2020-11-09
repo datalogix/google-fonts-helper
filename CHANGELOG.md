@@ -2,6 +2,19 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.1.0](https://github.com/ricardogobbosouza/google-fonts-helper/compare/v1.0.5...v1.1.0) (2020-11-09)
+
+
+### Features
+
+* custom request headers ([9ed9102](https://github.com/ricardogobbosouza/google-fonts-helper/commit/9ed9102ac288bf140a97fd4a3ceada48017888af))
+
+
+### Bug Fixes
+
+* construct and parse url from google fonts ([d1eba8e](https://github.com/ricardogobbosouza/google-fonts-helper/commit/d1eba8e2755f637a1b3cad841da1e1fd8c85d033))
+* goole fonts api version ([acaedb9](https://github.com/ricardogobbosouza/google-fonts-helper/commit/acaedb94fcdf400deb86d28cfbd8586e679976ad))
+
 ### [1.0.5](https://github.com/ricardogobbosouza/google-fonts-helper/compare/v1.0.4...v1.0.5) (2020-09-17)
 
 
