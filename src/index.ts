@@ -100,6 +100,14 @@ export class GoogleFontsHelper {
       throw new Error('Invalid Google Fonts URL')
     }
 
+    const headers = {
+      'user-agent': [
+        'Mozilla/5.0 (Windows NT 10.0; Win64; x64)',
+        'AppleWebKit/537.36 (KHTML, like Gecko)',
+        'Chrome/80.0.3987.132 Safari/537.36'
+      ].join(' ')
+    }
+
     const config: DownloadOptions = {
       base64: false,
       overwriting: false,
@@ -107,6 +115,7 @@ export class GoogleFontsHelper {
       stylePath: 'fonts.css',
       fontsDir: 'fonts',
       fontsPath: './fonts',
+      headers,
       ...options
     }
 
@@ -117,20 +126,12 @@ export class GoogleFontsHelper {
       return
     }
 
-    const headers = {
-      'user-agent': [
-        'Mozilla/5.0 (Windows NT 10.0; Win64; x64)',
-        'AppleWebKit/537.36 (KHTML, like Gecko)',
-        'Chrome/80.0.3987.132 Safari/537.36'
-      ].join(' ')
-    }
-
-    let { body: css } = await got(url, { headers })
+    let { body: css } = await got(url, { headers: config.headers })
 
     const fonts = parseFontsFromCss(css, config.fontsPath)
 
     for (const font of fonts) {
-      const response = got(font.inputFont)
+      const response = got(font.inputFont, { headers: config.headers })
       const buffer = await response.buffer()
 
       if (config.base64) {
