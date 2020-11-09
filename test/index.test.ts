@@ -24,12 +24,12 @@ describe('Google Fonts Helper', () => {
       families: { Roboto: true, Lato: false },
       display: 'swap',
       subsets: 'cyrillic'
-    }).constructURL()).toEqual('https://fonts.googleapis.com/css2?family=Roboto&display=swap&subset=cyrillic')
+    }).constructURL()).toEqual('https://fonts.googleapis.com/css?family=Roboto&display=swap&subset=cyrillic')
 
     expect(new GoogleFontsHelper({
       families: { Roboto: true, Lato: [100] },
       subsets: ['foo', 'bar']
-    }).constructURL()).toEqual('https://fonts.googleapis.com/css2?family=Roboto&family=Lato:wght@100&subset=foo,bar')
+    }).constructURL()).toEqual('https://fonts.googleapis.com/css?family=Roboto&family=Lato:wght@100&subset=foo,bar')
 
     expect(new GoogleFontsHelper({
       families: {
@@ -136,7 +136,7 @@ describe('Google Fonts Helper', () => {
       }
     })
 
-    expect(GoogleFontsHelper.parse('https://fonts.googleapis.com/css2?family=Roboto&family=Lato:&display=swap&subset=cyrillic').getFonts()).toStrictEqual({
+    expect(GoogleFontsHelper.parse('https://fonts.googleapis.com/css?family=Roboto&family=Lato:&display=swap&subset=cyrillic').getFonts()).toStrictEqual({
       families: {
         Roboto: true
       },
