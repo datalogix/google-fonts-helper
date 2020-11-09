@@ -1,3 +1,5 @@
+import { Headers } from 'got'
+
 export interface GoogleFonts {
   families?: Families
   display?: string
@@ -26,4 +28,5 @@ export interface DownloadOptions {
   stylePath: string
   fontsDir: string
   fontsPath: string
+  headers: Headers
 }
