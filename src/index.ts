@@ -43,7 +43,7 @@ export class GoogleFontsHelper {
     return unescape(format({
       protocol: 'https',
       hostname: 'fonts.googleapis.com',
-      pathname: 'css2',
+      pathname: query.subset ? 'css' : 'css2',
       query
     }))
   }
