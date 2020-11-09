@@ -9,7 +9,7 @@ export interface Families {
 }
 
 export interface FamilyStyles {
-  [style: string]: number | number[]
+  [style: string]: boolean | number | number[]
 }
 
 export interface FontInputOutput {

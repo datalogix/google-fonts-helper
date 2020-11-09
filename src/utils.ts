@@ -32,13 +32,14 @@ export function convertFamiliesObject (families: string[]): Families {
       styles = 'wght'
     }
 
-    styles.split(',').forEach((style, index) => {
+    styles.split(',').forEach((style) => {
       values[style] = weights.split(';').map((weight) => {
         if (/^\+?\d+$/.test(weight)) {
           return parseInt(weight)
         }
 
         const [pos, w] = weight.split(',')
+        const index = style === 'wght' ? 0 : 1
 
         if (parseInt(pos) === index && /^\+?\d+$/.test(w)) {
           return parseInt(w)
@@ -46,6 +47,8 @@ export function convertFamiliesObject (families: string[]): Families {
 
         return 0
       }).filter(v => v > 0)
+
+      values[style] = Object.entries(values[style]).length > 0 ? values[style] : true
     })
 
     result[parts[0]] = values
@@ -72,19 +75,28 @@ export function convertFamiliesToArray (families: Families): string[] {
       Object
         .entries(values)
         .sort(([styleA], [styleB]) => styleA.localeCompare(styleB))
-        .forEach(([style, weight], index) => {
+        .forEach(([style, weight]) => {
           styles.push(style);
 
           (Array.isArray(weight) ? weight : [weight]).forEach((value: string) => {
             if (Object.keys(values).length === 1 && style === 'wght') {
               weights.push(value)
             } else {
+              const index = style === 'wght' ? 0 : 1
               weights.push(`${index},${value}`)
             }
           })
         })
 
-      result.push(`${name}:${styles.join(',')}@${weights.join(';')}`)
+      if (!styles.includes('wght')) {
+        styles.push('wght')
+      }
+
+      const weightsSortered = weights
+        .sort(([weightA], [weightB]) => weightA.localeCompare(weightB))
+        .join(';')
+
+      result.push(`${name}:${styles.join(',')}@${weightsSortered}`)
       return
     }
 
