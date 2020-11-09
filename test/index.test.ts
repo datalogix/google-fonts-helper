@@ -17,6 +17,23 @@ describe('Google Fonts Helper', () => {
 
   test('constructURL', () => {
     expect(new GoogleFontsHelper({
+      families: {
+        Roboto: {
+          ital: [400]
+        }
+      }
+    }).constructURL()).toEqual('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@1,400')
+
+    expect(new GoogleFontsHelper({
+      families: {
+        Roboto: {
+          wght: [300, 400, 700],
+          ital: [400]
+        }
+      }
+    }).constructURL()).toEqual('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,300;0,400;0,700;1,400')
+
+    expect(new GoogleFontsHelper({
       families: { Roboto: true }
     }).constructURL()).toEqual('https://fonts.googleapis.com/css2?family=Roboto')
 
@@ -43,7 +60,7 @@ describe('Google Fonts Helper', () => {
           ital: [100, 400]
         }
       }
-    }).constructURL()).toEqual('https://fonts.googleapis.com/css2?family=Roboto&family=Lato:wght@100&family=Raleway:ital,wght@0,100;0,400;1,400')
+    }).constructURL()).toEqual('https://fonts.googleapis.com/css2?family=Roboto&family=Lato:wght@100&family=Raleway:ital,wght@0,400;1,100;1,400')
   })
 
   test('constructURL invalid', () => {
@@ -113,6 +130,24 @@ describe('Google Fonts Helper', () => {
       }
     })
 
+    expect(GoogleFontsHelper.parse('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,300;0,400;0,700;1,400').getFonts()).toStrictEqual({
+      families: {
+        Roboto: {
+          wght: [300, 400, 700],
+          ital: [400]
+        }
+      }
+    })
+
+    expect(GoogleFontsHelper.parse('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@1,400').getFonts()).toStrictEqual({
+      families: {
+        Roboto: {
+          wght: true,
+          ital: [400]
+        }
+      }
+    })
+
     expect(GoogleFontsHelper.parse('https://fonts.googleapis.com/css2?family=Roboto&display=swap').getFonts()).toStrictEqual({
       families: {
         Roboto: true
@@ -144,7 +179,7 @@ describe('Google Fonts Helper', () => {
       subsets: ['cyrillic']
     })
 
-    expect(GoogleFontsHelper.parse('https://fonts.googleapis.com/css2?family=Roboto&family=Lato:wght@100;400&family=Raleway:ital,wght@0,100;0,400;1,400').getFonts()).toStrictEqual({
+    expect(GoogleFontsHelper.parse('https://fonts.googleapis.com/css2?family=Roboto&family=Lato:wght@100;400&family=Raleway:ital,wght@0,400;1,100;1,400').getFonts()).toStrictEqual({
       families: {
         Roboto: true,
         Lato: {
