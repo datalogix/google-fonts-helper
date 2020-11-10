@@ -27,6 +27,22 @@ describe('Google Fonts Helper', () => {
     expect(new GoogleFontsHelper({
       families: {
         Roboto: {
+          wght: [600, 700, 800, 400]
+        }
+      }
+    }).constructURL()).toEqual('https://fonts.googleapis.com/css2?family=Roboto:wght@400;600;700;800')
+
+    expect(new GoogleFontsHelper({
+      families: {
+        Roboto: {
+          wght: [400, 600, 700, 800]
+        }
+      }
+    }).constructURL()).toEqual('https://fonts.googleapis.com/css2?family=Roboto:wght@400;600;700;800')
+
+    expect(new GoogleFontsHelper({
+      families: {
+        Roboto: {
           wght: [300, 400, 700],
           ital: [400]
         }

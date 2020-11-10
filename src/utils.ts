@@ -78,9 +78,9 @@ export function convertFamiliesToArray (families: Families): string[] {
         .forEach(([style, weight]) => {
           styles.push(style);
 
-          (Array.isArray(weight) ? weight : [weight]).forEach((value: string) => {
+          (Array.isArray(weight) ? weight : [weight]).forEach((value: string | number) => {
             if (Object.keys(values).length === 1 && style === 'wght') {
-              weights.push(value)
+              weights.push(String(value))
             } else {
               const index = style === 'wght' ? 0 : 1
               weights.push(`${index},${value}`)
