@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.1.1](https://github.com/ricardogobbosouza/google-fonts-helper/compare/v1.1.0...v1.1.1) (2020-11-10)
+
+
+### Bug Fixes
+
+* sort weights ([c308059](https://github.com/ricardogobbosouza/google-fonts-helper/commit/c308059c5d1d0f3ff120e2b1b3f23389078d183c))
+
 ## [1.1.0](https://github.com/ricardogobbosouza/google-fonts-helper/compare/v1.0.5...v1.1.0) (2020-11-09)
 
 
