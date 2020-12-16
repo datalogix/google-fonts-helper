@@ -54,6 +54,11 @@ describe('Google Fonts Helper', () => {
     }).constructURL()).toEqual('https://fonts.googleapis.com/css2?family=Roboto')
 
     expect(new GoogleFontsHelper({
+      families: { Roboto: true },
+      text: 'Foo Bar'
+    }).constructURL()).toEqual('https://fonts.googleapis.com/css2?family=Roboto&text=Foo%20Bar')
+
+    expect(new GoogleFontsHelper({
       families: { Roboto: true, Lato: false },
       display: 'swap',
       subsets: 'cyrillic'
@@ -185,6 +190,13 @@ describe('Google Fonts Helper', () => {
           wght: [100, 300]
         }
       }
+    })
+
+    expect(GoogleFontsHelper.parse('https://fonts.googleapis.com/css2?family=Roboto&text=Foo%20Bar').getFonts()).toStrictEqual({
+      families: {
+        Roboto: true
+      },
+      text: 'Foo Bar'
     })
 
     expect(GoogleFontsHelper.parse('https://fonts.googleapis.com/css?family=Roboto&family=Lato:&display=swap&subset=cyrillic').getFonts()).toStrictEqual({

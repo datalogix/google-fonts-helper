@@ -19,7 +19,7 @@ export class GoogleFontsHelper {
   }
 
   constructURL (): string | false {
-    const { families, display, subsets } = this.fonts
+    const { families, display, subsets, text } = this.fonts
     const family = convertFamiliesToArray(families ?? {})
 
     if (family.length < 1) {
@@ -38,6 +38,10 @@ export class GoogleFontsHelper {
 
     if (subset.length > 0) {
       query.subset = subset.join(',')
+    }
+
+    if (text) {
+      query.text = encodeURI(text)
     }
 
     return unescape(format({
@@ -90,6 +94,11 @@ export class GoogleFontsHelper {
     const subsets = searchParams.get('subset')
     if (subsets) {
       result.subsets = subsets.split(',')
+    }
+
+    const text = searchParams.get('text')
+    if (text) {
+      result.text = decodeURI(text)
     }
 
     return new GoogleFontsHelper(result)
