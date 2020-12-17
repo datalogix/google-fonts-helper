@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.2.0](https://github.com/ricardogobbosouza/google-fonts-helper/compare/v1.1.1...v1.2.0) (2020-12-17)
+
+
+### Features
+
+* support `text` parameter ([#8](https://github.com/ricardogobbosouza/google-fonts-helper/issues/8)) ([bfad587](https://github.com/ricardogobbosouza/google-fonts-helper/commit/bfad58774e359d8564f511cc5abce333cd153ebf))
+
 ### [1.1.1](https://github.com/ricardogobbosouza/google-fonts-helper/compare/v1.1.0...v1.1.1) (2020-11-10)
 
 
