@@ -4,6 +4,7 @@ export interface GoogleFonts {
   families?: Families
   display?: string
   subsets?: string[] | string
+  text?: string
 }
 
 export interface Families {
