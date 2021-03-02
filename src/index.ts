@@ -160,5 +160,3 @@ export class GoogleFontsHelper {
     await outputFile(stylePath, css)
   }
 }
-
-export default GoogleFontsHelper

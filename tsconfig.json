@@ -1,21 +1,10 @@
 {
   "compilerOptions": {
-    "target": "ES6",
-    "module": "CommonJS",
+    "target": "ESNext",
+    "module": "ESNext",
     "moduleResolution": "Node",
-    "esModuleInterop": true,
-    "allowSyntheticDefaultImports": true,
+    "resolveJsonModule": true,
     "strict": true,
-    "declaration": true,
-    "types": [
-      "deepmerge",
-      "fs-extra",
-      "got",
-      "jest",
-      "node"
-    ]
-  },
-  "include": [
-    "src",
-  ]
+    "esModuleInterop": true
+  }
 }

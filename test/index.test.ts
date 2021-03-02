@@ -1,7 +1,7 @@
 import { join } from 'path'
-import del from 'del'
-import tempy from 'tempy'
-import GoogleFontsHelper from '../src'
+import { sync } from 'del'
+import { directory } from 'tempy'
+import { GoogleFontsHelper } from '../src'
 import { pathExistsSync } from 'fs-extra'
 
 describe('Google Fonts Helper', () => {
@@ -228,7 +228,7 @@ describe('Google Fonts Helper', () => {
   })
 
   test('download', async () => {
-    const outputDir = tempy.directory()
+    const outputDir = directory()
     const stylePath = 'font.css'
     const fontsDir = 'fonts'
 
@@ -241,11 +241,11 @@ describe('Google Fonts Helper', () => {
     expect(pathExistsSync(join(outputDir, stylePath))).toBe(true)
     expect(pathExistsSync(join(outputDir, fontsDir))).toBe(true)
 
-    await del(outputDir, { force: true })
+    sync(outputDir, { force: true })
   })
 
   test('download base64', async () => {
-    const outputDir = tempy.directory()
+    const outputDir = directory()
     const stylePath = 'font.css'
     const fontsDir = 'fonts'
 
@@ -259,7 +259,7 @@ describe('Google Fonts Helper', () => {
     expect(pathExistsSync(join(outputDir, stylePath))).toBe(true)
     expect(pathExistsSync(join(outputDir, fontsDir))).toBe(false)
 
-    await del(outputDir, { force: true })
+    sync(outputDir, { force: true })
   })
 
   test('download invalid', async () => {
