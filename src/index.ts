@@ -7,6 +7,8 @@ import got from 'got'
 import { isValidDisplay, convertFamiliesObject, convertFamiliesToArray, parseFontsFromCss } from './utils'
 import { GoogleFonts, DownloadOptions } from './types'
 
+export * from './types'
+
 export class GoogleFontsHelper {
   private fonts: GoogleFonts
 
