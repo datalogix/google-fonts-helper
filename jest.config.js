@@ -2,6 +2,7 @@ module.exports = {
   preset: 'ts-jest',
   collectCoverage: true,
   testEnvironment: 'node',
+  testTimeout: 60000,
   transform: {
     '\\.(js|ts)$': [
       'babel-jest',
