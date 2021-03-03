@@ -2,6 +2,21 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [2.0.0](https://github.com/ricardogobbosouza/google-fonts-helper/compare/v1.2.0...v2.0.0) (2021-03-03)
+
+
+### ⚠ BREAKING CHANGES
+
+* change minimum supported node version to 12
+
+### Bug Fixes
+
+* tests ([4262d1c](https://github.com/ricardogobbosouza/google-fonts-helper/commit/4262d1c5cc1f177c510235bc9019dca26d5287f5))
+* use `siroc` to build ([5bdaac2](https://github.com/ricardogobbosouza/google-fonts-helper/commit/5bdaac2b0dfa9e2308380c3f6f393a4b2c971401))
+
+
+* change minimum supported node version to 12 ([2cb4df1](https://github.com/ricardogobbosouza/google-fonts-helper/commit/2cb4df1134e571ad8cc044a061c7fb3ac1428068))
+
 ## [1.2.0](https://github.com/ricardogobbosouza/google-fonts-helper/compare/v1.1.1...v1.2.0) (2020-12-17)
 
 
