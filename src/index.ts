@@ -1,13 +1,14 @@
 import { resolve } from 'path'
-import { format } from 'url'
-import { unescape, ParsedUrlQueryInput } from 'querystring'
 import { outputFile, pathExistsSync } from 'fs-extra'
 import { all } from 'deepmerge'
-import got from 'got'
+import { createURL, QueryObject, resolveURL, withQuery } from 'ufo'
+import { $fetch, Headers } from 'ohmyfetch'
 import { isValidDisplay, convertFamiliesObject, convertFamiliesToArray, parseFontsFromCss } from './utils'
 import { GoogleFonts, DownloadOptions } from './types'
 
 export * from './types'
+
+const GOOGLE_FONTS_DOMAIN = 'fonts.googleapis.com'
 
 export class GoogleFontsHelper {
   private fonts: GoogleFonts
@@ -22,13 +23,15 @@ export class GoogleFontsHelper {
 
   constructURL (): string | false {
     const { families, display, subsets, text } = this.fonts
-    const family = convertFamiliesToArray(families ?? {})
+    const subset = (Array.isArray(subsets) ? subsets : [subsets]).filter(Boolean)
+    const prefix = subset.length > 0 ? 'css' : 'css2'
+    const family = convertFamiliesToArray(families ?? {}, prefix.endsWith('2'))
 
     if (family.length < 1) {
       return false
     }
 
-    const query: ParsedUrlQueryInput = {
+    const query: QueryObject = {
       family
     }
 
@@ -36,28 +39,21 @@ export class GoogleFontsHelper {
       query.display = display
     }
 
-    const subset = (Array.isArray(subsets) ? subsets : [subsets]).filter(Boolean)
-
     if (subset.length > 0) {
       query.subset = subset.join(',')
     }
 
     if (text) {
-      query.text = encodeURI(text)
+      query.text = text
     }
 
-    return unescape(format({
-      protocol: 'https',
-      hostname: 'fonts.googleapis.com',
-      pathname: query.subset ? 'css' : 'css2',
-      query
-    }))
+    return 'https://' + withQuery(resolveURL(GOOGLE_FONTS_DOMAIN, prefix), query)
   }
 
   merge (...values: Array<GoogleFonts | GoogleFontsHelper>): void {
     const newFonts: GoogleFonts[] = [this.fonts]
 
-    values.forEach(value => {
+    values.forEach((value) => {
       newFonts.push(value instanceof GoogleFontsHelper ? value.getFonts() : value)
     })
 
@@ -65,7 +61,7 @@ export class GoogleFontsHelper {
   }
 
   static isValidURL (url: string): boolean {
-    return /fonts.googleapis.com/.test(url)
+    return RegExp(GOOGLE_FONTS_DOMAIN).test(url)
   }
 
   static parse (url: string): GoogleFontsHelper {
@@ -73,15 +69,15 @@ export class GoogleFontsHelper {
       return new GoogleFontsHelper()
     }
 
-    const { searchParams } = new URL(url)
+    const { searchParams, pathname } = createURL(url)
 
     if (!searchParams.has('family')) {
       return new GoogleFontsHelper()
     }
 
     const result: GoogleFonts = {}
+    const families = convertFamiliesObject(searchParams.getAll('family'), pathname.endsWith('2'))
 
-    const families = convertFamiliesObject(searchParams.getAll('family'))
     if (Object.keys(families).length < 1) {
       return new GoogleFontsHelper()
     }
@@ -100,7 +96,7 @@ export class GoogleFontsHelper {
 
     const text = searchParams.get('text')
     if (text) {
-      result.text = decodeURI(text)
+      result.text = text
     }
 
     return new GoogleFontsHelper(result)
@@ -111,13 +107,12 @@ export class GoogleFontsHelper {
       throw new Error('Invalid Google Fonts URL')
     }
 
-    const headers = {
-      'user-agent': [
-        'Mozilla/5.0 (Windows NT 10.0; Win64; x64)',
-        'AppleWebKit/537.36 (KHTML, like Gecko)',
-        'Chrome/80.0.3987.132 Safari/537.36'
-      ].join(' ')
-    }
+    const headers: HeadersInit = new Headers()
+    headers.set('user-agent', [
+      'Mozilla/5.0 (Windows NT 10.0; Win64; x64)',
+      'AppleWebKit/537.36 (KHTML, like Gecko)',
+      'Chrome/98.0.4758.102 Safari/537.36'
+    ].join(' '))
 
     const config: DownloadOptions = {
       base64: false,
@@ -137,25 +132,27 @@ export class GoogleFontsHelper {
       return
     }
 
-    let { body: css } = await got(url, { headers: config.headers })
-
+    let css = await $fetch(url, { headers: config.headers })
     const fonts = parseFontsFromCss(css, config.fontsPath)
 
     for (const font of fonts) {
-      const response = got(font.inputFont, { headers: config.headers })
-      const buffer = await response.buffer()
+      const response = await $fetch.raw(font.inputFont, { headers: config.headers, responseType: 'arrayBuffer' })
 
-      if (config.base64) {
-        const mime = (await response).headers['content-type'] ?? 'font/woff2'
-        const content = buffer.toString('base64')
+      if (response?._data) {
+        const buffer = Buffer.from(response?._data)
 
-        css = css.replace(font.inputText, `url('data:${mime};base64,${content}')`)
-      } else {
-        const fontPath = resolve(fontsDir, font.outputFont)
+        if (config.base64) {
+          const mime = response.headers.get('content-type') ?? 'font/woff2'
+          const content = buffer.toString('base64')
 
-        await outputFile(fontPath, buffer)
+          css = css.replace(font.inputText, `url('data:${mime};base64,${content}')`)
+        } else {
+          const fontPath = resolve(fontsDir, font.outputFont)
 
-        css = css.replace(font.inputText, font.outputText)
+          await outputFile(fontPath, buffer)
+
+          css = css.replace(font.inputText, font.outputText)
+        }
       }
     }
 
