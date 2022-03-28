@@ -1,18 +1,9 @@
-import { Headers } from 'got'
-
-export interface GoogleFonts {
-  families?: Families
-  display?: string
-  subsets?: string[] | string
-  text?: string
+export interface FamilyStyles {
+  [style: string]: boolean | number | number[]
 }
 
 export interface Families {
   [family: string]: boolean | number | number[] | FamilyStyles
-}
-
-export interface FamilyStyles {
-  [style: string]: boolean | number | number[]
 }
 
 export interface FontInputOutput {
@@ -23,11 +14,18 @@ export interface FontInputOutput {
 }
 
 export interface DownloadOptions {
-  base64: boolean
-  overwriting: boolean
+  base64?: boolean
+  overwriting?: boolean
   outputDir: string
   stylePath: string
   fontsDir: string
   fontsPath: string
-  headers: Headers
+  headers?: HeadersInit
+}
+
+export interface GoogleFonts {
+  families?: Families
+  display?: string
+  subsets?: string[] | string
+  text?: string
 }

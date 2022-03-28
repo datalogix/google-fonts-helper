@@ -4,50 +4,44 @@
   "description": "Google Fonts Helper",
   "repository": "ricardogobbosouza/google-fonts-helper",
   "license": "MIT",
-  "author": "Ricardo Gobbo de Souza <ricardogobbosouza@yahoo.com.br>",
-  "main": "dist/index.js",
+  "sideEffects": false,
+  "exports": {
+    ".": {
+      "require": "./dist/index.cjs",
+      "import": "./dist/index.mjs",
+      "types": "./dist/index.d.ts"
+    }
+  },
+  "main": "dist/index.cjs",
+  "module": "dist/index.mjs",
   "types": "dist/index.d.ts",
   "files": [
     "dist"
   ],
   "scripts": {
-    "build": "siroc build",
-    "prepublishOnly": "yarn build",
-    "lint": "eslint --ext .ts .",
-    "release": "yarn test && yarn build && standard-version && git push --follow-tags && npm publish",
-    "test": "yarn lint && yarn jest"
+    "build": "unbuild",
+    "dev": "vitest",
+    "lint": "eslint --ext .ts,.js .",
+    "prepack": "unbuild",
+    "release": "pnpm test && pnpm build && standard-version && git push --follow-tags && npm publish",
+    "test": "pnpm lint && vitest run --coverage"
   },
   "dependencies": {
     "deepmerge": "^4.2.2",
-    "fs-extra": "^9.1.0",
-    "got": "^11.8.2"
+    "fs-extra": "^10.0.1",
+    "ohmyfetch": "^0.4.15",
+    "ufo": "^0.8.1"
   },
   "devDependencies": {
-    "@babel/core": "latest",
-    "@babel/plugin-transform-runtime": "latest",
-    "@babel/preset-env": "latest",
-    "@babel/preset-typescript": "latest",
-    "@types/deepmerge": "latest",
-    "@types/del": "latest",
+    "@nuxtjs/eslint-config-typescript": "latest",
     "@types/fs-extra": "latest",
-    "@types/got": "latest",
-    "@types/jest": "latest",
-    "@types/node": "latest",
-    "@types/tempy": "latest",
-    "@typescript-eslint/eslint-plugin": "latest",
-    "babel-jest": "latest",
+    "c8": "latest",
     "del": "latest",
     "eslint": "latest",
-    "eslint-config-standard-with-typescript": "latest",
-    "eslint-plugin-import": "latest",
-    "eslint-plugin-node": "latest",
-    "eslint-plugin-promise": "latest",
-    "eslint-plugin-standard": "latest",
-    "jest": "latest",
-    "siroc": "latest",
     "standard-version": "latest",
     "tempy": "latest",
-    "ts-jest": "latest",
-    "typescript": "latest"
+    "typescript": "latest",
+    "unbuild": "latest",
+    "vitest": "latest"
   }
 }

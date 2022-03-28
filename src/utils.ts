@@ -5,10 +5,10 @@ export function isValidDisplay (display: string): boolean {
   return ['auto', 'block', 'swap', 'fallback', 'optional'].includes(display)
 }
 
-export function convertFamiliesObject (families: string[]): Families {
+export function convertFamiliesObject (families: string[], v2 = true): Families {
   const result: Families = {}
 
-  families.forEach((family) => {
+  families.flatMap(family => family.split('|')).forEach((family) => {
     if (!family) {
       return
     }
@@ -25,31 +25,58 @@ export function convertFamiliesObject (families: string[]): Families {
     }
 
     const values: FamilyStyles = {}
-    let [styles, weights] = parts[1].split('@')
 
-    if (!weights) {
-      weights = String(styles).replace(',', ';')
-      styles = 'wght'
+    // v1
+    if (!v2) {
+      // https://developers.google.com/fonts/docs/getting_started#specifying_font_families_and_styles_in_a_stylesheet_url
+
+      parts[1].split(',').forEach((style) => {
+        if (['i', 'italic', 'ital'].includes(style)) {
+          values.ital = true
+        }
+
+        if (['bold', 'b'].includes(style)) {
+          values.wght = 700
+        }
+
+        if (['bolditalic', 'bi'].includes(style)) {
+          values.ital = 700
+        }
+
+        if (['wght'].includes(style)) {
+          values.wght = true
+        }
+      })
     }
 
-    styles.split(',').forEach((style) => {
-      values[style] = weights.split(';').map((weight) => {
-        if (/^\+?\d+$/.test(weight)) {
-          return parseInt(weight)
-        }
+    // v2
+    if (v2) {
+      let [styles, weights] = parts[1].split('@')
 
-        const [pos, w] = weight.split(',')
-        const index = style === 'wght' ? 0 : 1
+      if (!weights) {
+        weights = String(styles).replace(',', ';')
+        styles = 'wght'
+      }
 
-        if (parseInt(pos) === index && /^\+?\d+$/.test(w)) {
-          return parseInt(w)
-        }
+      styles.split(',').forEach((style) => {
+        values[style] = weights.split(';').map((weight) => {
+          if (/^\+?\d+$/.test(weight)) {
+            return parseInt(weight)
+          }
 
-        return 0
-      }).filter(v => v > 0)
+          const [pos, w] = weight.split(',')
+          const index = style === 'wght' ? 0 : 1
 
-      values[style] = Object.entries(values[style]).length > 0 ? values[style] : true
-    })
+          if (parseInt(pos) === index && /^\+?\d+$/.test(w)) {
+            return parseInt(w)
+          }
+
+          return 0
+        }).filter(v => v > 0)
+
+        values[style] = Object.entries(values[style]).length > 0 ? values[style] : true
+      })
+    }
 
     result[parts[0]] = values
   })
@@ -57,53 +84,116 @@ export function convertFamiliesObject (families: string[]): Families {
   return result
 }
 
-export function convertFamiliesToArray (families: Families): string[] {
+export function convertFamiliesToArray (families: Families, v2 = true): string[] {
   const result: string[] = []
 
-  Object.entries(families).forEach(([name, values]) => {
-    if (!name) return
-
-    if (Array.isArray(values) && values.length > 0) {
-      result.push(`${name}:wght@${values.join(';')}`)
-      return
-    }
-
-    if (Object.keys(values).length > 0) {
-      const styles: string[] = []
-      const weights: string[] = []
-
-      Object
-        .entries(values)
-        .sort(([styleA], [styleB]) => styleA.localeCompare(styleB))
-        .forEach(([style, weight]) => {
-          styles.push(style);
-
-          (Array.isArray(weight) ? weight : [weight]).forEach((value: string | number) => {
-            if (Object.keys(values).length === 1 && style === 'wght') {
-              weights.push(String(value))
-            } else {
-              const index = style === 'wght' ? 0 : 1
-              weights.push(`${index},${value}`)
-            }
-          })
-        })
-
-      if (!styles.includes('wght')) {
-        styles.push('wght')
+  // v1
+  if (!v2) {
+    Object.entries(families).forEach(([name, values]) => {
+      if (!name) {
+        return
       }
 
-      const weightsSortered = weights
-        .sort(([weightA], [weightB]) => weightA.localeCompare(weightB))
-        .join(';')
+      if ((Array.isArray(values) && values.length > 0) || (values === true || values === 400)) {
+        result.push(name)
+        return
+      }
 
-      result.push(`${name}:${styles.join(',')}@${weightsSortered}`)
-      return
-    }
+      if (values === 700) {
+        result.push(`${name}:bold`)
+        return
+      }
 
-    if (values) {
-      result.push(name)
-    }
-  })
+      if (Object.keys(values).length > 0) {
+        const styles: string[] = []
+
+        Object
+          .entries(values)
+          .sort(([styleA], [styleB]) => styleA.localeCompare(styleB))
+          .forEach(([style, weight]) => {
+            if (style === 'ital' && (weight === 700 || (Array.isArray(weight) && weight.includes(700)))) {
+              styles.push('bolditalic')
+
+              if (Array.isArray(weight) && weight.includes(400)) {
+                styles.push(style)
+              }
+            } else if (style === 'wght' && (weight === 700 || (Array.isArray(weight) && weight.includes(700)))) {
+              styles.push('bold')
+
+              if (Array.isArray(weight) && weight.includes(400)) {
+                styles.push(style)
+              }
+            } else if (weight !== false) {
+              styles.push(style)
+            }
+          })
+
+        const stylesSortered = styles
+          .sort(([styleA], [styleB]) => styleA.localeCompare(styleB))
+          .reverse()
+          .join(',')
+
+        if (stylesSortered === 'wght') {
+          result.push(name)
+          return
+        }
+
+        result.push(`${name}:${stylesSortered}`)
+      }
+    })
+
+    return result.length ? [result.join('|')] : result
+  }
+
+  // v2
+  if (v2) {
+    Object.entries(families).forEach(([name, values]) => {
+      if (!name) {
+        return
+      }
+
+      if (Array.isArray(values) && values.length > 0) {
+        result.push(`${name}:wght@${values.join(';')}`)
+        return
+      }
+
+      if (Object.keys(values).length > 0) {
+        const styles: string[] = []
+        const weights: string[] = []
+
+        Object
+          .entries(values)
+          .sort(([styleA], [styleB]) => styleA.localeCompare(styleB))
+          .forEach(([style, weight]) => {
+            styles.push(style);
+
+            (Array.isArray(weight) ? weight : [weight]).forEach((value: string | number) => {
+              if (Object.keys(values).length === 1 && style === 'wght') {
+                weights.push(String(value))
+              } else {
+                const index = style === 'wght' ? 0 : 1
+                weights.push(`${index},${value}`)
+              }
+            })
+          })
+
+        if (!styles.includes('wght')) {
+          styles.push('wght')
+        }
+
+        const weightsSortered = weights
+          .sort(([weightA], [weightB]) => weightA.localeCompare(weightB))
+          .join(';')
+
+        result.push(`${name}:${styles.join(',')}@${weightsSortered}`)
+        return
+      }
+
+      if (values) {
+        result.push(name)
+      }
+    })
+  }
 
   return result
 }
@@ -134,7 +224,7 @@ export function parseFontsFromCss (content: string, fontsPath: string): FontInpu
       const ext = extname(urlPathname)
       if (ext.length < 2) { continue }
       const filename = basename(urlPathname, ext) || ''
-      const newFilename = formatFontFileName('{_family}-{weight}-{comment}{i}.{ext}', {
+      const newFilename = formatFontFileName('{_family}-{weight}-{i}.{ext}', {
         comment: comment || '',
         family,
         weight: weight || '',

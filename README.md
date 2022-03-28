@@ -12,12 +12,14 @@
 
 ## Install
 
-Install using npm or yarn:
+Install using npm, yarn or pnpm:
 
 ```bash
 npm install google-fonts-helper
 # or
 yarn add google-fonts-helper
+# or
+pnpm add google-fonts-helper
 ```
 
 Import into your Node.js project:
