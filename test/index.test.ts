@@ -385,7 +385,7 @@ describe('Google Fonts Helper', () => {
     expect(pathExistsSync(join(outputDir, fontsDir))).toBe(true)
 
     await del(outputDir, { force: true })
-  })
+  }, 60000)
 
   test('download base64', async () => {
     const outputDir = tempy.directory()
@@ -403,7 +403,7 @@ describe('Google Fonts Helper', () => {
     expect(pathExistsSync(join(outputDir, fontsDir))).toBe(false)
 
     await del(outputDir, { force: true })
-  })
+  }, 60000)
 
   test('download invalid', async () => {
     await expect(GoogleFontsHelper.download('https://foo.bar')).rejects.toEqual(new Error('Invalid Google Fonts URL'))
