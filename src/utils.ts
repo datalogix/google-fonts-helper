@@ -1,5 +1,5 @@
 import { basename, extname, posix } from 'path'
-import { Families, FamilyStyles, FontInputOutput } from './types'
+import type { Families, FamilyStyles, FontInputOutput } from './types'
 
 export function isValidDisplay (display: string): boolean {
   return ['auto', 'block', 'swap', 'fallback', 'optional'].includes(display)

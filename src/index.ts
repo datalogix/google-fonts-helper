@@ -4,7 +4,7 @@ import { all } from 'deepmerge'
 import { createURL, QueryObject, resolveURL, withQuery } from 'ufo'
 import { $fetch, Headers } from 'ohmyfetch'
 import { isValidDisplay, convertFamiliesObject, convertFamiliesToArray, parseFontsFromCss } from './utils'
-import { GoogleFonts, DownloadOptions } from './types'
+import type { GoogleFonts, DownloadOptions } from './types'
 
 export * from './types'
 
@@ -126,36 +126,49 @@ export class GoogleFontsHelper {
     }
 
     const stylePath = resolve(config.outputDir, config.stylePath)
-    const fontsDir = resolve(config.outputDir, config.fontsDir)
 
     if (!config.overwriting && pathExistsSync(stylePath)) {
       return
     }
 
-    let css = await $fetch(url, { headers: config.headers })
-    const fonts = parseFontsFromCss(css, config.fontsPath)
+    // download css content
+    let content = await $fetch(url, { headers: config.headers })
 
-    for (const font of fonts) {
-      const response = await $fetch.raw(font.inputFont, { headers: config.headers, responseType: 'arrayBuffer' })
+    // fonts from css file
+    const fonts = parseFontsFromCss(content, config.fontsPath)
+      .map(async (font) => {
+        const response = await $fetch.raw(font.inputFont, { headers: config.headers, responseType: 'arrayBuffer' })
 
-      if (response?._data) {
+        if (!response?._data) {
+          return
+        }
+
         const buffer = Buffer.from(response?._data)
 
         if (config.base64) {
           const mime = response.headers.get('content-type') ?? 'font/woff2'
           const content = buffer.toString('base64')
 
-          css = css.replace(font.inputText, `url('data:${mime};base64,${content}')`)
+          font.outputText = `url('data:${mime};base64,${content}')`
         } else {
+          const fontsDir = resolve(config.outputDir, config.fontsDir)
           const fontPath = resolve(fontsDir, font.outputFont)
 
           await outputFile(fontPath, buffer)
-
-          css = css.replace(font.inputText, font.outputText)
         }
+
+        return font
+      })
+
+    // convert results and save css file
+    const results = (await Promise.all(fonts))
+
+    for (const result of results) {
+      if (result) {
+        content = content.replace(result.inputText, result.outputText)
       }
     }
 
-    await outputFile(stylePath, css)
+    await outputFile(stylePath, content)
   }
 }
