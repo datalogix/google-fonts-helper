@@ -1,7 +1,7 @@
 import { resolve } from 'path'
 import { outputFile, pathExistsSync } from 'fs-extra'
 import { all } from 'deepmerge'
-import { createURL, QueryObject, resolveURL, withQuery } from 'ufo'
+import { createURL, QueryObject, resolveURL, withQuery, withHttps } from 'ufo'
 import { $fetch, Headers } from 'ohmyfetch'
 import { isValidDisplay, convertFamiliesObject, convertFamiliesToArray, parseFontsFromCss } from './utils'
 import type { GoogleFonts, DownloadOptions } from './types'
@@ -47,7 +47,7 @@ export class GoogleFontsHelper {
       query.text = text
     }
 
-    return 'https://' + withQuery(resolveURL(GOOGLE_FONTS_DOMAIN, prefix), query)
+    return withHttps(withQuery(resolveURL(GOOGLE_FONTS_DOMAIN, prefix), query))
   }
 
   merge (...values: Array<GoogleFonts | GoogleFontsHelper>): void {
