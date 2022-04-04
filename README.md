@@ -25,18 +25,46 @@ pnpm add google-fonts-helper
 Import into your Node.js project:
 
 ```js
-const { GoogleFontsHelper } = require('google-fonts-helper')
+const { constructURL, merge, isValidURL, parse, download } = require('google-fonts-helper')
 // or
-import { GoogleFontsHelper } from 'google-fonts-helper'
+import { constructURL, merge, isValidURL, parse, download } from 'google-fonts-helper'
 ```
 
 ## Usage
 
-```ts
-const googleFontsHelper = new GoogleFontsHelper({ families: { Roboto: true } })
-googleFontsHelper.constructURL() // https://fonts.googleapis.com/css2?family=Roboto
+### `constructURL(): string`
 
-await GoogleFontsHelper.download('https://fonts.googleapis.com/css2?family=Roboto', {
+```ts
+constructURL({ families: { Roboto: true } }) // https://fonts.googleapis.com/css2?family=Roboto
+constructURL({ families: { Roboto: true, Lato: true } }) // https://fonts.googleapis.com/css2?family=Roboto&family=Lato
+```
+
+### `merge(...fonts: GoogleFonts[]): GoogleFonts`
+
+```ts
+merge({ families: { Roboto: true } }, { families: { Lato: true } })  // { families: { Roboto: true, Lato: true } }
+merge({ families: { Roboto: true } }, { families: { Roboto: [300, 400] } })  // { families: { Roboto: [300, 400] } }
+```
+
+### `isValidURL(url: string): boolean`
+
+```ts
+isValidURL('https://fonts.googleapis.com/css2?family=Roboto') // true
+isValidURL('https://foo.bar') // false
+```
+
+### `parse(url: string): GoogleFonts`
+
+```ts
+parse('https://fonts.googleapis.com/css2?family=Roboto') // { families: { Roboto: true } }
+parse('https://fonts.googleapis.com/css2?family=Roboto&family=Lato') // { families: { Roboto: true, Lato: true } }
+parse('https://foo.bar') // {}
+```
+
+### `download(url: string, option?: DownloadOptions): Promise<void>`
+
+```ts
+const downloader = download('https://fonts.googleapis.com/css2?family=Roboto', {
   base64: false,
   overwriting: false,
   outputDir: './',
@@ -44,16 +72,17 @@ await GoogleFontsHelper.download('https://fonts.googleapis.com/css2?family=Robot
   fontsDir: 'fonts',
   fontsPath: './fonts'
 })
+
+downloader.hook('download-font:before', (font: FontInputOutput) {
+  console.log(font)
+})
+
+downloader.hook('download-font:done', (font: FontInputOutput) {
+  console.log(font)
+})
+
+await downloader.execute()
 ```
-
-## GoogleFontsHelper class
-
-### `constructor(fonts: GoogleFonts = {})`
-### `constructURL(): string`
-### `merge(...values: Array<GoogleFonts | GoogleFontsHelper>): void`
-### `isValidURL(url: string): boolean`
-### `parse(url: string): GoogleFontsHelper`
-### `download(url: string, option?: DownloadOptions): Promise<void>`
 
 ## License
 
