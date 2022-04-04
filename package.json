@@ -2,7 +2,7 @@
   "name": "google-fonts-helper",
   "version": "2.0.1",
   "description": "Google Fonts Helper",
-  "repository": "ricardogobbosouza/google-fonts-helper",
+  "repository": "datalogix/google-fonts-helper",
   "license": "MIT",
   "sideEffects": false,
   "exports": {
