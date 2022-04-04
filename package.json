@@ -29,6 +29,7 @@
   "dependencies": {
     "deepmerge": "^4.2.2",
     "fs-extra": "^10.0.1",
+    "hookable": "^5.1.1",
     "ohmyfetch": "^0.4.15",
     "ufo": "^0.8.3"
   },

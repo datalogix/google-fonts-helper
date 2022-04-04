@@ -1,11 +1,11 @@
-
 import { resolve } from 'path'
-import { outputFile, pathExistsSync } from 'fs-extra'
 import { all } from 'deepmerge'
 import { createURL, QueryObject, resolveURL, withQuery, withHttps } from 'ufo'
-import { $fetch, Headers } from 'ohmyfetch'
+import { outputFile, pathExistsSync } from 'fs-extra'
+import { $fetch } from 'ohmyfetch'
+import { Hookable } from 'hookable'
 import { isValidDisplay, convertFamiliesObject, convertFamiliesToArray, parseFontsFromCss } from './utils'
-import type { GoogleFonts, DownloadOptions } from './types'
+import type { GoogleFonts, DownloaderHooks, DownloadOptions, FontInputOutput } from './types'
 
 const GOOGLE_FONTS_DOMAIN = 'fonts.googleapis.com'
 
@@ -84,72 +84,100 @@ export function parse (url: string): GoogleFonts {
   return result
 }
 
-export async function download (url: string, options?: Partial<DownloadOptions>): Promise<void> {
-  if (!isValidURL(url)) {
-    throw new Error('Invalid Google Fonts URL')
+export function download (url: string, options?: Partial<DownloadOptions>) {
+  return new Downloader(url, options)
+}
+
+export class Downloader extends Hookable<DownloaderHooks> {
+  private config: DownloadOptions
+
+  public constructor (
+    private url: string,
+    options?: Partial<DownloadOptions>
+  ) {
+    super()
+
+    this.config = {
+      base64: false,
+      overwriting: false,
+      outputDir: './',
+      stylePath: 'fonts.css',
+      fontsDir: 'fonts',
+      fontsPath: './fonts',
+      headers: [['user-agent', [
+        'Mozilla/5.0 (Windows NT 10.0; Win64; x64)',
+        'AppleWebKit/537.36 (KHTML, like Gecko)',
+        'Chrome/98.0.4758.102 Safari/537.36'
+      ].join(' ')]],
+      ...options
+    }
   }
 
-  const headers: HeadersInit = new Headers()
-  headers.set('user-agent', [
-    'Mozilla/5.0 (Windows NT 10.0; Win64; x64)',
-    'AppleWebKit/537.36 (KHTML, like Gecko)',
-    'Chrome/98.0.4758.102 Safari/537.36'
-  ].join(' '))
+  async execute (): Promise<void> {
+    if (!isValidURL(this.url)) {
+      throw new Error('Invalid Google Fonts URL')
+    }
 
-  const config: DownloadOptions = {
-    base64: false,
-    overwriting: false,
-    outputDir: './',
-    stylePath: 'fonts.css',
-    fontsDir: 'fonts',
-    fontsPath: './fonts',
-    headers,
-    ...options
+    const { outputDir, stylePath, overwriting, headers, fontsPath } = this.config
+    const cssPath = resolve(outputDir, stylePath)
+
+    if (!overwriting && pathExistsSync(cssPath)) {
+      return
+    }
+
+    // download css content
+    await this.callHook('download-css:before', this.url)
+    const cssContent = await $fetch(this.url, { headers })
+    const fontsFromCss = parseFontsFromCss(cssContent, fontsPath)
+    await this.callHook('download-css:done', this.url, cssContent, fontsFromCss)
+
+    // download fonts from css
+    const fonts = (await Promise.all(this.downloadFonts(fontsFromCss)))
+      .filter(font => font.inputText)
+
+    // write css
+    await this.callHook('write-css:before', cssPath, cssContent, fonts)
+    const newContent = await this.writeCss(cssPath, cssContent, fonts)
+    await this.callHook('write-css:done', cssPath, newContent, cssContent)
   }
 
-  const stylePath = resolve(config.outputDir, config.stylePath)
+  private downloadFonts (fonts: FontInputOutput[]) {
+    const { headers, base64, outputDir, fontsDir } = this.config
 
-  if (!config.overwriting && pathExistsSync(stylePath)) {
-    return
-  }
+    return fonts.map(async (font) => {
+      await this.callHook('download-font:before', font)
 
-  // download css content
-  let content = await $fetch(url, { headers: config.headers })
-
-  // fonts from css file
-  const fonts = parseFontsFromCss(content, config.fontsPath)
-    .map(async (font) => {
-      const response = await $fetch.raw(font.inputFont, { headers: config.headers, responseType: 'arrayBuffer' })
+      const response = await $fetch.raw(font.inputFont, { headers, responseType: 'arrayBuffer' })
 
       if (!response?._data) {
-        return
+        return {} as FontInputOutput
       }
 
       const buffer = Buffer.from(response?._data)
 
-      if (config.base64) {
+      if (base64) {
         const mime = response.headers.get('content-type') ?? 'font/woff2'
-        const content = buffer.toString('base64')
 
-        font.outputText = `url('data:${mime};base64,${content}')`
+        font.outputText = `url('data:${mime};base64,${buffer.toString('base64')}')`
       } else {
-        const fontsDir = resolve(config.outputDir, config.fontsDir)
-        const fontPath = resolve(fontsDir, font.outputFont)
+        const fontPath = resolve(outputDir, fontsDir, font.outputFont)
 
         await outputFile(fontPath, buffer)
       }
 
+      await this.callHook('download-font:done', font)
+
       return font
     })
-
-  // convert results and save css file
-  const results = (await Promise.all(fonts))
-
-  for (const result of results) {
-    if (result) {
-      content = content.replace(result.inputText, result.outputText)
-    }
   }
 
-  await outputFile(stylePath, content)
+  private async writeCss (path: string, content: string, fonts: FontInputOutput[]) {
+    for (const font of fonts) {
+      content = content.replace(font.inputText, font.outputText)
+    }
+
+    await outputFile(path, content)
+
+    return content
+  }
 }
