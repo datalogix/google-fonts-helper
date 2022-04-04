@@ -376,7 +376,7 @@ describe('Google Fonts Helper', () => {
       outputDir,
       stylePath,
       fontsDir
-    })
+    }).execute()
 
     expect(pathExistsSync(join(outputDir, stylePath))).toBe(true)
     expect(pathExistsSync(join(outputDir, fontsDir))).toBe(true)
@@ -394,7 +394,7 @@ describe('Google Fonts Helper', () => {
       outputDir,
       stylePath,
       fontsDir
-    })
+    }).execute()
 
     expect(pathExistsSync(join(outputDir, stylePath))).toBe(true)
     expect(pathExistsSync(join(outputDir, fontsDir))).toBe(false)
@@ -403,6 +403,6 @@ describe('Google Fonts Helper', () => {
   }, 60000)
 
   test('download invalid', async () => {
-    await expect(download('https://foo.bar')).rejects.toEqual(new Error('Invalid Google Fonts URL'))
+    await expect(download('https://foo.bar').execute()).rejects.toEqual(new Error('Invalid Google Fonts URL'))
   })
 })

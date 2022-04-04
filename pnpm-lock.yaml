@@ -8,6 +8,7 @@ specifiers:
   del: latest
   eslint: latest
   fs-extra: ^10.0.1
+  hookable: ^5.1.1
   ohmyfetch: ^0.4.15
   standard-version: latest
   tempy: latest
@@ -19,6 +20,7 @@ specifiers:
 dependencies:
   deepmerge: 4.2.2
   fs-extra: 10.0.1
+  hookable: 5.1.1
   ohmyfetch: 0.4.15
   ufo: 0.8.3
 
@@ -32,7 +34,7 @@ devDependencies:
   tempy: 2.0.0
   typescript: 4.6.3
   unbuild: 0.7.2
-  vitest: 0.8.2_c8@7.11.0
+  vitest: 0.8.4_c8@7.11.0
 
 packages:
 
@@ -2327,7 +2329,6 @@ packages:
 
   /hookable/5.1.1:
     resolution: {integrity: sha512-7qam9XBFb+DijNBthaL1k/7lHU2TEMZkWSyuqmU3sCQze1wFm5w9AlEx30PD7a+QVAjOy6Ec2goFwe1YVyk2uA==}
-    dev: true
 
   /hosted-git-info/2.8.9:
     resolution: {integrity: sha512-mxIDAb9Lsm6DoOJ7xH+5+X4y1LU/4Hi50L9C5sIswK3JzULS4bwk1FvjdBgvYR4bzT4tuUQiC15FE2f5HbLvYw==}
@@ -3867,8 +3868,8 @@ packages:
       fsevents: 2.3.2
     dev: true
 
-  /vitest/0.8.2_c8@7.11.0:
-    resolution: {integrity: sha512-dTFDJl2F3pkWy1tcE3M29LasklhgtP7M88kT7AJcAurX7nCl/eWu1PQeSzjzWQyUbDq2p8jqdoLETd7MDeibcA==}
+  /vitest/0.8.4_c8@7.11.0:
+    resolution: {integrity: sha512-1OoAG1+VYkzp4WLCVQFRJX/OKk70rsMIM5H23crfc1wSEnJvHlxgQBS1HPpV/VYmjC8bIInKWhnB4Gaw32MnyQ==}
     engines: {node: '>=v14.16.0'}
     hasBin: true
     peerDependencies:
