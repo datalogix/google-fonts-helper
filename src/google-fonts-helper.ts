@@ -37,8 +37,8 @@ export function constructURL ({ families, display, subsets, text }: GoogleFonts 
   return withHttps(withQuery(resolveURL(GOOGLE_FONTS_DOMAIN, prefix), query))
 }
 
-export function merge (...values: GoogleFonts[]): GoogleFonts {
-  return all<GoogleFonts>(values)
+export function merge (...fonts: GoogleFonts[]): GoogleFonts {
+  return all<GoogleFonts>(fonts)
 }
 
 export function isValidURL (url: string): boolean {
