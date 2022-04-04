@@ -197,6 +197,20 @@ describe('Google Fonts Helper', () => {
         Lato: [100, 400]
       }
     })
+
+    expect(merge({
+      families: {
+        Roboto: true
+      }
+    }, {
+      families: {
+        Roboto: [100, 400]
+      }
+    })).toStrictEqual({
+      families: {
+        Roboto: [100, 400]
+      }
+    })
   })
 
   test('merge mutiple', () => {
