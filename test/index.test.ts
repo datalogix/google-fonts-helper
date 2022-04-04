@@ -3,70 +3,60 @@ import { describe, test, expect } from 'vitest'
 import del from 'del'
 import tempy from 'tempy'
 import { pathExistsSync } from 'fs-extra'
-import { GoogleFontsHelper } from '../src'
+import { constructURL, merge, parse, download } from '../src'
 
 describe('Google Fonts Helper', () => {
-  test('getFonts', () => {
-    const googleFontsHelper = new GoogleFontsHelper({
-      families: { Roboto: true }
-    })
-
-    expect(googleFontsHelper.getFonts()).toStrictEqual({
-      families: { Roboto: true }
-    })
-  })
-
   test('constructURL', () => {
     // v2
-    expect(new GoogleFontsHelper({
+    expect(constructURL({
       families: {
         Roboto: [100, 200, 300, 400]
       }
-    }).constructURL()).toEqual('https://fonts.googleapis.com/css2?family=Roboto:wght@100;200;300;400')
+    })).toEqual('https://fonts.googleapis.com/css2?family=Roboto:wght@100;200;300;400')
 
-    expect(new GoogleFontsHelper({
+    expect(constructURL({
       families: {
         Roboto: {
           ital: [400]
         }
       }
-    }).constructURL()).toEqual('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@1,400')
+    })).toEqual('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@1,400')
 
-    expect(new GoogleFontsHelper({
+    expect(constructURL({
       families: {
         Roboto: {
           wght: [600, 700, 800, 400]
         }
       }
-    }).constructURL()).toEqual('https://fonts.googleapis.com/css2?family=Roboto:wght@400;600;700;800')
+    })).toEqual('https://fonts.googleapis.com/css2?family=Roboto:wght@400;600;700;800')
 
-    expect(new GoogleFontsHelper({
+    expect(constructURL({
       families: {
         Roboto: {
           wght: [400, 600, 700, 800]
         }
       }
-    }).constructURL()).toEqual('https://fonts.googleapis.com/css2?family=Roboto:wght@400;600;700;800')
+    })).toEqual('https://fonts.googleapis.com/css2?family=Roboto:wght@400;600;700;800')
 
-    expect(new GoogleFontsHelper({
+    expect(constructURL({
       families: {
         Roboto: {
           wght: [300, 400, 700],
           ital: [400]
         }
       }
-    }).constructURL()).toEqual('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,300;0,400;0,700;1,400')
+    })).toEqual('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,300;0,400;0,700;1,400')
 
-    expect(new GoogleFontsHelper({
+    expect(constructURL({
       families: { Roboto: true }
-    }).constructURL()).toEqual('https://fonts.googleapis.com/css2?family=Roboto')
+    })).toEqual('https://fonts.googleapis.com/css2?family=Roboto')
 
-    expect(new GoogleFontsHelper({
+    expect(constructURL({
       families: { Roboto: true },
       text: 'Foo Bar'
-    }).constructURL()).toEqual('https://fonts.googleapis.com/css2?family=Roboto&text=Foo+Bar')
+    })).toEqual('https://fonts.googleapis.com/css2?family=Roboto&text=Foo+Bar')
 
-    expect(new GoogleFontsHelper({
+    expect(constructURL({
       families: {
         '': true,
         Roboto: true,
@@ -78,29 +68,29 @@ describe('Google Fonts Helper', () => {
           ital: [100, 400]
         }
       }
-    }).constructURL()).toEqual('https://fonts.googleapis.com/css2?family=Roboto&family=Lato:wght@100&family=Raleway:ital,wght@0,400;1,100;1,400')
+    })).toEqual('https://fonts.googleapis.com/css2?family=Roboto&family=Lato:wght@100&family=Raleway:ital,wght@0,400;1,100;1,400')
 
     // v1
-    expect(new GoogleFontsHelper({
+    expect(constructURL({
       families: { Roboto: true },
       display: 'swap',
       subsets: 'cyrillic'
-    }).constructURL()).toEqual('https://fonts.googleapis.com/css?family=Roboto&display=swap&subset=cyrillic')
+    })).toEqual('https://fonts.googleapis.com/css?family=Roboto&display=swap&subset=cyrillic')
 
-    expect(new GoogleFontsHelper({
+    expect(constructURL({
       families: { Roboto: true, Lato: [100] },
       subsets: ['foo', 'bar']
-    }).constructURL()).toEqual('https://fonts.googleapis.com/css?family=Roboto|Lato&subset=foo,bar')
+    })).toEqual('https://fonts.googleapis.com/css?family=Roboto|Lato&subset=foo,bar')
 
-    expect(new GoogleFontsHelper({
+    expect(constructURL({
       families: {
         Roboto: true
       },
       display: 'swap',
       subsets: 'cyrillic'
-    }).constructURL()).toEqual('https://fonts.googleapis.com/css?family=Roboto&display=swap&subset=cyrillic')
+    })).toEqual('https://fonts.googleapis.com/css?family=Roboto&display=swap&subset=cyrillic')
 
-    expect(new GoogleFontsHelper({
+    expect(constructURL({
       families: {
         Cantarell: {
           ital: true
@@ -110,9 +100,9 @@ describe('Google Fonts Helper', () => {
         }
       },
       subsets: 'cyrillic'
-    }).constructURL()).toEqual('https://fonts.googleapis.com/css?family=Cantarell:ital|Droid+Serif:bold&subset=cyrillic')
+    })).toEqual('https://fonts.googleapis.com/css?family=Cantarell:ital|Droid+Serif:bold&subset=cyrillic')
 
-    expect(new GoogleFontsHelper({
+    expect(constructURL({
       families: {
         Cantarell: {
           ital: [700]
@@ -122,9 +112,9 @@ describe('Google Fonts Helper', () => {
         }
       },
       subsets: 'cyrillic'
-    }).constructURL()).toEqual('https://fonts.googleapis.com/css?family=Cantarell:bolditalic|Droid+Serif:bold&subset=cyrillic')
+    })).toEqual('https://fonts.googleapis.com/css?family=Cantarell:bolditalic|Droid+Serif:bold&subset=cyrillic')
 
-    expect(new GoogleFontsHelper({
+    expect(constructURL({
       families: {
         'Droid Serif': {
           wght: true,
@@ -132,9 +122,9 @@ describe('Google Fonts Helper', () => {
         }
       },
       subsets: 'cyrillic'
-    }).constructURL()).toEqual('https://fonts.googleapis.com/css?family=Droid+Serif:wght,ital&subset=cyrillic')
+    })).toEqual('https://fonts.googleapis.com/css?family=Droid+Serif:wght,ital&subset=cyrillic')
 
-    expect(new GoogleFontsHelper({
+    expect(constructURL({
       families: {
         'Droid Serif': {
           ital: 700,
@@ -142,9 +132,9 @@ describe('Google Fonts Helper', () => {
         }
       },
       subsets: 'cyrillic'
-    }).constructURL()).toEqual('https://fonts.googleapis.com/css?family=Droid+Serif:wght,bolditalic&subset=cyrillic')
+    })).toEqual('https://fonts.googleapis.com/css?family=Droid+Serif:wght,bolditalic&subset=cyrillic')
 
-    expect(new GoogleFontsHelper({
+    expect(constructURL({
       families: {
         'Droid Serif': {
           ital: false,
@@ -152,17 +142,17 @@ describe('Google Fonts Helper', () => {
         }
       },
       subsets: 'cyrillic'
-    }).constructURL()).toEqual('https://fonts.googleapis.com/css?family=Droid+Serif&subset=cyrillic')
+    })).toEqual('https://fonts.googleapis.com/css?family=Droid+Serif&subset=cyrillic')
 
-    expect(new GoogleFontsHelper({
+    expect(constructURL({
       families: {
         Cantarell: true,
         'Droid Serif': 400
       },
       subsets: 'cyrillic'
-    }).constructURL()).toEqual('https://fonts.googleapis.com/css?family=Cantarell|Droid+Serif&subset=cyrillic')
+    })).toEqual('https://fonts.googleapis.com/css?family=Cantarell|Droid+Serif&subset=cyrillic')
 
-    expect(new GoogleFontsHelper({
+    expect(constructURL({
       families: {
         'Droid Serif': {
           ital: [400, 600, 700, 800]
@@ -172,39 +162,36 @@ describe('Google Fonts Helper', () => {
         }
       },
       subsets: 'cyrillic'
-    }).constructURL()).toEqual('https://fonts.googleapis.com/css?family=Droid+Serif:ital,bolditalic|Roboto:wght,bold&subset=cyrillic')
+    })).toEqual('https://fonts.googleapis.com/css?family=Droid+Serif:ital,bolditalic|Roboto:wght,bold&subset=cyrillic')
 
-    expect(new GoogleFontsHelper({
+    expect(constructURL({
       families: {
         '': true,
         Roboto: 700
       },
       subsets: 'cyrillic'
-    }).constructURL()).toEqual('https://fonts.googleapis.com/css?family=Roboto:bold&subset=cyrillic')
+    })).toEqual('https://fonts.googleapis.com/css?family=Roboto:bold&subset=cyrillic')
   })
 
   test('constructURL invalid', () => {
-    expect(new GoogleFontsHelper().constructURL()).toBe(false)
-    expect(new GoogleFontsHelper({ families: {} }).constructURL()).toBe(false)
-    expect(new GoogleFontsHelper({ display: 'swap' }).constructURL()).toBe(false)
-    expect(new GoogleFontsHelper({ subsets: 'foo' }).constructURL()).toBe(false)
-    expect(new GoogleFontsHelper({ subsets: ['foo', 'bar'] }).constructURL()).toBe(false)
+    expect(constructURL()).toBe(false)
+    expect(constructURL({})).toBe(false)
+    expect(constructURL({ families: {} })).toBe(false)
+    expect(constructURL({ display: 'swap' })).toBe(false)
+    expect(constructURL({ subsets: 'foo' })).toBe(false)
+    expect(constructURL({ subsets: ['foo', 'bar'] })).toBe(false)
   })
 
   test('merge', () => {
-    const googleFontsHelper = new GoogleFontsHelper({
+    expect(merge({
       families: {
         Roboto: true
       }
-    })
-
-    googleFontsHelper.merge({
+    }, {
       families: {
         Lato: [100, 400]
       }
-    })
-
-    expect(googleFontsHelper.getFonts()).toStrictEqual({
+    })).toStrictEqual({
       families: {
         Roboto: true,
         Lato: [100, 400]
@@ -213,26 +200,22 @@ describe('Google Fonts Helper', () => {
   })
 
   test('merge mutiple', () => {
-    const googleFontsHelper = new GoogleFontsHelper({
+    expect(merge({
       families: {
         Roboto: true
       }
-    })
-
-    googleFontsHelper.merge(new GoogleFontsHelper({
+    }, {
       families: {
         Lato: [100, 400]
       }
-    }), {
+    }, {
       families: {
         Raleway: {
           ital: [100, 400],
           wght: [400]
         }
       }
-    })
-
-    expect(googleFontsHelper.getFonts()).toStrictEqual({
+    })).toStrictEqual({
       families: {
         Roboto: true,
         Lato: [100, 400],
@@ -246,13 +229,13 @@ describe('Google Fonts Helper', () => {
 
   test('parse', () => {
     // v2
-    expect(GoogleFontsHelper.parse('https://fonts.googleapis.com/css2?family=Roboto').getFonts()).toStrictEqual({
+    expect(parse('https://fonts.googleapis.com/css2?family=Roboto')).toStrictEqual({
       families: {
         Roboto: true
       }
     })
 
-    expect(GoogleFontsHelper.parse('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,300;0,400;0,700;1,400').getFonts()).toStrictEqual({
+    expect(parse('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,300;0,400;0,700;1,400')).toStrictEqual({
       families: {
         Roboto: {
           wght: [300, 400, 700],
@@ -261,7 +244,7 @@ describe('Google Fonts Helper', () => {
       }
     })
 
-    expect(GoogleFontsHelper.parse('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@1,400').getFonts()).toStrictEqual({
+    expect(parse('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@1,400')).toStrictEqual({
       families: {
         Roboto: {
           wght: true,
@@ -270,14 +253,14 @@ describe('Google Fonts Helper', () => {
       }
     })
 
-    expect(GoogleFontsHelper.parse('https://fonts.googleapis.com/css2?family=Roboto&display=swap').getFonts()).toStrictEqual({
+    expect(parse('https://fonts.googleapis.com/css2?family=Roboto&display=swap')).toStrictEqual({
       families: {
         Roboto: true
       },
       display: 'swap'
     })
 
-    expect(GoogleFontsHelper.parse('https://fonts.googleapis.com/css2?family=Roboto:100').getFonts()).toStrictEqual({
+    expect(parse('https://fonts.googleapis.com/css2?family=Roboto:100')).toStrictEqual({
       families: {
         Roboto: {
           wght: [100]
@@ -285,7 +268,7 @@ describe('Google Fonts Helper', () => {
       }
     })
 
-    expect(GoogleFontsHelper.parse('https://fonts.googleapis.com/css2?family=Roboto:100,300').getFonts()).toStrictEqual({
+    expect(parse('https://fonts.googleapis.com/css2?family=Roboto:100,300')).toStrictEqual({
       families: {
         Roboto: {
           wght: [100, 300]
@@ -293,14 +276,14 @@ describe('Google Fonts Helper', () => {
       }
     })
 
-    expect(GoogleFontsHelper.parse('https://fonts.googleapis.com/css2?family=Roboto&text=Foo%20Bar').getFonts()).toStrictEqual({
+    expect(parse('https://fonts.googleapis.com/css2?family=Roboto&text=Foo%20Bar')).toStrictEqual({
       families: {
         Roboto: true
       },
       text: 'Foo Bar'
     })
 
-    expect(GoogleFontsHelper.parse('https://fonts.googleapis.com/css2?family=Roboto&family=Lato:wght@100;400&family=Raleway:ital,wght@0,400;1,100;1,400').getFonts()).toStrictEqual({
+    expect(parse('https://fonts.googleapis.com/css2?family=Roboto&family=Lato:wght@100;400&family=Raleway:ital,wght@0,400;1,100;1,400')).toStrictEqual({
       families: {
         Roboto: true,
         Lato: {
@@ -314,7 +297,7 @@ describe('Google Fonts Helper', () => {
     })
 
     // v1
-    expect(GoogleFontsHelper.parse('https://fonts.googleapis.com/css?family=Roboto&family=Lato:&display=swap&subset=cyrillic').getFonts()).toStrictEqual({
+    expect(parse('https://fonts.googleapis.com/css?family=Roboto&family=Lato:&display=swap&subset=cyrillic')).toStrictEqual({
       families: {
         Roboto: true
       },
@@ -322,7 +305,7 @@ describe('Google Fonts Helper', () => {
       subsets: ['cyrillic']
     })
 
-    expect(GoogleFontsHelper.parse('https://fonts.googleapis.com/css?family=Cantarell:italic|Droid+Serif:bold').getFonts()).toStrictEqual({
+    expect(parse('https://fonts.googleapis.com/css?family=Cantarell:italic|Droid+Serif:bold')).toStrictEqual({
       families: {
         Cantarell: {
           ital: true
@@ -333,7 +316,7 @@ describe('Google Fonts Helper', () => {
       }
     })
 
-    expect(GoogleFontsHelper.parse('https://fonts.googleapis.com/css?family=Droid+Serif:wght,italic').getFonts()).toStrictEqual({
+    expect(parse('https://fonts.googleapis.com/css?family=Droid+Serif:wght,italic')).toStrictEqual({
       families: {
         'Droid Serif': {
           wght: true,
@@ -342,20 +325,20 @@ describe('Google Fonts Helper', () => {
       }
     })
 
-    expect(GoogleFontsHelper.parse('https://fonts.googleapis.com/css?family=Cantarell|Droid+Serif').getFonts()).toStrictEqual({
+    expect(parse('https://fonts.googleapis.com/css?family=Cantarell|Droid+Serif')).toStrictEqual({
       families: {
         Cantarell: true,
         'Droid Serif': true
       }
     })
 
-    expect(GoogleFontsHelper.parse('https://fonts.googleapis.com/css?family=Droid+Serif').getFonts()).toStrictEqual({
+    expect(parse('https://fonts.googleapis.com/css?family=Droid+Serif')).toStrictEqual({
       families: {
         'Droid Serif': true
       }
     })
 
-    expect(GoogleFontsHelper.parse('https://fonts.googleapis.com/css?family=Droid+Serif:bolditalic').getFonts()).toStrictEqual({
+    expect(parse('https://fonts.googleapis.com/css?family=Droid+Serif:bolditalic')).toStrictEqual({
       families: {
         'Droid Serif': {
           ital: 700
@@ -365,9 +348,9 @@ describe('Google Fonts Helper', () => {
   })
 
   test('parse invalid', () => {
-    expect(GoogleFontsHelper.parse('https://fonts.googleapis.com/css2?family=')).toStrictEqual(new GoogleFontsHelper())
-    expect(GoogleFontsHelper.parse('https://foo.bar')).toStrictEqual(new GoogleFontsHelper())
-    expect(GoogleFontsHelper.parse('https://fonts.googleapis.com/css')).toStrictEqual(new GoogleFontsHelper())
+    expect(parse('https://fonts.googleapis.com/css2?family=')).toStrictEqual({})
+    expect(parse('https://foo.bar')).toStrictEqual({})
+    expect(parse('https://fonts.googleapis.com/css')).toStrictEqual({})
   })
 
   test('download', async () => {
@@ -375,7 +358,7 @@ describe('Google Fonts Helper', () => {
     const stylePath = 'font.css'
     const fontsDir = 'fonts'
 
-    await GoogleFontsHelper.download('https://fonts.googleapis.com/css2?family=Roboto&family=Lato:wght@100;400&family=Raleway:ital,wght@0,100;0,400;1,400', {
+    await download('https://fonts.googleapis.com/css2?family=Roboto&family=Lato:wght@100;400&family=Raleway:ital,wght@0,100;0,400;1,400', {
       outputDir,
       stylePath,
       fontsDir
@@ -392,7 +375,7 @@ describe('Google Fonts Helper', () => {
     const stylePath = 'font.css'
     const fontsDir = 'fonts'
 
-    await GoogleFontsHelper.download('https://fonts.googleapis.com/css2?family=Roboto', {
+    await download('https://fonts.googleapis.com/css2?family=Roboto', {
       base64: true,
       outputDir,
       stylePath,
@@ -406,6 +389,6 @@ describe('Google Fonts Helper', () => {
   }, 60000)
 
   test('download invalid', async () => {
-    await expect(GoogleFontsHelper.download('https://foo.bar')).rejects.toEqual(new Error('Invalid Google Fonts URL'))
+    await expect(download('https://foo.bar')).rejects.toEqual(new Error('Invalid Google Fonts URL'))
   })
 })
