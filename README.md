@@ -61,7 +61,7 @@ parse('https://fonts.googleapis.com/css2?family=Roboto&family=Lato') // { famili
 parse('https://foo.bar') // {}
 ```
 
-### `download(url: string, option?: DownloadOptions): Promise<void>`
+### `download(url: string, option?: DownloadOptions): Downloader`
 
 ```ts
 const downloader = download('https://fonts.googleapis.com/css2?family=Roboto', {
