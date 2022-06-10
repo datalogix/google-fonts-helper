@@ -5,6 +5,7 @@
   "repository": "datalogix/google-fonts-helper",
   "license": "MIT",
   "sideEffects": false,
+  "type": "module",
   "exports": {
     ".": {
       "require": "./dist/index.cjs",
@@ -20,11 +21,11 @@
   ],
   "scripts": {
     "build": "unbuild",
-    "dev": "vitest",
+    "dev": "vitest dev",
     "lint": "eslint --ext .ts,.js .",
     "prepack": "unbuild",
-    "release": "pnpm test && pnpm build && standard-version && git push --follow-tags && npm publish",
-    "test": "pnpm lint && vitest run --coverage"
+    "release": "pnpm test && standard-version && git push --follow-tags && npm publish",
+    "test": "vitest run --coverage"
   },
   "dependencies": {
     "deepmerge": "^4.2.2",
@@ -44,5 +45,6 @@
     "typescript": "latest",
     "unbuild": "latest",
     "vitest": "latest"
-  }
+  },
+  "packageManager": "pnpm@7.2.0"
 }
