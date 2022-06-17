@@ -88,7 +88,7 @@ await downloader.execute()
 
 [MIT License](./LICENSE)
 
-Copyright (c) Ricardo Gobbo de Souza
+Copyright (c) Datalogix
 
 <!-- Badges -->
 [npm-version-src]: https://img.shields.io/npm/v/google-fonts-helper/latest.svg
@@ -97,11 +97,11 @@ Copyright (c) Ricardo Gobbo de Souza
 [npm-downloads-src]: https://img.shields.io/npm/dt/google-fonts-helper.svg
 [npm-downloads-href]: https://npmjs.com/package/google-fonts-helper
 
-[github-actions-ci-src]: https://github.com/ricardogobbosouza/google-fonts-helper/workflows/ci/badge.svg
-[github-actions-ci-href]: https://github.com/ricardogobbosouza/google-fonts-helper/actions?query=workflow%3Aci
+[github-actions-ci-src]: https://github.com/datalogix/google-fonts-helper/workflows/ci/badge.svg
+[github-actions-ci-href]: https://github.com/datalogix/google-fonts-helper/actions?query=workflow%3Aci
 
-[codecov-src]: https://img.shields.io/codecov/c/github/ricardogobbosouza/google-fonts-helper.svg
-[codecov-href]: https://codecov.io/gh/ricardogobbosouza/google-fonts-helper
+[codecov-src]: https://img.shields.io/codecov/c/github/datalogix/google-fonts-helper.svg
+[codecov-href]: https://codecov.io/gh/datalogix/google-fonts-helper
 
 [license-src]: https://img.shields.io/npm/l/google-fonts-helper.svg
 [license-href]: https://npmjs.com/package/google-fonts-helper
