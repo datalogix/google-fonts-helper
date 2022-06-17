@@ -1,9 +1,9 @@
 import { resolve } from 'path'
-import { all } from 'deepmerge'
+import deepmerge from 'deepmerge'
 import { createURL, QueryObject, resolveURL, withQuery, withHttps } from 'ufo'
-import { outputFile, pathExistsSync } from 'fs-extra'
 import { $fetch } from 'ohmyfetch'
 import { Hookable } from 'hookable'
+import fsExtra from 'fs-extra'
 import { isValidDisplay, convertFamiliesObject, convertFamiliesToArray, parseFontsFromCss } from './utils'
 import type { GoogleFonts, DownloaderHooks, DownloadOptions, FontInputOutput } from './types'
 
@@ -38,7 +38,7 @@ export function constructURL ({ families, display, subsets, text }: GoogleFonts 
 }
 
 export function merge (...fonts: GoogleFonts[]): GoogleFonts {
-  return all<GoogleFonts>(fonts)
+  return deepmerge.all<GoogleFonts>(fonts)
 }
 
 export function isValidURL (url: string): boolean {
@@ -121,7 +121,7 @@ export class Downloader extends Hookable<DownloaderHooks> {
     const { outputDir, stylePath, overwriting, headers, fontsPath } = this.config
     const cssPath = resolve(outputDir, stylePath)
 
-    if (!overwriting && pathExistsSync(cssPath)) {
+    if (!overwriting && fsExtra.pathExistsSync(cssPath)) {
       return
     }
 
@@ -162,7 +162,7 @@ export class Downloader extends Hookable<DownloaderHooks> {
       } else {
         const fontPath = resolve(outputDir, fontsDir, font.outputFont)
 
-        await outputFile(fontPath, buffer)
+        await fsExtra.outputFile(fontPath, buffer)
       }
 
       await this.callHook('download-font:done', font)
@@ -176,7 +176,7 @@ export class Downloader extends Hookable<DownloaderHooks> {
       content = content.replace(font.inputText, font.outputText)
     }
 
-    await outputFile(path, content)
+    await fsExtra.outputFile(path, content)
 
     return content
   }
