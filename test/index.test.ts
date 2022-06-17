@@ -1,7 +1,7 @@
 import { join } from 'path'
 import { describe, test, expect } from 'vitest'
 import del from 'del'
-import tempy from 'tempy'
+import { temporaryDirectory } from 'tempy'
 import { pathExistsSync } from 'fs-extra'
 import { constructURL, merge, parse, download } from '../src'
 
@@ -368,7 +368,7 @@ describe('Google Fonts Helper', () => {
   })
 
   test('download', async () => {
-    const outputDir = tempy.directory()
+    const outputDir = temporaryDirectory()
     const stylePath = 'font.css'
     const fontsDir = 'fonts'
 
@@ -385,7 +385,7 @@ describe('Google Fonts Helper', () => {
   }, 60000)
 
   test('download base64', async () => {
-    const outputDir = tempy.directory()
+    const outputDir = temporaryDirectory()
     const stylePath = 'font.css'
     const fontsDir = 'fonts'
 
