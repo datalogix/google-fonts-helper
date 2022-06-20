@@ -70,6 +70,20 @@ describe('Google Fonts Helper', () => {
       }
     })).toEqual('https://fonts.googleapis.com/css2?family=Roboto&family=Lato:wght@100&family=Raleway:ital,wght@0,400;1,100;1,400')
 
+    expect(constructURL({
+      families: {
+        '': true,
+        Roboto: true,
+        Lato: {
+          normal: 100
+        },
+        Raleway: {
+          regular: [400],
+          italic: [100, 400]
+        }
+      }
+    })).toEqual('https://fonts.googleapis.com/css2?family=Roboto&family=Lato:wght@100&family=Raleway:ital,wght@0,400;1,100;1,400')
+
     // v1
     expect(constructURL({
       families: { Roboto: true },
@@ -159,6 +173,30 @@ describe('Google Fonts Helper', () => {
         },
         Roboto: {
           wght: [400, 600, 700, 800]
+        }
+      },
+      subsets: 'cyrillic'
+    })).toEqual('https://fonts.googleapis.com/css?family=Droid+Serif:ital,bolditalic|Roboto:wght,bold&subset=cyrillic')
+
+    expect(constructURL({
+      families: {
+        'Droid Serif': {
+          italic: [400, 600, 700, 800]
+        },
+        Roboto: {
+          normal: [400, 600, 700, 800]
+        }
+      },
+      subsets: 'cyrillic'
+    })).toEqual('https://fonts.googleapis.com/css?family=Droid+Serif:ital,bolditalic|Roboto:wght,bold&subset=cyrillic')
+
+    expect(constructURL({
+      families: {
+        'Droid Serif': {
+          i: [400, 600, 700, 800]
+        },
+        Roboto: {
+          regular: [400, 600, 700, 800]
         }
       },
       subsets: 'cyrillic'
