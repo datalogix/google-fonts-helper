@@ -31,20 +31,22 @@ export function convertFamiliesObject (families: string[], v2 = true): Families 
       // https://developers.google.com/fonts/docs/getting_started#specifying_font_families_and_styles_in_a_stylesheet_url
 
       parts[1].split(',').forEach((style) => {
-        if (['i', 'italic', 'ital'].includes(style)) {
+        const styleParsed = parseStyle(style)
+
+        if (styleParsed === 'wght') {
+          values.wght = true
+        }
+
+        if (styleParsed === 'ital') {
           values.ital = true
         }
 
-        if (['bold', 'b'].includes(style)) {
+        if (styleParsed === 'bold' || styleParsed === 'b') {
           values.wght = 700
         }
 
-        if (['bolditalic', 'bi'].includes(style)) {
+        if (styleParsed === 'bolditalic' || styleParsed === 'bi') {
           values.ital = 700
-        }
-
-        if (['wght'].includes(style)) {
-          values.wght = true
         }
       })
     }
@@ -59,13 +61,15 @@ export function convertFamiliesObject (families: string[], v2 = true): Families 
       }
 
       styles.split(',').forEach((style) => {
-        values[style] = weights.split(';').map((weight) => {
+        const styleParsed = parseStyle(style)
+
+        values[styleParsed] = weights.split(';').map((weight) => {
           if (/^\+?\d+$/.test(weight)) {
             return parseInt(weight)
           }
 
           const [pos, w] = weight.split(',')
-          const index = style === 'wght' ? 0 : 1
+          const index = styleParsed === 'wght' ? 0 : 1
 
           if (parseInt(pos) === index && /^\+?\d+$/.test(w)) {
             return parseInt(w)
@@ -74,7 +78,7 @@ export function convertFamiliesObject (families: string[], v2 = true): Families 
           return 0
         }).filter(v => v > 0)
 
-        values[style] = Object.entries(values[style]).length > 0 ? values[style] : true
+        values[styleParsed] = Object.entries(values[styleParsed]).length > 0 ? values[styleParsed] : true
       })
     }
 
@@ -111,20 +115,22 @@ export function convertFamiliesToArray (families: Families, v2 = true): string[]
           .entries(values)
           .sort(([styleA], [styleB]) => styleA.localeCompare(styleB))
           .forEach(([style, weight]) => {
-            if (style === 'ital' && (weight === 700 || (Array.isArray(weight) && weight.includes(700)))) {
+            const styleParsed = parseStyle(style)
+
+            if (styleParsed === 'ital' && (weight === 700 || (Array.isArray(weight) && weight.includes(700)))) {
               styles.push('bolditalic')
 
               if (Array.isArray(weight) && weight.includes(400)) {
-                styles.push(style)
+                styles.push(styleParsed)
               }
-            } else if (style === 'wght' && (weight === 700 || (Array.isArray(weight) && weight.includes(700)))) {
+            } else if (styleParsed === 'wght' && (weight === 700 || (Array.isArray(weight) && weight.includes(700)))) {
               styles.push('bold')
 
               if (Array.isArray(weight) && weight.includes(400)) {
-                styles.push(style)
+                styles.push(styleParsed)
               }
             } else if (weight !== false) {
-              styles.push(style)
+              styles.push(styleParsed)
             }
           })
 
@@ -165,13 +171,14 @@ export function convertFamiliesToArray (families: Families, v2 = true): string[]
           .entries(values)
           .sort(([styleA], [styleB]) => styleA.localeCompare(styleB))
           .forEach(([style, weight]) => {
-            styles.push(style);
+            const styleParsed = parseStyle(style)
+            styles.push(styleParsed);
 
             (Array.isArray(weight) ? weight : [weight]).forEach((value: string | number) => {
-              if (Object.keys(values).length === 1 && style === 'wght') {
+              if (Object.keys(values).length === 1 && styleParsed === 'wght') {
                 weights.push(String(value))
               } else {
-                const index = style === 'wght' ? 0 : 1
+                const index = styleParsed === 'wght' ? 0 : 1
                 weights.push(`${index},${value}`)
               }
             })
@@ -252,4 +259,18 @@ function formatFontFileName (template: string, values: { [s: string]: string } |
     .map(([key, value]) => [new RegExp(`([^{]|^){${key}}([^}]|$)`, 'g'), `$1${value}$2`])
     .reduce((str, [regexp, replacement]) => str.replace(regexp, String(replacement)), template)
     .replace(/({|}){2}/g, '$1')
+}
+
+function parseStyle (style: string): string {
+  const _style = style.toLowerCase()
+
+  if (['wght', 'regular', 'normal'].includes(_style)) {
+    return 'wght'
+  }
+
+  if (['i', 'italic', 'ital'].includes(_style)) {
+    return 'ital'
+  }
+
+  return _style
 }
