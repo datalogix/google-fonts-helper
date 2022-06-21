@@ -35,30 +35,58 @@ import { constructURL, merge, isValidURL, parse, download } from 'google-fonts-h
 ### `constructURL(): string`
 
 ```ts
-constructURL({ families: { Roboto: true } }) // https://fonts.googleapis.com/css2?family=Roboto
-constructURL({ families: { Roboto: true, Lato: true } }) // https://fonts.googleapis.com/css2?family=Roboto&family=Lato
+constructURL({ families: { Roboto: true } })
+// https://fonts.googleapis.com/css2?family=Roboto
+
+constructURL({ families: { Roboto: true, Lato: true } })
+// https://fonts.googleapis.com/css2?family=Roboto&family=Lato
+
+constructURL({
+  families: {
+    Roboto: true,
+    Lato: {
+      wght: 100
+    },
+    Raleway: {
+      wght: [400],
+      ital: [100, 400]
+    }
+  }
+})
+// https://fonts.googleapis.com/css2?family=Roboto&family=Lato:wght@100&family=Raleway:ital,wght@0,400;1,100;1,400
 ```
 
 ### `merge(...fonts: GoogleFonts[]): GoogleFonts`
 
 ```ts
-merge({ families: { Roboto: true } }, { families: { Lato: true } })  // { families: { Roboto: true, Lato: true } }
-merge({ families: { Roboto: true } }, { families: { Roboto: [300, 400] } })  // { families: { Roboto: [300, 400] } }
+merge({ families: { Roboto: true } }, { families: { Lato: true } })
+// { families: { Roboto: true, Lato: true } }
+
+merge({ families: { Roboto: true } }, { families: { Roboto: [300, 400] } })
+// { families: { Roboto: [300, 400] } }
 ```
 
 ### `isValidURL(url: string): boolean`
 
 ```ts
-isValidURL('https://fonts.googleapis.com/css2?family=Roboto') // true
-isValidURL('https://foo.bar') // false
+isValidURL('https://fonts.googleapis.com/css2?family=Roboto')
+// true
+
+isValidURL('https://foo.bar')
+// false
 ```
 
 ### `parse(url: string): GoogleFonts`
 
 ```ts
-parse('https://fonts.googleapis.com/css2?family=Roboto') // { families: { Roboto: true } }
-parse('https://fonts.googleapis.com/css2?family=Roboto&family=Lato') // { families: { Roboto: true, Lato: true } }
-parse('https://foo.bar') // {}
+parse('https://fonts.googleapis.com/css2?family=Roboto')
+// { families: { Roboto: true } }
+
+parse('https://fonts.googleapis.com/css2?family=Roboto&family=Lato')
+// { families: { Roboto: true, Lato: true } }
+
+parse('https://foo.bar')
+// {}
 ```
 
 ### `download(url: string, option?: DownloadOptions): Downloader`
