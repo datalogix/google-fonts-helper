@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [3.2.0](https://github.com/datalogix/google-fonts-helper/compare/v3.1.0...v3.2.0) (2022-10-14)
+
+
+### Features
+
+* auto overwriting ([#35](https://github.com/datalogix/google-fonts-helper/issues/35)) ([f56434c](https://github.com/datalogix/google-fonts-helper/commit/f56434ceb2d96d4c73e581009b9b97ee856be4ed))
+
+
+### Bug Fixes
+
+* encoded family name ([90745d6](https://github.com/datalogix/google-fonts-helper/commit/90745d634c7a7d15914fc1f35be2568a00c89455))
+
 ## [3.1.0](https://github.com/datalogix/google-fonts-helper/compare/v3.0.1...v3.1.0) (2022-06-21)
 
 
