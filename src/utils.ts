@@ -82,7 +82,7 @@ export function convertFamiliesObject (families: string[], v2 = true): Families 
       })
     }
 
-    result[parts[0]] = values
+    result[parseFamilyName(parts[0])] = values
   })
 
   return result
@@ -97,6 +97,8 @@ export function convertFamiliesToArray (families: Families, v2 = true): string[]
       if (!name) {
         return
       }
+
+      name = parseFamilyName(name)
 
       if ((Array.isArray(values) && values.length > 0) || (values === true || values === 400)) {
         result.push(name)
@@ -157,6 +159,8 @@ export function convertFamiliesToArray (families: Families, v2 = true): string[]
       if (!name) {
         return
       }
+
+      name = parseFamilyName(name)
 
       if (Array.isArray(values) && values.length > 0) {
         result.push(`${name}:wght@${values.join(';')}`)
@@ -273,4 +277,8 @@ function parseStyle (style: string): string {
   }
 
   return _style
+}
+
+function parseFamilyName (name: string) {
+  return decodeURIComponent(name).replace('+', ' ')
 }

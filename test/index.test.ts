@@ -1,6 +1,6 @@
 import { join } from 'path'
 import { describe, test, expect } from 'vitest'
-import del from 'del'
+import { deleteAsync } from 'del'
 import { temporaryDirectory } from 'tempy'
 import { pathExistsSync } from 'fs-extra'
 import { constructURL, merge, parse, download } from '../src'
@@ -8,6 +8,14 @@ import { constructURL, merge, parse, download } from '../src'
 describe('Google Fonts Helper', () => {
   test('constructURL', () => {
     // v2
+    expect(constructURL({
+      families: {
+        'Droid+Serif': true,
+        'Open Sans': true,
+        'Roboto%2BMono': true
+      }
+    })).toEqual('https://fonts.googleapis.com/css2?family=Droid+Serif&family=Open+Sans&family=Roboto+Mono')
+
     expect(constructURL({
       families: {
         Roboto: [100, 200, 300, 400]
@@ -287,6 +295,13 @@ describe('Google Fonts Helper', () => {
       }
     })
 
+    expect(parse('https://fonts.googleapis.com/css2?family=Roboto&family=Roboto+Mono')).toStrictEqual({
+      families: {
+        Roboto: true,
+        'Roboto Mono': true
+      }
+    })
+
     expect(parse('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,300;0,400;0,700;1,400')).toStrictEqual({
       families: {
         Roboto: {
@@ -419,7 +434,7 @@ describe('Google Fonts Helper', () => {
     expect(pathExistsSync(join(outputDir, stylePath))).toBe(true)
     expect(pathExistsSync(join(outputDir, fontsDir))).toBe(true)
 
-    await del(outputDir, { force: true })
+    await deleteAsync(outputDir, { force: true })
   }, 60000)
 
   test('download base64', async () => {
@@ -437,7 +452,7 @@ describe('Google Fonts Helper', () => {
     expect(pathExistsSync(join(outputDir, stylePath))).toBe(true)
     expect(pathExistsSync(join(outputDir, fontsDir))).toBe(false)
 
-    await del(outputDir, { force: true })
+    await deleteAsync(outputDir, { force: true })
   }, 60000)
 
   test('download invalid', async () => {
