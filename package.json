@@ -30,14 +30,14 @@
   "dependencies": {
     "deepmerge": "^4.2.2",
     "fs-extra": "^10.1.0",
-    "hookable": "^5.1.1",
-    "ohmyfetch": "^0.4.18",
-    "ufo": "^0.8.4"
+    "hookable": "^5.4.0",
+    "ohmyfetch": "^0.4.19",
+    "ufo": "^0.8.5"
   },
   "devDependencies": {
     "@nuxtjs/eslint-config-typescript": "latest",
     "@types/fs-extra": "latest",
-    "c8": "latest",
+    "@vitest/coverage-c8": "latest",
     "del": "latest",
     "eslint": "latest",
     "standard-version": "latest",
@@ -46,5 +46,5 @@
     "unbuild": "latest",
     "vitest": "latest"
   },
-  "packageManager": "pnpm@7.2.0"
+  "packageManager": "pnpm@7.5.1"
 }
