@@ -25,10 +25,11 @@
     "lint": "eslint --ext .ts,.js .",
     "prepack": "unbuild",
     "release": "pnpm test && standard-version && git push --follow-tags && npm publish",
-    "test": "vitest run --coverage"
+    "test": "yarn lint && vitest run --coverage"
   },
   "dependencies": {
     "deepmerge": "^4.2.2",
+    "del": "^7.0.0",
     "fs-extra": "^10.1.0",
     "hookable": "^5.4.0",
     "ohmyfetch": "^0.4.19",
@@ -38,7 +39,6 @@
     "@nuxtjs/eslint-config-typescript": "latest",
     "@types/fs-extra": "latest",
     "@vitest/coverage-c8": "latest",
-    "del": "latest",
     "eslint": "latest",
     "standard-version": "latest",
     "tempy": "latest",

@@ -1,4 +1,5 @@
 import { resolve } from 'path'
+import { deleteAsync } from 'del'
 import deepmerge from 'deepmerge'
 import { createURL, QueryObject, resolveURL, withQuery, withHttps } from 'ufo'
 import { $fetch } from 'ohmyfetch'
@@ -118,11 +119,19 @@ export class Downloader extends Hookable<DownloaderHooks> {
       throw new Error('Invalid Google Fonts URL')
     }
 
-    const { outputDir, stylePath, overwriting, headers, fontsPath } = this.config
+    const { outputDir, stylePath, headers, fontsPath } = this.config
     const cssPath = resolve(outputDir, stylePath)
+    let overwriting = this.config.overwriting
 
-    if (!overwriting && fsExtra.pathExistsSync(cssPath)) {
-      return
+    if (!overwriting && await fsExtra.pathExists(cssPath)) {
+      const currentCssContent = await fsExtra.readFile(cssPath, 'utf-8')
+      const currentUrl = (currentCssContent.split(/\r?\n/, 1).shift() || '').replace('/*', '').replace('*/', '').trim()
+
+      overwriting = currentUrl !== this.url
+    }
+
+    if (overwriting) {
+      await deleteAsync(outputDir, { force: true })
     }
 
     // download css content
@@ -137,7 +146,7 @@ export class Downloader extends Hookable<DownloaderHooks> {
 
     // write css
     await this.callHook('write-css:before', cssPath, cssContent, fonts)
-    const newContent = await this.writeCss(cssPath, cssContent, fonts)
+    const newContent = await this.writeCss(cssPath, `/* ${this.url} */\n${cssContent}`, fonts)
     await this.callHook('write-css:done', cssPath, newContent, cssContent)
   }
 

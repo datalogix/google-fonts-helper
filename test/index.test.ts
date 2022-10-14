@@ -2,7 +2,7 @@ import { join } from 'path'
 import { describe, test, expect } from 'vitest'
 import { deleteAsync } from 'del'
 import { temporaryDirectory } from 'tempy'
-import { pathExistsSync } from 'fs-extra'
+import { pathExists, readFile } from 'fs-extra'
 import { constructURL, merge, parse, download } from '../src'
 
 describe('Google Fonts Helper', () => {
@@ -431,8 +431,37 @@ describe('Google Fonts Helper', () => {
       fontsDir
     }).execute()
 
-    expect(pathExistsSync(join(outputDir, stylePath))).toBe(true)
-    expect(pathExistsSync(join(outputDir, fontsDir))).toBe(true)
+    expect(await pathExists(join(outputDir, stylePath))).toBe(true)
+    expect(await pathExists(join(outputDir, fontsDir))).toBe(true)
+
+    await deleteAsync(outputDir, { force: true })
+  }, 60000)
+
+  test('download overwriting', async () => {
+    const outputDir = temporaryDirectory()
+    const stylePath = 'font.css'
+    const fontsDir = 'fonts'
+    const config = {
+      families: {
+        Roboto: true
+      }
+    }
+
+    let url = constructURL(config) || ''
+
+    await download(url, { outputDir, stylePath, fontsDir }).execute()
+
+    expect(await pathExists(join(outputDir, stylePath))).toBe(true)
+    expect(await pathExists(join(outputDir, fontsDir))).toBe(true)
+    expect(await readFile(join(outputDir, stylePath), 'utf-8')).toContain(url)
+
+    url = constructURL(merge(config, { families: { Lato: true } })) || ''
+
+    await download(url, { outputDir, stylePath, fontsDir }).execute()
+
+    expect(await pathExists(join(outputDir, stylePath))).toBe(true)
+    expect(await pathExists(join(outputDir, fontsDir))).toBe(true)
+    expect(await readFile(join(outputDir, stylePath), 'utf-8')).toContain(url)
 
     await deleteAsync(outputDir, { force: true })
   }, 60000)
@@ -449,8 +478,8 @@ describe('Google Fonts Helper', () => {
       fontsDir
     }).execute()
 
-    expect(pathExistsSync(join(outputDir, stylePath))).toBe(true)
-    expect(pathExistsSync(join(outputDir, fontsDir))).toBe(false)
+    expect(await pathExists(join(outputDir, stylePath))).toBe(true)
+    expect(await pathExists(join(outputDir, fontsDir))).toBe(false)
 
     await deleteAsync(outputDir, { force: true })
   }, 60000)
