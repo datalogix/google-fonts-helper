@@ -31,9 +31,9 @@
     "deepmerge": "^4.2.2",
     "del": "^7.0.0",
     "fs-extra": "^10.1.0",
-    "hookable": "^5.4.0",
+    "hookable": "^5.4.1",
     "ohmyfetch": "^0.4.19",
-    "ufo": "^0.8.5"
+    "ufo": "^0.8.6"
   },
   "devDependencies": {
     "@nuxtjs/eslint-config-typescript": "latest",
@@ -46,5 +46,5 @@
     "unbuild": "latest",
     "vitest": "latest"
   },
-  "packageManager": "pnpm@7.5.1"
+  "packageManager": "pnpm@7.13.5"
 }
