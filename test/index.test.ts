@@ -3,7 +3,7 @@ import { describe, test, expect } from 'vitest'
 import { deleteAsync } from 'del'
 import { temporaryDirectory } from 'tempy'
 import { pathExists, readFile } from 'fs-extra'
-import { constructURL, merge, parse, download } from '../src'
+import { constructURL, merge, parse, download, isValidURL } from '../src'
 
 describe('Google Fonts Helper', () => {
   test('constructURL', () => {
@@ -418,6 +418,13 @@ describe('Google Fonts Helper', () => {
     expect(parse('https://fonts.googleapis.com/css2?family=')).toStrictEqual({})
     expect(parse('https://foo.bar')).toStrictEqual({})
     expect(parse('https://fonts.googleapis.com/css')).toStrictEqual({})
+  })
+
+  test('isValidURL', () => {
+    expect(isValidURL('https://fonts.googleapis.com/css?family=Roboto')).toBe(true)
+    expect(isValidURL('https://fonts.googleapis.com/css2?family=Roboto')).toBe(true)
+    expect(isValidURL('https://font.googleapis.com/css?family=Roboto')).toBe(false)
+    expect(isValidURL('https://fonts.google.com/css2?family=Roboto')).toBe(false)
   })
 
   test('download', async () => {
