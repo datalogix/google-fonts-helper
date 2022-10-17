@@ -1,6 +1,6 @@
 {
   "name": "google-fonts-helper",
-  "version": "3.2.0",
+  "version": "3.2.1",
   "description": "Google Fonts Helper",
   "repository": "datalogix/google-fonts-helper",
   "license": "MIT",
@@ -13,19 +13,19 @@
       "types": "./dist/index.d.ts"
     }
   },
-  "main": "dist/index.cjs",
-  "module": "dist/index.mjs",
-  "types": "dist/index.d.ts",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.ts",
   "files": [
     "dist"
   ],
   "scripts": {
     "build": "unbuild",
-    "dev": "vitest dev",
+    "dev": "vitest",
     "lint": "eslint --ext .ts,.js .",
     "prepack": "unbuild",
-    "release": "pnpm test && standard-version && git push --follow-tags && npm publish",
-    "test": "pnpm lint && vitest run --coverage"
+    "release": "pnpm test && changelogen --release && git push --follow-tags && pnpm publish",
+    "test": "pnpm lint && pnpm build && vitest run --coverage"
   },
   "dependencies": {
     "deepmerge": "^4.2.2",
@@ -39,8 +39,8 @@
     "@nuxtjs/eslint-config-typescript": "latest",
     "@types/fs-extra": "latest",
     "@vitest/coverage-c8": "latest",
+    "changelogen": "latest",
     "eslint": "latest",
-    "standard-version": "latest",
     "tempy": "latest",
     "typescript": "latest",
     "unbuild": "latest",

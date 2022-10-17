@@ -2,6 +2,25 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## v3.2.1
+
+
+### 💅 Refactors
+
+  - Update (92935a8)
+
+### 🏡 Chore
+
+  - Update deps (b9376ed)
+
+### ✅ Tests
+
+  - Add tests for `isValidURL` (3ca12cb)
+
+### ❤️  Contributors
+
+- Ricardo Gobbo De Souza
+
 ## [3.2.0](https://github.com/datalogix/google-fonts-helper/compare/v3.1.0...v3.2.0) (2022-10-14)
 
 
