@@ -1,92 +1,34 @@
-import { resolve } from 'path'
+import { basename, extname, posix, resolve } from 'path'
 import { deleteAsync } from 'del'
-import deepmerge from 'deepmerge'
-import { createURL, QueryObject, resolveURL, withQuery, withHttps } from 'ufo'
 import { $fetch } from 'ohmyfetch'
 import { Hookable } from 'hookable'
 import fsExtra from 'fs-extra'
-import { isValidDisplay, convertFamiliesObject, convertFamiliesToArray, parseFontsFromCss } from './utils'
-import type { GoogleFonts, DownloaderHooks, DownloadOptions, FontInputOutput } from './types'
+import { isValidURL } from './is-valid-url'
 
-const GOOGLE_FONTS_DOMAIN = 'fonts.googleapis.com'
-
-export function constructURL ({ families, display, subsets, text }: GoogleFonts = {}): string | false {
-  const subset = (Array.isArray(subsets) ? subsets : [subsets]).filter(Boolean)
-  const prefix = subset.length > 0 ? 'css' : 'css2'
-  const family = convertFamiliesToArray(families ?? {}, prefix.endsWith('2'))
-
-  if (family.length < 1) {
-    return false
-  }
-
-  const query: QueryObject = {
-    family
-  }
-
-  if (display && isValidDisplay(display)) {
-    query.display = display
-  }
-
-  if (subset.length > 0) {
-    query.subset = subset.join(',')
-  }
-
-  if (text) {
-    query.text = text
-  }
-
-  return withHttps(withQuery(resolveURL(GOOGLE_FONTS_DOMAIN, prefix), query))
+export interface FontInputOutput {
+  inputFont: string
+  outputFont: string
+  inputText: string
+  outputText: string
 }
 
-export function merge (...fonts: GoogleFonts[]): GoogleFonts {
-  return deepmerge.all<GoogleFonts>(fonts)
+export interface DownloadOptions {
+  base64?: boolean
+  overwriting?: boolean
+  outputDir: string
+  stylePath: string
+  fontsDir: string
+  fontsPath: string
+  headers?: HeadersInit
 }
 
-export function isValidURL (url: string): boolean {
-  return RegExp(GOOGLE_FONTS_DOMAIN).test(url)
-}
-
-export function parse (url: string): GoogleFonts {
-  const result: GoogleFonts = {}
-
-  if (!isValidURL(url)) {
-    return result
-  }
-
-  const { searchParams, pathname } = createURL(url)
-
-  if (!searchParams.has('family')) {
-    return result
-  }
-
-  const families = convertFamiliesObject(searchParams.getAll('family'), pathname.endsWith('2'))
-
-  if (Object.keys(families).length < 1) {
-    return result
-  }
-
-  result.families = families
-
-  const display = searchParams.get('display')
-  if (display && isValidDisplay(display)) {
-    result.display = display
-  }
-
-  const subsets = searchParams.get('subset')
-  if (subsets) {
-    result.subsets = subsets.split(',')
-  }
-
-  const text = searchParams.get('text')
-  if (text) {
-    result.text = text
-  }
-
-  return result
-}
-
-export function download (url: string, options?: Partial<DownloadOptions>) {
-  return new Downloader(url, options)
+export interface DownloaderHooks {
+  'download-css:before': (url: string) => void
+  'download-css:done': (url: string, content: string, fonts: FontInputOutput[]) => void
+  'download-font:before': (font: FontInputOutput) => void
+  'download-font:done': (font: FontInputOutput) => void
+  'write-css:before': (path: string, content: string, fonts: FontInputOutput[]) => void
+  'write-css:done': (path: string, newContent: string, oldContent: string) => void
 }
 
 export class Downloader extends Hookable<DownloaderHooks> {
@@ -189,4 +131,60 @@ export class Downloader extends Hookable<DownloaderHooks> {
 
     return content
   }
+}
+
+function parseFontsFromCss (content: string, fontsPath: string): FontInputOutput[] {
+  const fonts: FontInputOutput[] = []
+  const re = {
+    face: /\s*(?:\/\*\s*(.*?)\s*\*\/)?[^@]*?@font-face\s*{(?:[^}]*?)}\s*/gi,
+    family: /font-family\s*:\s*(?:'|")?([^;]*?)(?:'|")?\s*;/i,
+    weight: /font-weight\s*:\s*([^;]*?)\s*;/i,
+    url: /url\s*\(\s*(?:'|")?\s*([^]*?)\s*(?:'|")?\s*\)\s*?/gi
+  }
+
+  let i = 1
+  let match1
+
+  while ((match1 = re.face.exec(content)) !== null) {
+    const [fontface, comment] = match1
+    const familyRegExpArray = re.family.exec(fontface)
+    const family = familyRegExpArray ? familyRegExpArray[1] : ''
+    const weightRegExpArray = re.weight.exec(fontface)
+    const weight = weightRegExpArray ? weightRegExpArray[1] : ''
+
+    let match2
+    while ((match2 = re.url.exec(fontface)) !== null) {
+      const [forReplace, url] = match2
+      const urlPathname = new URL(url).pathname
+      const ext = extname(urlPathname)
+      if (ext.length < 2) { continue }
+      const filename = basename(urlPathname, ext) || ''
+      const newFilename = formatFontFileName('{_family}-{weight}-{i}.{ext}', {
+        comment: comment || '',
+        family,
+        weight: weight || '',
+        filename,
+        _family: family.replace(/\s+/g, '_'),
+        ext: ext.replace(/^\./, '') || '',
+        i: String(i++)
+      }).replace(/\.$/, '')
+
+      fonts.push({
+        inputFont: url,
+        outputFont: newFilename,
+        inputText: forReplace,
+        outputText: `url('${posix.join(fontsPath, newFilename)}')`
+      })
+    }
+  }
+
+  return fonts
+}
+
+function formatFontFileName (template: string, values: { [s: string]: string } | ArrayLike<string>): string {
+  return Object.entries(values)
+    .filter(([key]) => /^[a-z0-9_-]+$/gi.test(key))
+    .map(([key, value]) => [new RegExp(`([^{]|^){${key}}([^}]|$)`, 'g'), `$1${value}$2`])
+    .reduce((str, [regexp, replacement]) => str.replace(regexp, String(replacement)), template)
+    .replace(/({|}){2}/g, '$1')
 }
