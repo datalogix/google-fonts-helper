@@ -18,11 +18,8 @@ jobs:
         node: [14, 16, 18]
 
     steps:
-      - name: checkout
-        uses: actions/checkout@v3
-
+      - uses: actions/checkout@v3
       - run: corepack enable
-
       - uses: actions/setup-node@v3
         with:
           node-version: ${{ matrix.node }}
