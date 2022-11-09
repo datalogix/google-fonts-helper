@@ -19,5 +19,5 @@ export function parseStyle (style: string): string {
 }
 
 export function parseFamilyName (name: string) {
-  return decodeURIComponent(name).replaceAll('+', ' ')
+  return decodeURIComponent(name).replace(/\+/, ' ')
 }
