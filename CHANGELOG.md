@@ -2,6 +2,28 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## v3.2.2
+
+
+### 🩹 Fixes
+
+  - Use regexp to replace all `+` (#37)
+  - Globally replace all occurrences (#38)
+
+### 🏡 Chore
+
+  - Update command (828df49)
+  - Update deps (7f246f1)
+
+### 🤖 CI
+
+  - Update (0fa5a59)
+
+### ❤️  Contributors
+
+- Lightcode22
+- Ricardo Gobbo De Souza
+
 ## v3.2.1
 
 
