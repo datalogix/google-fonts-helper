@@ -1,6 +1,6 @@
 import { join } from 'path'
 import { describe, test, expect } from 'vitest'
-import { deleteAsync } from 'del'
+import del from 'del'
 import { temporaryDirectory } from 'tempy'
 import { pathExists, readFile } from 'fs-extra'
 import { constructURL, merge, download } from '../src'
@@ -20,7 +20,7 @@ describe('download', () => {
     expect(await pathExists(join(outputDir, stylePath))).toBe(true)
     expect(await pathExists(join(outputDir, fontsDir))).toBe(true)
 
-    await deleteAsync(outputDir, { force: true })
+    await del(outputDir, { force: true })
   }, 60000)
 
   test('overwriting', async () => {
@@ -49,7 +49,7 @@ describe('download', () => {
     expect(await pathExists(join(outputDir, fontsDir))).toBe(true)
     expect(await readFile(join(outputDir, stylePath), 'utf-8')).toContain(url)
 
-    await deleteAsync(outputDir, { force: true })
+    await del(outputDir, { force: true })
   }, 60000)
 
   test('base64', async () => {
@@ -67,7 +67,7 @@ describe('download', () => {
     expect(await pathExists(join(outputDir, stylePath))).toBe(true)
     expect(await pathExists(join(outputDir, fontsDir))).toBe(false)
 
-    await deleteAsync(outputDir, { force: true })
+    await del(outputDir, { force: true })
   }, 60000)
 
   test('invalid', async () => {

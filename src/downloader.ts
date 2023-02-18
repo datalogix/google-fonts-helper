@@ -1,5 +1,5 @@
 import { basename, extname, posix, resolve } from 'path'
-import { deleteAsync } from 'del'
+import del from 'del'
 import { $fetch } from 'ohmyfetch'
 import { Hookable } from 'hookable'
 import fsExtra from 'fs-extra'
@@ -73,7 +73,7 @@ export class Downloader extends Hookable<DownloaderHooks> {
     }
 
     if (overwriting) {
-      await deleteAsync(outputDir, { force: true })
+      await del(outputDir, { force: true })
     }
 
     // download css content

@@ -28,12 +28,12 @@
     "test": "pnpm lint && vitest run --coverage"
   },
   "dependencies": {
-    "deepmerge": "^4.2.2",
-    "del": "^7.0.0",
+    "deepmerge": "^4.3.0",
+    "del": "^6.1.1",
     "fs-extra": "^10.1.0",
-    "hookable": "^5.4.1",
+    "hookable": "^5.4.2",
     "ohmyfetch": "^0.4.21",
-    "ufo": "^0.8.6"
+    "ufo": "^1.1.0"
   },
   "devDependencies": {
     "@nuxtjs/eslint-config-typescript": "latest",
@@ -46,5 +46,5 @@
     "unbuild": "latest",
     "vitest": "latest"
   },
-  "packageManager": "pnpm@7.15.0"
+  "packageManager": "pnpm@7.27.1"
 }
