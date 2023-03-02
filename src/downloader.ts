@@ -1,8 +1,7 @@
-import { basename, extname, posix, resolve } from 'path'
-import del from 'del'
-import { $fetch } from 'ohmyfetch'
+import { existsSync, readFileSync, mkdirSync, writeFileSync, rmSync } from 'node:fs'
+import { basename, extname, posix, resolve, dirname } from 'node:path'
+import { ofetch } from 'ofetch'
 import { Hookable } from 'hookable'
-import fsExtra from 'fs-extra'
 import { isValidURL } from './is-valid-url'
 
 export interface FontInputOutput {
@@ -65,20 +64,20 @@ export class Downloader extends Hookable<DownloaderHooks> {
     const cssPath = resolve(outputDir, stylePath)
     let overwriting = this.config.overwriting
 
-    if (!overwriting && await fsExtra.pathExists(cssPath)) {
-      const currentCssContent = await fsExtra.readFile(cssPath, 'utf-8')
+    if (!overwriting && existsSync(cssPath)) {
+      const currentCssContent = readFileSync(cssPath, 'utf-8')
       const currentUrl = (currentCssContent.split(/\r?\n/, 1).shift() || '').replace('/*', '').replace('*/', '').trim()
 
       overwriting = currentUrl !== this.url
     }
 
     if (overwriting) {
-      await del(outputDir, { force: true })
+      rmSync(outputDir, { recursive: true, force: true })
     }
 
     // download css content
     await this.callHook('download-css:before', this.url)
-    const cssContent = await $fetch(this.url, { headers })
+    const cssContent = await ofetch(this.url, { headers })
     const fontsFromCss = parseFontsFromCss(cssContent, fontsPath)
     await this.callHook('download-css:done', this.url, cssContent, fontsFromCss)
 
@@ -88,7 +87,7 @@ export class Downloader extends Hookable<DownloaderHooks> {
 
     // write css
     await this.callHook('write-css:before', cssPath, cssContent, fonts)
-    const newContent = await this.writeCss(cssPath, `/* ${this.url} */\n${cssContent}`, fonts)
+    const newContent = this.writeCss(cssPath, `/* ${this.url} */\n${cssContent}`, fonts)
     await this.callHook('write-css:done', cssPath, newContent, cssContent)
   }
 
@@ -98,7 +97,7 @@ export class Downloader extends Hookable<DownloaderHooks> {
     return fonts.map(async (font) => {
       await this.callHook('download-font:before', font)
 
-      const response = await $fetch.raw(font.inputFont, { headers, responseType: 'arrayBuffer' })
+      const response = await ofetch.raw(font.inputFont, { headers, responseType: 'arrayBuffer' })
 
       if (!response?._data) {
         return {} as FontInputOutput
@@ -113,7 +112,8 @@ export class Downloader extends Hookable<DownloaderHooks> {
       } else {
         const fontPath = resolve(outputDir, fontsDir, font.outputFont)
 
-        await fsExtra.outputFile(fontPath, buffer)
+        mkdirSync(dirname(fontPath), { recursive: true })
+        writeFileSync(fontPath, buffer, 'utf-8')
       }
 
       await this.callHook('download-font:done', font)
@@ -122,12 +122,13 @@ export class Downloader extends Hookable<DownloaderHooks> {
     })
   }
 
-  private async writeCss (path: string, content: string, fonts: FontInputOutput[]) {
+  private writeCss (path: string, content: string, fonts: FontInputOutput[]) {
     for (const font of fonts) {
       content = content.replace(font.inputText, font.outputText)
     }
 
-    await fsExtra.outputFile(path, content)
+    mkdirSync(dirname(path), { recursive: true })
+    writeFileSync(path, content, 'utf-8')
 
     return content
   }

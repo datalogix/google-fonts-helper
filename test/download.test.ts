@@ -1,8 +1,7 @@
-import { join } from 'path'
-import { describe, test, expect } from 'vitest'
-import del from 'del'
+import { join } from 'node:path'
+import { existsSync, readFileSync, rmSync } from 'node:fs'
 import { temporaryDirectory } from 'tempy'
-import { pathExists, readFile } from 'fs-extra'
+import { describe, test, expect } from 'vitest'
 import { constructURL, merge, download } from '../src'
 
 describe('download', () => {
@@ -17,10 +16,10 @@ describe('download', () => {
       fontsDir
     }).execute()
 
-    expect(await pathExists(join(outputDir, stylePath))).toBe(true)
-    expect(await pathExists(join(outputDir, fontsDir))).toBe(true)
+    expect(existsSync(join(outputDir, stylePath))).toBe(true)
+    expect(existsSync(join(outputDir, fontsDir))).toBe(true)
 
-    await del(outputDir, { force: true })
+    rmSync(outputDir, { recursive: true, force: true })
   }, 60000)
 
   test('overwriting', async () => {
@@ -37,19 +36,19 @@ describe('download', () => {
 
     await download(url, { outputDir, stylePath, fontsDir }).execute()
 
-    expect(await pathExists(join(outputDir, stylePath))).toBe(true)
-    expect(await pathExists(join(outputDir, fontsDir))).toBe(true)
-    expect(await readFile(join(outputDir, stylePath), 'utf-8')).toContain(url)
+    expect(existsSync(join(outputDir, stylePath))).toBe(true)
+    expect(existsSync(join(outputDir, fontsDir))).toBe(true)
+    expect(readFileSync(join(outputDir, stylePath), 'utf-8')).toContain(url)
 
     url = constructURL(merge(config, { families: { Lato: true } })) || ''
 
     await download(url, { outputDir, stylePath, fontsDir }).execute()
 
-    expect(await pathExists(join(outputDir, stylePath))).toBe(true)
-    expect(await pathExists(join(outputDir, fontsDir))).toBe(true)
-    expect(await readFile(join(outputDir, stylePath), 'utf-8')).toContain(url)
+    expect(existsSync(join(outputDir, stylePath))).toBe(true)
+    expect(existsSync(join(outputDir, fontsDir))).toBe(true)
+    expect(readFileSync(join(outputDir, stylePath), 'utf-8')).toContain(url)
 
-    await del(outputDir, { force: true })
+    rmSync(outputDir, { recursive: true, force: true })
   }, 60000)
 
   test('base64', async () => {
@@ -64,10 +63,10 @@ describe('download', () => {
       fontsDir
     }).execute()
 
-    expect(await pathExists(join(outputDir, stylePath))).toBe(true)
-    expect(await pathExists(join(outputDir, fontsDir))).toBe(false)
+    expect(existsSync(join(outputDir, stylePath))).toBe(true)
+    expect(existsSync(join(outputDir, fontsDir))).toBe(false)
 
-    await del(outputDir, { force: true })
+    rmSync(outputDir, { recursive: true, force: true })
   }, 60000)
 
   test('invalid', async () => {
