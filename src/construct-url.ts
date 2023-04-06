@@ -112,25 +112,36 @@ function convertFamiliesToArray (families: Families, v2 = true): string[] {
       if (Object.keys(values).length > 0) {
         const styles: string[] = []
         const weights: string[] = []
+        let forceWght = false
 
         Object
           .entries(values)
           .sort(([styleA], [styleB]) => styleA.localeCompare(styleB))
           .forEach(([style, weight]) => {
             const styleParsed = parseStyle(style)
-            styles.push(styleParsed);
+            styles.push(styleParsed)
 
-            (Array.isArray(weight) ? weight : [weight]).forEach((value: string | number) => {
+            const weightList = Array.isArray(weight) ? weight : [weight]
+            weightList.forEach((value: string | number) => {
               if (Object.keys(values).length === 1 && styleParsed === 'wght') {
                 weights.push(String(value))
               } else {
                 const index = styleParsed === 'wght' ? 0 : 1
-                weights.push(`${index},${value}`)
+
+                if (
+                  (value.toString() === 'true' || value === 1 || value === 400) &&
+                  Object.entries(values).length === 1 && weightList.length === 1
+                ) {
+                  weights.push(`${index}`)
+                } else if (value) {
+                  forceWght = true
+                  weights.push(`${index},${value}`)
+                }
               }
             })
           })
 
-        if (!styles.includes('wght')) {
+        if (!styles.includes('wght') && forceWght) {
           styles.push('wght')
         }
 

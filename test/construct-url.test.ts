@@ -20,10 +20,34 @@ describe('constructURL', () => {
     expect(constructURL({
       families: {
         Roboto: {
+          italic: true
+        }
+      }
+    })).toEqual('https://fonts.googleapis.com/css2?family=Roboto:ital@1')
+
+    expect(constructURL({
+      families: {
+        Roboto: {
+          italic: 1
+        }
+      }
+    })).toEqual('https://fonts.googleapis.com/css2?family=Roboto:ital@1')
+
+    expect(constructURL({
+      families: {
+        Roboto: {
           ital: [400]
         }
       }
-    })).toEqual('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@1,400')
+    })).toEqual('https://fonts.googleapis.com/css2?family=Roboto:ital@1')
+
+    expect(constructURL({
+      families: {
+        Roboto: {
+          ital: [400, 700]
+        }
+      }
+    })).toEqual('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@1,400;1,700')
 
     expect(constructURL({
       families: {
