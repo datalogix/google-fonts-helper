@@ -52,25 +52,25 @@ describe('constructURL', () => {
 
     expect(constructURL({
       families: {
-        'Crimson Pro': '100..400'
+        'Crimson Pro': '200..400'
       }
-    })).toEqual('https://fonts.googleapis.com/css2?family=Crimson+Pro:wght@100..400')
+    })).toEqual('https://fonts.googleapis.com/css2?family=Crimson+Pro:wght@200..400')
 
     expect(constructURL({
       families: {
         'Crimson Pro': {
-          wght: '100..400'
+          wght: '200..400'
         }
       }
-    })).toEqual('https://fonts.googleapis.com/css2?family=Crimson+Pro:wght@100..400')
+    })).toEqual('https://fonts.googleapis.com/css2?family=Crimson+Pro:wght@200..400')
 
     expect(constructURL({
       families: {
         'Crimson Pro': {
-          italic: '100..400'
+          italic: '200..400'
         }
       }
-    })).toEqual('https://fonts.googleapis.com/css2?family=Crimson+Pro:ital,wght@1,100..400')
+    })).toEqual('https://fonts.googleapis.com/css2?family=Crimson+Pro:ital,wght@1,200..400')
 
     expect(constructURL({
       families: {
