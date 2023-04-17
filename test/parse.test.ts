@@ -34,6 +34,40 @@ describe('parse', () => {
       }
     })
 
+    expect(parse('https://fonts.googleapis.com/css2?family=Roboto:ital@1')).toStrictEqual({
+      families: {
+        Roboto: {
+          ital: true
+        }
+      }
+    })
+
+    expect(parse('https://fonts.googleapis.com/css2?family=Crimson+Pro:wght@200..900')).toStrictEqual({
+      families: {
+        'Crimson Pro': {
+          wght: '200..900'
+        }
+      }
+    })
+
+    expect(parse('https://fonts.googleapis.com/css2?family=Crimson+Pro:ital,wght@1,200..900')).toStrictEqual({
+      families: {
+        'Crimson Pro': {
+          wght: true,
+          ital: '200..900'
+        }
+      }
+    })
+
+    expect(parse('https://fonts.googleapis.com/css2?family=Crimson+Pro:ital,wght@0,200..900;1,200..700')).toStrictEqual({
+      families: {
+        'Crimson Pro': {
+          wght: '200..900',
+          ital: '200..700'
+        }
+      }
+    })
+
     expect(parse('https://fonts.googleapis.com/css2?family=Roboto&display=swap')).toStrictEqual({
       families: {
         Roboto: true

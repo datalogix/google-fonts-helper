@@ -104,6 +104,11 @@ function convertFamiliesToArray (families: Families, v2 = true): string[] {
 
       name = parseFamilyName(name)
 
+      if (typeof values === 'string' && String(values).includes('..')) {
+        result.push(`${name}:wght@${values}`)
+        return
+      }
+
       if (Array.isArray(values) && values.length > 0) {
         result.push(`${name}:wght@${values.join(';')}`)
         return

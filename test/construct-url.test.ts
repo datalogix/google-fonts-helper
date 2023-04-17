@@ -75,6 +75,37 @@ describe('constructURL', () => {
     })).toEqual('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,300;0,400;0,700;1,400')
 
     expect(constructURL({
+      families: {
+        'Crimson Pro': '200..400'
+      }
+    })).toEqual('https://fonts.googleapis.com/css2?family=Crimson+Pro:wght@200..400')
+
+    expect(constructURL({
+      families: {
+        'Crimson Pro': {
+          wght: '200..400'
+        }
+      }
+    })).toEqual('https://fonts.googleapis.com/css2?family=Crimson+Pro:wght@200..400')
+
+    expect(constructURL({
+      families: {
+        'Crimson Pro': {
+          italic: '200..400'
+        }
+      }
+    })).toEqual('https://fonts.googleapis.com/css2?family=Crimson+Pro:ital,wght@1,200..400')
+
+    expect(constructURL({
+      families: {
+        'Crimson Pro': {
+          wght: '200..900',
+          italic: '200..700'
+        }
+      }
+    })).toEqual('https://fonts.googleapis.com/css2?family=Crimson+Pro:ital,wght@0,200..900;1,200..700')
+
+    expect(constructURL({
       families: { Roboto: true }
     })).toEqual('https://fonts.googleapis.com/css2?family=Roboto')
 

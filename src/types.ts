@@ -1,9 +1,11 @@
+export type FamilyWeight = string | boolean | number | number[]
+
 export interface FamilyStyles {
-  [style: string]: boolean | number | number[]
+  [style: string]: FamilyWeight
 }
 
 export interface Families {
-  [family: string]: boolean | number | number[] | FamilyStyles
+  [family: string]: FamilyWeight | FamilyStyles
 }
 
 export interface GoogleFonts {

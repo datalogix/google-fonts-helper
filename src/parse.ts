@@ -1,7 +1,7 @@
 import { createURL } from 'ufo'
 import { isValidURL } from './is-valid-url'
 import { isValidDisplay, parseFamilyName, parseStyle } from './utils'
-import type { GoogleFonts, Families, FamilyStyles } from './types'
+import type { GoogleFonts, Families } from './types'
 
 export function parse (url: string): GoogleFonts {
   const result: GoogleFonts = {}
@@ -61,7 +61,7 @@ function convertFamiliesObject (families: string[], v2 = true): Families {
       return
     }
 
-    const values: FamilyStyles = {}
+    const values: any = {}
 
     // v1
     if (!v2) {
@@ -108,14 +108,39 @@ function convertFamiliesObject (families: string[], v2 = true): Families {
           const [pos, w] = weight.split(',')
           const index = styleParsed === 'wght' ? 0 : 1
 
-          if (parseInt(pos) === index && /^\+?\d+$/.test(w)) {
+          if (!w) {
+            return weight
+          }
+
+          if (parseInt(pos) !== index) {
+            return 0
+          }
+
+          if (/^\+?\d+$/.test(w)) {
             return parseInt(w)
           }
 
-          return 0
-        }).filter(v => v > 0)
+          return w
+        }).filter(v => parseInt(v.toString()) > 0 || v.toString().includes('..'))
 
-        values[styleParsed] = Object.entries(values[styleParsed]).length > 0 ? values[styleParsed] : true
+        if (!values[styleParsed].length) {
+          values[styleParsed] = true
+          return
+        }
+
+        if (values[styleParsed].length > 1) {
+          return
+        }
+
+        const first = values[styleParsed][0]
+
+        if (String(first).includes('..')) {
+          values[styleParsed] = first
+        }
+
+        if (first === 1 || first === true) {
+          values[styleParsed] = true
+        }
       })
     }
 

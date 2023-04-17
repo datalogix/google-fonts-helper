@@ -41,6 +41,9 @@ constructURL({ families: { Roboto: true } })
 constructURL({ families: { Roboto: true, Lato: true } })
 // https://fonts.googleapis.com/css2?family=Roboto&family=Lato
 
+constructURL({ families: { 'Crimson Pro': { wght: '200..400' } } })
+// https://fonts.googleapis.com/css2?family=Crimson+Pro:wght@200..400
+
 constructURL({
   families: {
     Roboto: true,
@@ -84,6 +87,9 @@ parse('https://fonts.googleapis.com/css2?family=Roboto')
 
 parse('https://fonts.googleapis.com/css2?family=Roboto&family=Lato')
 // { families: { Roboto: true, Lato: true } }
+
+parse('https://fonts.googleapis.com/css2?family=Crimson+Pro:wght@200..400')
+// { families: { 'Crimson Pro': { wght: '200..400' } }
 
 parse('https://foo.bar')
 // {}
