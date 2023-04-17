@@ -2,6 +2,31 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## v3.3.0
+
+[compare changes](https://undefined/undefined/compare/v3.2.4...v3.3.0)
+
+
+### 🚀 Enhancements
+
+  - Add support variable fonts (#44)
+
+### 🩹 Fixes
+
+  - Construct url (#43)
+
+### 🏡 Chore
+
+  - Update deps (ff8a429)
+
+### 🤖 CI
+
+  - Drop node 14 (3a12af1)
+
+### ❤️  Contributors
+
+- Ricardo Gobbo De Souza ([@ricardogobbosouza](http://github.com/ricardogobbosouza))
+
 ## v3.2.4
 
 
