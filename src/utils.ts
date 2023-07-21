@@ -5,17 +5,15 @@ export function isValidDisplay (display: string): boolean {
 }
 
 export function parseStyle (style: string): string {
-  const _style = style.toLowerCase()
-
-  if (['wght', 'regular', 'normal'].includes(_style)) {
+  if (['wght', 'regular', 'normal'].includes(style.toLowerCase())) {
     return 'wght'
   }
 
-  if (['i', 'italic', 'ital'].includes(_style)) {
+  if (['i', 'italic', 'ital'].includes(style.toLowerCase())) {
     return 'ital'
   }
 
-  return _style
+  return style
 }
 
 export function parseFamilyName (name: string) {
