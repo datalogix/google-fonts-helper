@@ -2,6 +2,22 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## v3.3.1
+
+[compare changes](https://undefined/undefined/compare/v3.3.0...v3.3.1)
+
+### 🩹 Fixes
+
+- Preserve case in axis names (#46)
+
+### 🏡 Chore
+
+- Update deps (#45)
+
+### ❤️  Contributors
+
+- Ricardo Gobbo De Souza ([@ricardogobbosouza](http://github.com/ricardogobbosouza))
+
 ## v3.3.0
 
 [compare changes](https://undefined/undefined/compare/v3.2.4...v3.3.0)
