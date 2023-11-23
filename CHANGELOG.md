@@ -2,6 +2,22 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## v3.3.3
+
+[compare changes](https://github.com/datalogix/google-fonts-helper/compare/v3.3.2...v3.3.3)
+
+### 🩹 Fixes
+
+- Overwriting ([c82bb6d](https://github.com/datalogix/google-fonts-helper/commit/c82bb6d))
+
+### 🏡 Chore
+
+- **release:** V3.3.2 ([1a46fc5](https://github.com/datalogix/google-fonts-helper/commit/1a46fc5))
+
+### ❤️ Contributors
+
+- Ricardo Gobbo De Souza ([@ricardogobbosouza](http://github.com/ricardogobbosouza))
+
 ## v3.3.2
 
 [compare changes](https://github.com/datalogix/google-fonts-helper/compare/v3.3.1...v3.3.2)
