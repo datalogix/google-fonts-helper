@@ -159,6 +159,8 @@ function parseFontsFromCss (content: string, fontsPath: string): FontInputOutput
       const urlPathname = new URL(url).pathname
       const ext = extname(urlPathname)
       if (ext.length < 2) { continue }
+      if (fonts.find(font => font.inputFont === url)) { continue }
+
       const filename = basename(urlPathname, ext) || ''
       const newFilename = formatFontFileName('{_family}-{weight}-{i}.{ext}', {
         comment: comment || '',
