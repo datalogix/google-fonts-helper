@@ -68,7 +68,11 @@ export class Downloader extends Hookable<DownloaderHooks> {
       const currentCssContent = readFileSync(cssPath, 'utf-8')
       const currentUrl = (currentCssContent.split(/\r?\n/, 1).shift() || '').replace('/*', '').replace('*/', '').trim()
 
-      overwriting = currentUrl !== this.url
+      if (currentUrl === this.url) {
+        return
+      }
+
+      overwriting = true
     }
 
     if (overwriting) {

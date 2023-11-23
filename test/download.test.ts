@@ -22,7 +22,7 @@ describe('download', () => {
     rmSync(outputDir, { recursive: true, force: true })
   }, 60000)
 
-  test('overwriting', async () => {
+  test('force overwriting when a different url', async () => {
     const outputDir = temporaryDirectory()
     const stylePath = 'font.css'
     const fontsDir = 'fonts'
@@ -47,6 +47,33 @@ describe('download', () => {
     expect(existsSync(join(outputDir, stylePath))).toBe(true)
     expect(existsSync(join(outputDir, fontsDir))).toBe(true)
     expect(readFileSync(join(outputDir, stylePath), 'utf-8')).toContain(url)
+
+    rmSync(outputDir, { recursive: true, force: true })
+  }, 60000)
+
+  test('download only once', async () => {
+    const outputDir = temporaryDirectory()
+    const stylePath = 'font.css'
+    const fontsDir = 'fonts'
+    const config = {
+      families: {
+        Roboto: true
+      }
+    }
+
+    const url = constructURL(config) || ''
+
+    await download(url, { outputDir, stylePath, fontsDir }).execute()
+
+    expect(existsSync(join(outputDir, stylePath))).toBe(true)
+    expect(existsSync(join(outputDir, fontsDir))).toBe(true)
+    expect(readFileSync(join(outputDir, stylePath), 'utf-8')).toContain(url)
+    rmSync(join(outputDir, fontsDir), { recursive: true, force: true })
+
+    await download(url, { outputDir, stylePath, fontsDir }).execute()
+
+    expect(existsSync(join(outputDir, stylePath))).toBe(true)
+    expect(existsSync(join(outputDir, fontsDir))).toBe(false)
 
     rmSync(outputDir, { recursive: true, force: true })
   }, 60000)
