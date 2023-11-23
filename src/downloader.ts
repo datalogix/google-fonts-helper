@@ -22,6 +22,8 @@ export interface DownloadOptions {
 }
 
 export interface DownloaderHooks {
+  'download:start': () => void
+  'download:complete': () => void
   'download-css:before': (url: string) => void
   'download-css:done': (url: string, content: string, fonts: FontInputOutput[]) => void
   'download-font:before': (font: FontInputOutput) => void
@@ -55,7 +57,7 @@ export class Downloader extends Hookable<DownloaderHooks> {
     }
   }
 
-  async execute (): Promise<void> {
+  async execute (): Promise<boolean> {
     if (!isValidURL(this.url)) {
       throw new Error('Invalid Google Fonts URL')
     }
@@ -69,7 +71,7 @@ export class Downloader extends Hookable<DownloaderHooks> {
       const currentUrl = (currentCssContent.split(/\r?\n/, 1).shift() || '').replace('/*', '').replace('*/', '').trim()
 
       if (currentUrl === this.url) {
-        return
+        return false
       }
 
       overwriting = true
@@ -78,6 +80,8 @@ export class Downloader extends Hookable<DownloaderHooks> {
     if (overwriting) {
       rmSync(outputDir, { recursive: true, force: true })
     }
+
+    await this.callHook('download:start')
 
     // download css content
     await this.callHook('download-css:before', this.url)
@@ -93,6 +97,10 @@ export class Downloader extends Hookable<DownloaderHooks> {
     await this.callHook('write-css:before', cssPath, cssContent, fonts)
     const newContent = this.writeCss(cssPath, `/* ${this.url} */\n${cssContent}`, fonts)
     await this.callHook('write-css:done', cssPath, newContent, cssContent)
+
+    await this.callHook('download:complete')
+
+    return true
   }
 
   private downloadFonts (fonts: FontInputOutput[]) {
