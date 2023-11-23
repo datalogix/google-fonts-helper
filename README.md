@@ -25,9 +25,21 @@ pnpm add google-fonts-helper
 Import into your Node.js project:
 
 ```js
-const { constructURL, merge, isValidURL, parse, download } = require('google-fonts-helper')
+const {
+  constructURL,
+  merge,
+  isValidURL,
+  parse,
+  download,
+} = require("google-fonts-helper");
 // or
-import { constructURL, merge, isValidURL, parse, download } from 'google-fonts-helper'
+import {
+  constructURL,
+  merge,
+  isValidURL,
+  parse,
+  download,
+} from "google-fonts-helper";
 ```
 
 ## Usage
@@ -35,63 +47,63 @@ import { constructURL, merge, isValidURL, parse, download } from 'google-fonts-h
 ### `constructURL(): string`
 
 ```ts
-constructURL({ families: { Roboto: true } })
+constructURL({ families: { Roboto: true } });
 // https://fonts.googleapis.com/css2?family=Roboto
 
-constructURL({ families: { Roboto: true, Lato: true } })
+constructURL({ families: { Roboto: true, Lato: true } });
 // https://fonts.googleapis.com/css2?family=Roboto&family=Lato
 
-constructURL({ families: { 'Crimson Pro': { wght: '200..400' } } })
+constructURL({ families: { "Crimson Pro": { wght: "200..400" } } });
 // https://fonts.googleapis.com/css2?family=Crimson+Pro:wght@200..400
 
 constructURL({
   families: {
     Roboto: true,
     Lato: {
-      wght: 100
+      wght: 100,
     },
     Raleway: {
       wght: [400],
-      ital: [100, 400]
-    }
-  }
-})
+      ital: [100, 400],
+    },
+  },
+});
 // https://fonts.googleapis.com/css2?family=Roboto&family=Lato:wght@100&family=Raleway:ital,wght@0,400;1,100;1,400
 ```
 
 ### `merge(...fonts: GoogleFonts[]): GoogleFonts`
 
 ```ts
-merge({ families: { Roboto: true } }, { families: { Lato: true } })
+merge({ families: { Roboto: true } }, { families: { Lato: true } });
 // { families: { Roboto: true, Lato: true } }
 
-merge({ families: { Roboto: true } }, { families: { Roboto: [300, 400] } })
+merge({ families: { Roboto: true } }, { families: { Roboto: [300, 400] } });
 // { families: { Roboto: [300, 400] } }
 ```
 
 ### `isValidURL(url: string): boolean`
 
 ```ts
-isValidURL('https://fonts.googleapis.com/css2?family=Roboto')
+isValidURL("https://fonts.googleapis.com/css2?family=Roboto");
 // true
 
-isValidURL('https://foo.bar')
+isValidURL("https://foo.bar");
 // false
 ```
 
 ### `parse(url: string): GoogleFonts`
 
 ```ts
-parse('https://fonts.googleapis.com/css2?family=Roboto')
+parse("https://fonts.googleapis.com/css2?family=Roboto");
 // { families: { Roboto: true } }
 
-parse('https://fonts.googleapis.com/css2?family=Roboto&family=Lato')
+parse("https://fonts.googleapis.com/css2?family=Roboto&family=Lato");
 // { families: { Roboto: true, Lato: true } }
 
-parse('https://fonts.googleapis.com/css2?family=Crimson+Pro:wght@200..400')
+parse("https://fonts.googleapis.com/css2?family=Crimson+Pro:wght@200..400");
 // { families: { 'Crimson Pro': { wght: '200..400' } }
 
-parse('https://foo.bar')
+parse("https://foo.bar");
 // {}
 ```
 
@@ -115,6 +127,14 @@ downloader.hook('download-font:done', (font: FontInputOutput) {
   console.log(font)
 })
 
+downloader.hook('download:start', () => {
+  console.log('Downloading fonts...')
+})
+
+downloader.hook('download:complete', () => {
+  console.log('Download fonts completed.')
+})
+
 await downloader.execute()
 ```
 
@@ -125,17 +145,14 @@ await downloader.execute()
 Copyright (c) Datalogix
 
 <!-- Badges -->
+
 [npm-version-src]: https://img.shields.io/npm/v/google-fonts-helper/latest.svg
 [npm-version-href]: https://npmjs.com/package/google-fonts-helper
-
 [npm-downloads-src]: https://img.shields.io/npm/dt/google-fonts-helper.svg
 [npm-downloads-href]: https://npmjs.com/package/google-fonts-helper
-
 [github-actions-ci-src]: https://github.com/datalogix/google-fonts-helper/workflows/ci/badge.svg
 [github-actions-ci-href]: https://github.com/datalogix/google-fonts-helper/actions?query=workflow%3Aci
-
 [codecov-src]: https://img.shields.io/codecov/c/github/datalogix/google-fonts-helper.svg
 [codecov-href]: https://codecov.io/gh/datalogix/google-fonts-helper
-
 [license-src]: https://img.shields.io/npm/l/google-fonts-helper.svg
 [license-href]: https://npmjs.com/package/google-fonts-helper
