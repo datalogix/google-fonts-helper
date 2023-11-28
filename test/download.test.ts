@@ -22,6 +22,40 @@ describe('download', () => {
     rmSync(outputDir, { recursive: true, force: true })
   }, 60000)
 
+  test('with a text', async () => {
+    const outputDir = temporaryDirectory()
+    const stylePath = 'font.css'
+    const fontsDir = 'fonts'
+
+    await download('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&text=example', {
+      outputDir,
+      stylePath,
+      fontsDir
+    }).execute()
+
+    expect(existsSync(join(outputDir, stylePath))).toBe(true)
+    expect(existsSync(join(outputDir, fontsDir))).toBe(true)
+
+    rmSync(outputDir, { recursive: true, force: true })
+  }, 60000)
+
+  test('complex text', async () => {
+    const outputDir = temporaryDirectory()
+    const stylePath = 'font.css'
+    const fontsDir = 'fonts'
+
+    await download('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&text=A%C4%84BC%C4%86DE%C4%98FGHIJKL%C5%81MN%C5%83O%C3%93PRSTUWXYZ%C5%BB%C5%B9a%C4%85bc%C4%87de%C4%99fghijkl%C5%82mn%C5%84o%C3%B3prstuwxyz%C5%BC%C5%BA1234567890+`!@%23$%25^%26*()-=_%2B%5B%5D%7B%7D%5C|;\':%22,./%3C%3E?', {
+      outputDir,
+      stylePath,
+      fontsDir
+    }).execute()
+
+    expect(existsSync(join(outputDir, stylePath))).toBe(true)
+    expect(existsSync(join(outputDir, fontsDir))).toBe(true)
+
+    rmSync(outputDir, { recursive: true, force: true })
+  }, 60000)
+
   test('force overwriting when a different url', async () => {
     const outputDir = temporaryDirectory()
     const stylePath = 'font.css'
