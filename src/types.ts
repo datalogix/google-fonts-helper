@@ -1,16 +1,33 @@
-export type FamilyWeight = string | boolean | number | number[]
+import type { GoogleFontsDisplay, GoogleFontsSubset, GoogleFontsWeight, GoogleFontsMetadata } from './google-fonts-metadata'
 
-export interface FamilyStyles {
-  [style: string]: FamilyWeight
-}
+export type FontDisplay = GoogleFontsDisplay
 
-export interface Families {
-  [family: string]: FamilyWeight | FamilyStyles
-}
+export type FontSubset = GoogleFontsSubset
 
-export interface GoogleFonts {
-  families?: Families
-  display?: string
-  subsets?: string[] | string
+export type FontWeight = GoogleFontsWeight | string
+
+export type FontStyle = boolean | FontWeight | FontWeight[]
+
+export type FontOptions = {
+  display?: FontDisplay
+  subsets?: FontSubset | FontSubset[]
   text?: string
 }
+
+export type Families = {
+  [family: string]: FontStyle | {
+    // normal
+    wght?: FontStyle
+    normal?: FontStyle
+    regular?: FontStyle
+
+    // italic
+    ital?: FontStyle
+    italic?: FontStyle
+    i?: FontStyle
+  }
+}
+
+export type GoogleFonts = {
+  families?: Families & Partial<GoogleFontsMetadata>
+} & FontOptions

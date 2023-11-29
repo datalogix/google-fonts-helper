@@ -5,11 +5,11 @@ export function isValidDisplay (display: string): boolean {
 }
 
 export function parseStyle (style: string): string {
-  if (['wght', 'regular', 'normal'].includes(style.toLowerCase())) {
+  if (['wght', 'normal', 'regular'].includes(style.toLowerCase())) {
     return 'wght'
   }
 
-  if (['i', 'italic', 'ital'].includes(style.toLowerCase())) {
+  if (['ital', 'italic', 'i'].includes(style.toLowerCase())) {
     return 'ital'
   }
 

@@ -13,22 +13,14 @@ describe('constructURL', () => {
 
     expect(constructURL({
       families: {
-        Roboto: [100, 200, 300, 400]
+        Roboto: [100, 300, 400]
       }
-    })).toEqual('https://fonts.googleapis.com/css2?family=Roboto:wght@100;200;300;400')
+    })).toEqual('https://fonts.googleapis.com/css2?family=Roboto:wght@100;300;400')
 
     expect(constructURL({
       families: {
         Roboto: {
           italic: true
-        }
-      }
-    })).toEqual('https://fonts.googleapis.com/css2?family=Roboto:ital@1')
-
-    expect(constructURL({
-      families: {
-        Roboto: {
-          italic: 1
         }
       }
     })).toEqual('https://fonts.googleapis.com/css2?family=Roboto:ital@1')
@@ -52,18 +44,10 @@ describe('constructURL', () => {
     expect(constructURL({
       families: {
         Roboto: {
-          wght: [600, 700, 800, 400]
+          wght: [700, 400, 300]
         }
       }
-    })).toEqual('https://fonts.googleapis.com/css2?family=Roboto:wght@400;600;700;800')
-
-    expect(constructURL({
-      families: {
-        Roboto: {
-          wght: [400, 600, 700, 800]
-        }
-      }
-    })).toEqual('https://fonts.googleapis.com/css2?family=Roboto:wght@400;600;700;800')
+    })).toEqual('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700')
 
     expect(constructURL({
       families: {
@@ -152,6 +136,7 @@ describe('constructURL', () => {
 
     expect(constructURL({
       families: { Roboto: true, Lato: [100] },
+      // @ts-ignore
       subsets: ['foo', 'bar']
     })).toEqual('https://fonts.googleapis.com/css?family=Roboto|Lato&subset=foo,bar')
 
@@ -231,7 +216,7 @@ describe('constructURL', () => {
           ital: [400, 600, 700, 800]
         },
         Roboto: {
-          wght: [400, 600, 700, 800]
+          wght: [400, 700]
         }
       },
       subsets: 'cyrillic'
@@ -243,7 +228,7 @@ describe('constructURL', () => {
           italic: [400, 600, 700, 800]
         },
         Roboto: {
-          normal: [400, 600, 700, 800]
+          normal: [400, 700]
         }
       },
       subsets: 'cyrillic'
@@ -255,7 +240,7 @@ describe('constructURL', () => {
           i: [400, 600, 700, 800]
         },
         Roboto: {
-          regular: [400, 600, 700, 800]
+          regular: [400, 700]
         }
       },
       subsets: 'cyrillic'
@@ -275,7 +260,9 @@ describe('constructURL', () => {
     expect(constructURL({})).toBe(false)
     expect(constructURL({ families: {} })).toBe(false)
     expect(constructURL({ display: 'swap' })).toBe(false)
+    // @ts-ignore
     expect(constructURL({ subsets: 'foo' })).toBe(false)
+    // @ts-ignore
     expect(constructURL({ subsets: ['foo', 'bar'] })).toBe(false)
   })
 })
