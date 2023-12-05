@@ -1,5 +1,5 @@
 import { existsSync, readFileSync, mkdirSync, writeFileSync, rmSync } from 'node:fs'
-import { basename, extname, posix, resolve, dirname } from 'node:path'
+import { extname, posix, resolve, dirname } from 'node:path'
 import { ofetch } from 'ofetch'
 import { Hookable } from 'hookable'
 import { isValidURL } from './is-valid-url'
@@ -187,18 +187,13 @@ function parseFontsFromCss (content: string, fontsPath: string): FontInputOutput
     let match2
     while ((match2 = re.url.exec(fontface)) !== null) {
       const [forReplace, url] = match2
-      const urlPathname = new URL(url).pathname
-      const ext = extname(urlPathname)
-      if (ext.length < 2) { continue }
+      const ext = extname(url).replace(/^\./, '') || 'woff2'
 
-      const filename = basename(urlPathname, ext) || ''
-      const newFilename = formatFontFileName('{_family}-{weight}-{i}.{ext}', {
+      const newFilename = formatFontFileName('{family}-{weight}-{i}.{ext}', {
         comment: comment || '',
-        family,
+        family: family.replace(/\s+/g, '_'),
         weight: weight || '',
-        filename,
-        _family: family.replace(/\s+/g, '_'),
-        ext: ext.replace(/^\./, '') || '',
+        ext,
         i: String(i++)
       }).replace(/\.$/, '')
 
