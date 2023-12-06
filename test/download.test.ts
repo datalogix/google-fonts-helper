@@ -22,6 +22,29 @@ describe('download', () => {
     rmSync(outputDir, { recursive: true, force: true })
   }, 60000)
 
+  test('with a variable fonts', async () => {
+    const outputDir = temporaryDirectory()
+    const stylePath = 'font.css'
+    const fontsDir = 'fonts'
+
+    await download('https://fonts.googleapis.com/css2?family=Manrope:wght@200..800', {
+      outputDir,
+      stylePath,
+      fontsDir
+    }).execute()
+
+    expect(existsSync(join(outputDir, stylePath))).toBe(true)
+    expect(existsSync(join(outputDir, fontsDir))).toBe(true)
+    expect(existsSync(join(outputDir, fontsDir, 'Manrope-200_800-1.woff2'))).toBe(true)
+    expect(existsSync(join(outputDir, fontsDir, 'Manrope-200_800-2.woff2'))).toBe(true)
+    expect(existsSync(join(outputDir, fontsDir, 'Manrope-200_800-3.woff2'))).toBe(true)
+    expect(existsSync(join(outputDir, fontsDir, 'Manrope-200_800-4.woff2'))).toBe(true)
+    expect(existsSync(join(outputDir, fontsDir, 'Manrope-200_800-5.woff2'))).toBe(true)
+    expect(existsSync(join(outputDir, fontsDir, 'Manrope-200_800-6.woff2'))).toBe(true)
+
+    rmSync(outputDir, { recursive: true, force: true })
+  }, 60000)
+
   test('with a text', async () => {
     const outputDir = temporaryDirectory()
     const stylePath = 'font.css'
@@ -35,6 +58,9 @@ describe('download', () => {
 
     expect(existsSync(join(outputDir, stylePath))).toBe(true)
     expect(existsSync(join(outputDir, fontsDir))).toBe(true)
+    expect(existsSync(join(outputDir, fontsDir, 'Poppins-400-1.woff2'))).toBe(true)
+    expect(existsSync(join(outputDir, fontsDir, 'Poppins-600-2.woff2'))).toBe(true)
+    expect(existsSync(join(outputDir, fontsDir, 'Poppins-700-3.woff2'))).toBe(true)
 
     rmSync(outputDir, { recursive: true, force: true })
   }, 60000)
@@ -52,6 +78,9 @@ describe('download', () => {
 
     expect(existsSync(join(outputDir, stylePath))).toBe(true)
     expect(existsSync(join(outputDir, fontsDir))).toBe(true)
+    expect(existsSync(join(outputDir, fontsDir, 'Poppins-400-1.woff2'))).toBe(true)
+    expect(existsSync(join(outputDir, fontsDir, 'Poppins-600-2.woff2'))).toBe(true)
+    expect(existsSync(join(outputDir, fontsDir, 'Poppins-700-3.woff2'))).toBe(true)
 
     rmSync(outputDir, { recursive: true, force: true })
   }, 60000)
@@ -126,6 +155,7 @@ describe('download', () => {
 
     expect(existsSync(join(outputDir, stylePath))).toBe(true)
     expect(existsSync(join(outputDir, fontsDir))).toBe(false)
+    expect(existsSync(join(outputDir, fontsDir, 'Roboto-400-1.woff2'))).toBe(false)
 
     rmSync(outputDir, { recursive: true, force: true })
   }, 60000)

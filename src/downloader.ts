@@ -192,7 +192,7 @@ function parseFontsFromCss (content: string, fontsPath: string): FontInputOutput
       const newFilename = formatFontFileName('{family}-{weight}-{i}.{ext}', {
         comment: comment || '',
         family: family.replace(/\s+/g, '_'),
-        weight: weight || '',
+        weight: weight.replace(/\s+/g, '_') || '',
         ext,
         i: String(i++)
       }).replace(/\.$/, '')
