@@ -3,6 +3,7 @@ import { extname, posix, resolve, dirname } from 'node:path'
 import { ofetch } from 'ofetch'
 import { Hookable } from 'hookable'
 import { isValidURL } from './is-valid-url'
+import { FontSubset } from './types'
 
 export interface FontInputOutput {
   inputFont: string
@@ -83,10 +84,13 @@ export class Downloader extends Hookable<DownloaderHooks> {
 
     await this.callHook('download:start')
 
+    const { searchParams } = new URL(this.url)
+    const subsets = searchParams.get('subset') ? searchParams.get('subset')?.split(',') as FontSubset[] : undefined
+
     // download css content
     await this.callHook('download-css:before', this.url)
-    const cssContent = await ofetch(this.url, { headers })
-    const fontsFromCss = parseFontsFromCss(cssContent, fontsPath)
+    const _css = await ofetch(this.url, { headers })
+    const { fonts: fontsFromCss, css: cssContent } = parseFontsFromCss(_css, fontsPath, subsets)
     await this.callHook('download-css:done', this.url, cssContent, fontsFromCss)
 
     // download fonts from css
@@ -165,7 +169,11 @@ export class Downloader extends Hookable<DownloaderHooks> {
   }
 }
 
-function parseFontsFromCss (content: string, fontsPath: string): FontInputOutput[] {
+function parseFontsFromCss (content: string, fontsPath: string, subsets?: FontSubset[]): {
+  fonts: FontInputOutput[]
+  css: string
+} {
+  const css: string[] = []
   const fonts: FontInputOutput[] = []
   const re = {
     face: /\s*(?:\/\*\s*(.*?)\s*\*\/)?[^@]*?@font-face\s*{(?:[^}]*?)}\s*/gi,
@@ -178,11 +186,17 @@ function parseFontsFromCss (content: string, fontsPath: string): FontInputOutput
   let match1
 
   while ((match1 = re.face.exec(content)) !== null) {
-    const [fontface, comment] = match1
+    const [fontface, subset] = match1
     const familyRegExpArray = re.family.exec(fontface)
     const family = familyRegExpArray ? familyRegExpArray[1] : ''
     const weightRegExpArray = re.weight.exec(fontface)
     const weight = weightRegExpArray ? weightRegExpArray[1] : ''
+
+    if (subsets && subsets.length && !subsets.includes(subset as FontSubset)) {
+      continue
+    }
+
+    css.push(fontface)
 
     let match2
     while ((match2 = re.url.exec(fontface)) !== null) {
@@ -190,11 +204,10 @@ function parseFontsFromCss (content: string, fontsPath: string): FontInputOutput
       const ext = extname(url).replace(/^\./, '') || 'woff2'
 
       const newFilename = formatFontFileName('{family}-{weight}-{i}.{ext}', {
-        comment: comment || '',
         family: family.replace(/\s+/g, '_'),
         weight: weight.replace(/\s+/g, '_') || '',
-        ext,
-        i: String(i++)
+        i: String(i++),
+        ext
       }).replace(/\.$/, '')
 
       fonts.push({
@@ -206,7 +219,10 @@ function parseFontsFromCss (content: string, fontsPath: string): FontInputOutput
     }
   }
 
-  return fonts
+  return {
+    css: css.join('\n'),
+    fonts
+  }
 }
 
 function formatFontFileName (template: string, values: { [s: string]: string } | ArrayLike<string>): string {

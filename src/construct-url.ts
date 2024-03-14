@@ -3,9 +3,8 @@ import { GOOGLE_FONTS_DOMAIN, isValidDisplay, parseFamilyName, parseStyle } from
 import type { GoogleFonts, Families } from './types'
 
 export function constructURL ({ families, display, subsets, text }: GoogleFonts = {}): string | false {
-  const subset = (Array.isArray(subsets) ? subsets : [subsets]).filter(Boolean)
-  const prefix = subset.length > 0 ? 'css' : 'css2'
-  const family = convertFamiliesToArray(families ?? {}, prefix.endsWith('2'))
+  const _subsets = (Array.isArray(subsets) ? subsets : [subsets]).filter(Boolean)
+  const family = convertFamiliesToArray(families ?? {})
 
   if (family.length < 1) {
     return false
@@ -19,150 +18,85 @@ export function constructURL ({ families, display, subsets, text }: GoogleFonts 
     query.display = display
   }
 
-  if (subset.length > 0) {
-    query.subset = subset.join(',')
+  if (_subsets.length > 0) {
+    query.subset = _subsets.join(',')
   }
 
   if (text) {
     query.text = text
   }
 
-  return withHttps(withQuery(resolveURL(GOOGLE_FONTS_DOMAIN, prefix), query))
+  return withHttps(withQuery(resolveURL(GOOGLE_FONTS_DOMAIN, 'css2'), query))
 }
 
-function convertFamiliesToArray (families: Families, v2 = true): string[] {
+function convertFamiliesToArray (families: Families): string[] {
   const result: string[] = []
 
-  // v1
-  if (!v2) {
-    Object.entries(families).forEach(([name, values]) => {
-      if (!name) {
-        return
-      }
+  Object.entries(families).forEach(([name, values]) => {
+    if (!name) {
+      return
+    }
 
-      name = parseFamilyName(name)
+    name = parseFamilyName(name)
 
-      if ((Array.isArray(values) && values.length > 0) || (values === true || values === 400)) {
-        result.push(name)
-        return
-      }
+    if (typeof values === 'string' && String(values).includes('..')) {
+      result.push(`${name}:wght@${values}`)
+      return
+    }
 
-      if (values === 700) {
-        result.push(`${name}:bold`)
-        return
-      }
+    if (Array.isArray(values) && values.length > 0) {
+      result.push(`${name}:wght@${values.join(';')}`)
+      return
+    }
 
-      if (Object.keys(values).length > 0) {
-        const styles: string[] = []
+    if (Object.keys(values).length > 0) {
+      const styles: string[] = []
+      const weights: string[] = []
+      let forceWght = false
 
-        Object
-          .entries(values)
-          .sort(([styleA], [styleB]) => styleA.localeCompare(styleB))
-          .forEach(([style, weight]) => {
-            const styleParsed = parseStyle(style)
+      Object
+        .entries(values)
+        .sort(([styleA], [styleB]) => styleA.localeCompare(styleB))
+        .forEach(([style, weight]) => {
+          const styleParsed = parseStyle(style)
+          styles.push(styleParsed)
 
-            if (styleParsed === 'ital' && (weight === 700 || (Array.isArray(weight) && weight.includes(700)))) {
-              styles.push('bolditalic')
+          const weightList = Array.isArray(weight) ? weight : [weight]
+          weightList.forEach((value: string | number) => {
+            if (Object.keys(values).length === 1 && styleParsed === 'wght') {
+              weights.push(String(value))
+            } else {
+              const index = styleParsed === 'wght' ? 0 : 1
 
-              if (Array.isArray(weight) && weight.includes(400)) {
-                styles.push(styleParsed)
+              if (
+                (value.toString() === 'true' || value === 1 || value === 400) &&
+                Object.entries(values).length === 1 && weightList.length === 1
+              ) {
+                weights.push(`${index}`)
+              } else if (value) {
+                forceWght = true
+                weights.push(`${index},${value}`)
               }
-            } else if (styleParsed === 'wght' && (weight === 700 || (Array.isArray(weight) && weight.includes(700)))) {
-              styles.push('bold')
-
-              if (Array.isArray(weight) && weight.includes(400)) {
-                styles.push(styleParsed)
-              }
-            } else if (weight !== false) {
-              styles.push(styleParsed)
             }
           })
+        })
 
-        const stylesSortered = styles
-          .sort(([styleA], [styleB]) => styleA.localeCompare(styleB))
-          .reverse()
-          .join(',')
-
-        if (stylesSortered === 'wght') {
-          result.push(name)
-          return
-        }
-
-        result.push(`${name}:${stylesSortered}`)
-      }
-    })
-
-    return result.length ? [result.join('|')] : result
-  }
-
-  // v2
-  if (v2) {
-    Object.entries(families).forEach(([name, values]) => {
-      if (!name) {
-        return
+      if (!styles.includes('wght') && forceWght) {
+        styles.push('wght')
       }
 
-      name = parseFamilyName(name)
+      const weightsSortered = weights
+        .sort(([weightA], [weightB]) => weightA.localeCompare(weightB))
+        .join(';')
 
-      if (typeof values === 'string' && String(values).includes('..')) {
-        result.push(`${name}:wght@${values}`)
-        return
-      }
+      result.push(`${name}:${styles.join(',')}@${weightsSortered}`)
+      return
+    }
 
-      if (Array.isArray(values) && values.length > 0) {
-        result.push(`${name}:wght@${values.join(';')}`)
-        return
-      }
-
-      if (Object.keys(values).length > 0) {
-        const styles: string[] = []
-        const weights: string[] = []
-        let forceWght = false
-
-        Object
-          .entries(values)
-          .sort(([styleA], [styleB]) => styleA.localeCompare(styleB))
-          .forEach(([style, weight]) => {
-            const styleParsed = parseStyle(style)
-            styles.push(styleParsed)
-
-            const weightList = Array.isArray(weight) ? weight : [weight]
-            weightList.forEach((value: string | number) => {
-              if (Object.keys(values).length === 1 && styleParsed === 'wght') {
-                weights.push(String(value))
-              } else {
-                const index = styleParsed === 'wght' ? 0 : 1
-
-                if (
-                  (value.toString() === 'true' || value === 1 || value === 400) &&
-                  Object.entries(values).length === 1 && weightList.length === 1
-                ) {
-                  weights.push(`${index}`)
-                } else if (value) {
-                  forceWght = true
-                  weights.push(`${index},${value}`)
-                }
-              }
-            })
-          })
-
-        if (!styles.includes('wght') && forceWght) {
-          styles.push('wght')
-        }
-
-        const weightsSortered = weights
-          .sort(([weightA], [weightB]) => weightA.localeCompare(weightB))
-          .join(';')
-
-        result.push(`${name}:${styles.join(',')}@${weightsSortered}`)
-        return
-      }
-
-      if (values) {
-        result.push(name)
-      }
-    })
-  }
+    if (values) {
+      result.push(name)
+    }
+  })
 
   return result
 }

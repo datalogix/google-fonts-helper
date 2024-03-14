@@ -22,7 +22,7 @@ describe('download', () => {
     rmSync(outputDir, { recursive: true, force: true })
   }, 60000)
 
-  test('with a variable fonts', async () => {
+  test('variable fonts', async () => {
     const outputDir = temporaryDirectory()
     const stylePath = 'font.css'
     const fontsDir = 'fonts'
@@ -45,7 +45,26 @@ describe('download', () => {
     rmSync(outputDir, { recursive: true, force: true })
   }, 60000)
 
-  test('with a text', async () => {
+  test('subset', async () => {
+    const outputDir = temporaryDirectory()
+    const stylePath = 'font.css'
+    const fontsDir = 'fonts'
+
+    await download('https://fonts.googleapis.com/css2?family=Poppins&subset=latin', {
+      outputDir,
+      stylePath,
+      fontsDir
+    }).execute()
+
+    expect(existsSync(join(outputDir, stylePath))).toBe(true)
+    expect(existsSync(join(outputDir, fontsDir))).toBe(true)
+    expect(existsSync(join(outputDir, fontsDir, 'Poppins-400-1.woff2'))).toBe(true)
+    expect(existsSync(join(outputDir, fontsDir, 'Poppins-400-2.woff2'))).toBe(false)
+
+    rmSync(outputDir, { recursive: true, force: true })
+  }, 60000)
+
+  test('simple text', async () => {
     const outputDir = temporaryDirectory()
     const stylePath = 'font.css'
     const fontsDir = 'fonts'
