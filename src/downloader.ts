@@ -1,4 +1,4 @@
-import { existsSync, readFileSync, mkdirSync, writeFileSync, rmSync } from 'node:fs'
+import { existsSync, readFileSync, mkdirSync, writeFileSync } from 'node:fs'
 import { extname, posix, resolve, dirname } from 'node:path'
 import { ofetch } from 'ofetch'
 import { Hookable } from 'hookable'
@@ -76,10 +76,6 @@ export class Downloader extends Hookable<DownloaderHooks> {
       }
 
       overwriting = true
-    }
-
-    if (overwriting) {
-      rmSync(outputDir, { recursive: true, force: true })
     }
 
     await this.callHook('download:start')
