@@ -1,5 +1,5 @@
 import { existsSync, readFileSync, mkdirSync, writeFileSync, rmSync } from 'node:fs'
-import { basename, extname, posix, resolve, dirname } from 'node:path'
+import { extname, posix, resolve, dirname } from 'node:path'
 import { ofetch } from 'ofetch'
 import { Hookable } from 'hookable'
 import { isValidURL } from './is-valid-url'
@@ -90,8 +90,7 @@ export class Downloader extends Hookable<DownloaderHooks> {
     await this.callHook('download-css:done', this.url, cssContent, fontsFromCss)
 
     // download fonts from css
-    const fonts = (await Promise.all(this.downloadFonts(fontsFromCss)))
-      .filter(font => font.inputText)
+    const fonts = await this.downloadFonts(fontsFromCss)
 
     // write css
     await this.callHook('write-css:before', cssPath, cssContent, fonts)
@@ -103,17 +102,33 @@ export class Downloader extends Hookable<DownloaderHooks> {
     return true
   }
 
-  private downloadFonts (fonts: FontInputOutput[]) {
+  private async downloadFonts (fonts: FontInputOutput[]) {
     const { headers, base64, outputDir, fontsDir } = this.config
+    const downloadedFonts: FontInputOutput[] = []
+    const _fonts:FontInputOutput[] = []
 
-    return fonts.map(async (font) => {
+    for (const font of fonts) {
+      const downloadedFont = downloadedFonts.find(f => f.inputFont === font.inputFont)
+
+      if (downloadedFont) {
+        font.outputText = downloadedFont.outputText
+
+        _fonts.push(font)
+
+        continue
+      }
+
       await this.callHook('download-font:before', font)
 
       const response = await ofetch.raw(font.inputFont, { headers, responseType: 'arrayBuffer' })
 
+      /* v8 ignore start */
       if (!response?._data) {
-        return {} as FontInputOutput
+        _fonts.push(font)
+
+        continue
       }
+      /* v8 ignore stop */
 
       const buffer = Buffer.from(response?._data)
 
@@ -128,10 +143,14 @@ export class Downloader extends Hookable<DownloaderHooks> {
         writeFileSync(fontPath, buffer, 'utf-8')
       }
 
+      _fonts.push(font)
+
       await this.callHook('download-font:done', font)
 
-      return font
-    })
+      downloadedFonts.push(font)
+    }
+
+    return _fonts
   }
 
   private writeCss (path: string, content: string, fonts: FontInputOutput[]) {
@@ -168,19 +187,13 @@ function parseFontsFromCss (content: string, fontsPath: string): FontInputOutput
     let match2
     while ((match2 = re.url.exec(fontface)) !== null) {
       const [forReplace, url] = match2
-      const urlPathname = new URL(url).pathname
-      const ext = extname(urlPathname)
-      if (ext.length < 2) { continue }
-      if (fonts.find(font => font.inputFont === url)) { continue }
+      const ext = extname(url).replace(/^\./, '') || 'woff2'
 
-      const filename = basename(urlPathname, ext) || ''
-      const newFilename = formatFontFileName('{_family}-{weight}-{i}.{ext}', {
+      const newFilename = formatFontFileName('{family}-{weight}-{i}.{ext}', {
         comment: comment || '',
-        family,
-        weight: weight || '',
-        filename,
-        _family: family.replace(/\s+/g, '_'),
-        ext: ext.replace(/^\./, '') || '',
+        family: family.replace(/\s+/g, '_'),
+        weight: weight.replace(/\s+/g, '_') || '',
+        ext,
         i: String(i++)
       }).replace(/\.$/, '')
 
