@@ -1,4 +1,3 @@
-import { createURL } from 'ufo'
 import { isValidURL } from './is-valid-url'
 import { isValidDisplay, parseFamilyName, parseStyle } from './utils'
 import type { GoogleFonts, Families, FontDisplay, FontSubset } from './types'
@@ -10,7 +9,7 @@ export function parse (url: string): GoogleFonts {
     return result
   }
 
-  const { searchParams, pathname } = createURL(url)
+  const { searchParams, pathname } = new URL(url)
 
   if (!searchParams.has('family')) {
     return result
