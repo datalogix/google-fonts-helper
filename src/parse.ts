@@ -1,7 +1,7 @@
 import { createURL } from 'ufo'
 import { isValidURL } from './is-valid-url'
 import { isValidDisplay, parseFamilyName, parseStyle } from './utils'
-import type { GoogleFonts, Families } from './types'
+import type { GoogleFonts, Families, FontDisplay, FontSubset } from './types'
 
 export function parse (url: string): GoogleFonts {
   const result: GoogleFonts = {}
@@ -26,12 +26,12 @@ export function parse (url: string): GoogleFonts {
 
   const display = searchParams.get('display')
   if (display && isValidDisplay(display)) {
-    result.display = display
+    result.display = display as FontDisplay
   }
 
   const subsets = searchParams.get('subset')
   if (subsets) {
-    result.subsets = subsets.split(',')
+    result.subsets = subsets.split(',') as FontSubset[]
   }
 
   const text = searchParams.get('text')

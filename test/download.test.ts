@@ -2,7 +2,7 @@ import { join } from 'node:path'
 import { existsSync, readFileSync, rmSync } from 'node:fs'
 import { temporaryDirectory } from 'tempy'
 import { describe, test, expect } from 'vitest'
-import { constructURL, merge, download } from '../src'
+import { constructURL, merge, download, type GoogleFonts } from '../src'
 
 describe('download', () => {
   test('simple', async () => {
@@ -89,7 +89,7 @@ describe('download', () => {
     const outputDir = temporaryDirectory()
     const stylePath = 'font.css'
     const fontsDir = 'fonts'
-    const config = {
+    const config: GoogleFonts = {
       families: {
         Roboto: true
       }
@@ -118,7 +118,7 @@ describe('download', () => {
     const outputDir = temporaryDirectory()
     const stylePath = 'font.css'
     const fontsDir = 'fonts'
-    const config = {
+    const config: GoogleFonts = {
       families: {
         Roboto: true
       }
