@@ -2,6 +2,31 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## v3.5.0
+
+[compare changes](https://github.com/datalogix/google-fonts-helper/compare/v3.4.1...v3.5.0)
+
+### 🚀 Enhancements
+
+- Add fonts typed ([#57](https://github.com/datalogix/google-fonts-helper/pull/57))
+
+### 🩹 Fixes
+
+- Subsets ([#64](https://github.com/datalogix/google-fonts-helper/pull/64))
+- Do not remove `outputDir` directory when `overwriting` is enabled ([#65](https://github.com/datalogix/google-fonts-helper/pull/65))
+
+### 🏡 Chore
+
+- **release:** V3.4.1 ([8569d9f](https://github.com/datalogix/google-fonts-helper/commit/8569d9f))
+
+### 🤖 CI
+
+- Update ([14689de](https://github.com/datalogix/google-fonts-helper/commit/14689de))
+
+### ❤️ Contributors
+
+- Ricardo Gobbo De Souza ([@ricardogobbosouza](http://github.com/ricardogobbosouza))
+
 ## v3.4.1
 
 [compare changes](https://github.com/datalogix/google-fonts-helper/compare/v3.4.0...v3.4.1)
