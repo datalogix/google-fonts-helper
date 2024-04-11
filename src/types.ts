@@ -16,6 +16,9 @@ export type FontOptions = {
 
 export type Families = {
   [family: string]: FontStyle | {
+    // other axes
+    [key: string]: undefined | (string | number) | (string | number)[] | FontStyle
+
     // normal
     wght?: FontStyle
     normal?: FontStyle

@@ -16,6 +16,13 @@ export function parseStyle (style: string): string {
   return style
 }
 
+export function cartesianProduct (...a: any[][]) {
+  if (a.length < 2) {
+    return a
+  }
+  return a.reduce((a, b) => a.flatMap((d: any) => b.map((e: any) => [d, e].flat())))
+}
+
 export function parseFamilyName (name: string) {
   return decodeURIComponent(name).replace(/\+/g, ' ')
 }
