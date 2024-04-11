@@ -65,7 +65,7 @@ describe('constructURL', () => {
           ital: [100, 400]
         }
       }
-    })).toEqual('https://fonts.googleapis.com/css2?family=Roboto&family=Lato:wght@100&family=Raleway:ital,wght@0,400;1,400;1,100')
+    })).toEqual('https://fonts.googleapis.com/css2?family=Roboto&family=Lato:wght@100&family=Raleway:ital,wght@0,400;1,100;1,400')
 
     expect(constructURL({
       families: {
@@ -79,7 +79,7 @@ describe('constructURL', () => {
           italic: [100, 400]
         }
       }
-    })).toEqual('https://fonts.googleapis.com/css2?family=Roboto&family=Lato:wght@100&family=Raleway:ital,wght@0,400;1,400;1,100')
+    })).toEqual('https://fonts.googleapis.com/css2?family=Roboto&family=Lato:wght@100&family=Raleway:ital,wght@0,400;1,100;1,400')
   })
 
   test('multiple styles', () => {

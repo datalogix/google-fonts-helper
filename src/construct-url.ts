@@ -2,7 +2,12 @@ import { QueryObject, resolveURL, withHttps, withQuery } from 'ufo'
 import { cartesianProduct, GOOGLE_FONTS_DOMAIN, isValidDisplay, parseFamilyName, parseStyle } from './utils'
 import type { Families, GoogleFonts } from './types'
 
-export function constructURL ({ families, display, subsets, text }: GoogleFonts = {}): string | false {
+export function constructURL ({
+  families,
+  display,
+  subsets,
+  text
+}: GoogleFonts = {}): string | false {
   const _subsets = (Array.isArray(subsets) ? subsets : [subsets]).filter(Boolean)
   const family = convertFamiliesToArray(families ?? {})
 
@@ -102,8 +107,17 @@ function convertFamiliesToArray (families: Families): string[] {
       }
 
       const axisTupleList = axisTupleArrays
+        .sort((axisTupleA, axisTupleB) => {
+          for (let i = 0; i < axisTupleA.length; i++) {
+            const compareResult = parseInt(axisTupleA[i]) - parseInt(axisTupleB[i])
+            if (compareResult !== 0) {
+              return compareResult
+            }
+          }
+
+          return 0
+        })
         .map((axisTuple: string[]) => axisTuple.join(','))
-        .sort(([axisTupleA], [axisTupleB]) => axisTupleA.localeCompare(axisTupleB))
         .join(';')
 
       result.push(`${name}:${axisTagList.join(',')}@${axisTupleList}`)
