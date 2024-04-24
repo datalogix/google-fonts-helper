@@ -2,7 +2,6 @@ import { writeFileSync } from 'node:fs'
 // https://developers.google.com/fonts/docs/developer_api?hl=pt-br&apix_params=%7B%22sort%22%3A%22ALPHA%22%7D#api_url_specification
 import fontData from './font-data.json' assert { type: 'json' }
 
-const weights = []
 const subsets = []
 const families = fontData.items.map((font) => {
   return {
@@ -24,26 +23,24 @@ const families = fontData.items.map((font) => {
     ital.unshift(true)
   }
 
-  weights.push(...normal)
-  weights.push(...italic)
-
   subsets.push(...font.subsets)
   return `
-  ${font.family.includes(' ') ? `'${font.family}'` : font.family}: {
+  ${font.family.includes(' ') ? `'${font.family}'` : font.family}: GoogleFontsWeight | {
     display?: GoogleFontsDisplay
-    subsets?: '${font.subsets.join('\' | \'')}' | ('${font.subsets.join('\' | \'')}')[]${
+    subsets?: '${font.subsets.join('\' | \'')}' | ('${font.subsets.join('\' | \'')}')[]
+    [key: string]: undefined | GoogleFontsWeight${
     wght.length
-  ? `\r\n    wght?: ${normal.length > 2 ? 'string | ' : ''}${wght.join(' | ')}${normal.length > 1 ? ` | (${normal.join(' | ')})[]` : ''}
-    normal?: ${normal.length > 2 ? 'string | ' : ''}${wght.join(' | ')}${normal.length > 1 ? ` | (${normal.join(' | ')})[]` : ''}
-    regular?: ${normal.length > 2 ? 'string | ' : ''}${wght.join(' | ')}${normal.length > 1 ? ` | (${normal.join(' | ')})[]` : ''}`
+  ? `\r\n    wght?: GoogleFontsWeight
+    normal?: GoogleFontsWeight
+    regular?: GoogleFontsWeight`
     : ''}${
     ital.length
-  ? `\r\n    ital?: ${italic.length > 2 ? 'string | ' : ''}${ital.join(' | ')}${italic.length > 1 ? ` | (${italic.join(' | ')})[]` : ''}
-    italic?: ${italic.length > 2 ? 'string | ' : ''}${ital.join(' | ')}${italic.length > 1 ? ` | (${italic.join(' | ')})[]` : ''}
-    i?: ${italic.length > 2 ? 'string | ' : ''}${ital.join(' | ')}${italic.length > 1 ? ` | (${italic.join(' | ')})[]` : ''}`
+  ? `\r\n    ital?: GoogleFontsWeight
+    italic?: GoogleFontsWeight
+    i?: GoogleFontsWeight`
     : ''}
     text?: string
-  }${wght.length > 1 ? ` | ${normal.length > 2 ? 'string | ' : ''}${wght.join(' | ')}${normal.length > 1 ? ` | (${normal.join(' | ')})[]` : ''}` : ''},
+  },
 `
 })
 
@@ -51,7 +48,7 @@ writeFileSync('../src/google-fonts-metadata.ts', `export type GoogleFontsDisplay
 
 export type GoogleFontsSubset = '${Array.from(new Set(subsets)).join('\' | \'')}'
 
-export type GoogleFontsWeight = ${Array.from(new Set(weights)).sort().join(' | ')}
+export type GoogleFontsWeight = boolean | string | string[] | number | number[]
 
 export type GoogleFontsMetadata = {${families.join('')}}
 `, 'utf-8')
