@@ -50,6 +50,14 @@ describe('constructURL', () => {
         }
       }
     })).toEqual('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700')
+
+    expect(constructURL({
+      families: {
+        'Roboto Flex': {
+          wght: [1000, 400, 300]
+        }
+      }
+    })).toEqual('https://fonts.googleapis.com/css2?family=Roboto+Flex:wght@300;400;1000')
   })
 
   test('multiple families and styles', () => {
@@ -88,6 +96,7 @@ describe('constructURL', () => {
         Roboto: [100, 300, 400]
       }
     })).toEqual('https://fonts.googleapis.com/css2?family=Roboto:wght@100;300;400')
+
     expect(constructURL({
       families: {
         Roboto: {
@@ -96,6 +105,15 @@ describe('constructURL', () => {
         }
       }
     })).toEqual('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,300;0,400;0,700;1,400')
+
+    expect(constructURL({
+      families: {
+        'Roboto Flex': {
+          wght: [300, 400, 700],
+          ital: [1000, 400]
+        }
+      }
+    })).toEqual('https://fonts.googleapis.com/css2?family=Roboto+Flex:ital,wght@0,300;0,400;0,700;1,400;1,1000')
   })
 
   test('axis', () => {
