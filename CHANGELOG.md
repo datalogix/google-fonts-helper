@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## v3.6.0
+
+[compare changes](https://github.com/datalogix/google-fonts-helper/compare/v3.5.0...v3.6.0)
+
+### 🚀 Enhancements
+
+- Add support for multiple font axes ([#68](https://github.com/datalogix/google-fonts-helper/pull/68))
+
+### ❤️ Contributors
+
+- Ivan R. Petrov <ivansteklow@gmail.com>
+
 ## v3.5.0
 
 [compare changes](https://github.com/datalogix/google-fonts-helper/compare/v3.4.1...v3.5.0)
