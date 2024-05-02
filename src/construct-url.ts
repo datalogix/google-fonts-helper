@@ -1,8 +1,13 @@
-import { QueryObject, resolveURL, withQuery, withHttps } from 'ufo'
-import { GOOGLE_FONTS_DOMAIN, isValidDisplay, parseFamilyName, parseStyle } from './utils'
-import type { GoogleFonts, Families } from './types'
+import { QueryObject, resolveURL, withHttps, withQuery } from 'ufo'
+import { cartesianProduct, GOOGLE_FONTS_DOMAIN, isValidDisplay, parseFamilyName, parseStyle } from './utils'
+import type { Families, GoogleFonts } from './types'
 
-export function constructURL ({ families, display, subsets, text }: GoogleFonts = {}): string | false {
+export function constructURL ({
+  families,
+  display,
+  subsets,
+  text
+}: GoogleFonts = {}): string | false {
   const _subsets = (Array.isArray(subsets) ? subsets : [subsets]).filter(Boolean)
   const family = convertFamiliesToArray(families ?? {})
 
@@ -50,46 +55,72 @@ function convertFamiliesToArray (families: Families): string[] {
     }
 
     if (Object.keys(values).length > 0) {
-      const styles: string[] = []
-      const weights: string[] = []
-      let forceWght = false
+      const axes: Record<string, Array<string>> = {}
+      let italicWeights: string[] = []
 
       Object
         .entries(values)
         .sort(([styleA], [styleB]) => styleA.localeCompare(styleB))
         .forEach(([style, weight]) => {
-          const styleParsed = parseStyle(style)
-          styles.push(styleParsed)
-
-          const weightList = Array.isArray(weight) ? weight : [weight]
-          weightList.forEach((value: string | number) => {
-            if (Object.keys(values).length === 1 && styleParsed === 'wght') {
-              weights.push(String(value))
+          const parsedStyle = parseStyle(style)
+          if (parsedStyle === 'ital') {
+            axes[parsedStyle] = ['0', '1']
+            if (weight === true || weight === 400 || weight === 1) {
+              italicWeights = ['*']
             } else {
-              const index = styleParsed === 'wght' ? 0 : 1
-
-              if (
-                (value.toString() === 'true' || value === 1 || value === 400) &&
-                Object.entries(values).length === 1 && weightList.length === 1
-              ) {
-                weights.push(`${index}`)
-              } else if (value) {
-                forceWght = true
-                weights.push(`${index},${value}`)
-              }
+              italicWeights = Array.isArray(weight) ? weight.map(w => String(w)) : [weight]
             }
-          })
+          } else {
+            axes[parseStyle(style)] = Array.isArray(weight) ? weight.map(w => String(w)) : [weight]
+          }
         })
 
-      if (!styles.includes('wght') && forceWght) {
-        styles.push('wght')
+      const strictlyItalic: string[] = []
+
+      if (Object.keys(axes).length === 1 && Object.hasOwn(axes, 'ital')) {
+        if (!(italicWeights.includes('*') || (italicWeights.length === 1 && italicWeights.includes('400')))) {
+          axes.wght = italicWeights
+          strictlyItalic.push(...italicWeights)
+        }
+      } else if (Object.hasOwn(axes, 'wght') && !italicWeights.includes('*')) {
+        strictlyItalic.push(...italicWeights.filter(w => !axes.wght.includes(w)))
+        axes.wght = [...new Set([...axes.wght, ...italicWeights])]
       }
 
-      const weightsSortered = weights
-        .sort(([weightA], [weightB]) => weightA.localeCompare(weightB))
+      const axisTagList = Object.keys(axes)
+        .sort(([axisA], [axisB]) => axisA.localeCompare(axisB))
+
+      if (axisTagList.length === 1 && axisTagList.includes('ital')) {
+        result.push(`${name}:ital@1`)
+        return
+      }
+
+      let axisTupleArrays: string[][] = cartesianProduct(...axisTagList.map((tag: string) => axes[tag]), [[]])
+      const italicIndex = axisTagList.findIndex(i => i === 'ital')
+      if (italicIndex !== -1) {
+        const weightIndex = axisTagList.findIndex(i => i === 'wght')
+        if (weightIndex !== -1) {
+          axisTupleArrays = axisTupleArrays
+            .filter((axisTuple: string[]) => (axisTuple[italicIndex] === '0' && !strictlyItalic.includes(axisTuple[weightIndex])) ||
+              (axisTuple[italicIndex] === '1' && italicWeights.includes(axisTuple[weightIndex])))
+        }
+      }
+
+      const axisTupleList = axisTupleArrays
+        .sort((axisTupleA, axisTupleB) => {
+          for (let i = 0; i < axisTupleA.length; i++) {
+            const compareResult = parseInt(axisTupleA[i]) - parseInt(axisTupleB[i])
+            if (compareResult !== 0) {
+              return compareResult
+            }
+          }
+
+          return 0
+        })
+        .map((axisTuple: string[]) => axisTuple.join(','))
         .join(';')
 
-      result.push(`${name}:${styles.join(',')}@${weightsSortered}`)
+      result.push(`${name}:${axisTagList.join(',')}@${axisTupleList}`)
       return
     }
 

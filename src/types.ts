@@ -4,9 +4,7 @@ export type FontDisplay = GoogleFontsDisplay
 
 export type FontSubset = GoogleFontsSubset
 
-export type FontWeight = GoogleFontsWeight | string
-
-export type FontStyle = boolean | FontWeight | FontWeight[]
+export type FontStyle = GoogleFontsWeight
 
 export type FontOptions = {
   display?: FontDisplay
@@ -16,6 +14,9 @@ export type FontOptions = {
 
 export type Families = {
   [family: string]: FontStyle | {
+    // other axes
+    [key: string]: undefined | FontStyle
+
     // normal
     wght?: FontStyle
     normal?: FontStyle
