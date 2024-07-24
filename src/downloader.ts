@@ -102,10 +102,23 @@ export class Downloader extends Hookable<DownloaderHooks> {
     return true
   }
 
+  async extractFontInfo (): Promise<{ fonts: FontInputOutput[], css: string }> {
+    if (!isValidURL(this.url)) {
+      throw new Error('Invalid Google Fonts URL')
+    }
+
+    const { headers, fontsPath } = this.config
+
+    const _css = await ofetch(this.url, { headers })
+    const { fonts, css } = parseFontsFromCss(_css, fontsPath)
+
+    return { fonts, css }
+  }
+
   private async downloadFonts (fonts: FontInputOutput[]) {
     const { headers, base64, outputDir, fontsDir } = this.config
     const downloadedFonts: FontInputOutput[] = []
-    const _fonts:FontInputOutput[] = []
+    const _fonts: FontInputOutput[] = []
 
     for (const font of fonts) {
       const downloadedFont = downloadedFonts.find(f => f.inputFont === font.inputFont)
