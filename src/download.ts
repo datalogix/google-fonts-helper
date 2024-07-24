@@ -8,12 +8,12 @@ export async function getFontInfo (url: string, options?: Partial<DownloadOption
   const info = new Downloader(url, options)
   const { fonts, css } = await info.extractFontInfo()
 
-  let localCSS: string = ''
+  let localCSS: string = css
   const fontMaps: Map<string, string> = new Map()
 
   // Replace remote with local font url() paths
   for (const font of fonts) {
-    localCSS = css.replace(font.inputText, font.outputText)
+    localCSS = localCSS.replace(font.inputText, font.outputText)
     fontMaps.set(font.inputFont, font.outputFont)
   }
 

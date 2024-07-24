@@ -138,27 +138,48 @@ downloader.hook('download:complete', () => {
 await downloader.execute()
 ```
 
-### `getFontInfo(url: string, option?: DownloadOptions): Map<string, string>, string`
+### `getFontInfo(url: string, option?: DownloadOptions): fontMaps: Map<string, string>, localCSS: string`
 
 Use this function if you'd like more control over font download caching for your project. For example, using [Eleventy Fetch](https://www.11ty.dev/docs/plugins/fetch/#fetch), which incorporates local caching.
 
 ```ts
-const { css, fonts } = getFontInfo('https://fonts.googleapis.com/css2?family=Roboto', {
+// fontsPath is the path prepended to the local font name in the @font-face url()
+const fontsPath = './fonts'
+const cssPath = './css'
+
+const { localCSS, fontMaps } = await getFontInfo('https://fonts.googleapis.com/css2?family=Roboto', {
   base64: false,
-  overwriting: false,
-  outputDir: './',
-  stylePath: 'fonts.css',
-  fontsDir: 'fonts',
-  fontsPath: './fonts'
+  fontsPath: fontsPath
 })
 
-for (const [url, filename] of fonts) {
-  // Save locally to `fontsPath/filename`
-  await yourDownloadFunction(url, `${fontsPath}/${filename}`)
+const result = async function () {
+  let success: boolean = true
+
+  try {
+    await fs.writeFile(cssPath, localCSS) 
+  } catch (error) {
+    success = false
+    console.error(`Failed to save CSS`, error)
+  }
+
+  return success
 }
 
-const fs = require('fs')
-fs.writeFileSync(`${outputDir}/${stylePath}`, css)
+const result = async function () {
+  let success: boolean = true
+
+  for (const [url, filename] of fontMaps) {
+    try {
+      // Save locally to `fontsPath/filename`
+      await yourDownloadFunction(url, `${fontsPath}/${filename}`)
+    } catch (error) {
+      success = false
+      console.error(`Failed to save font: ${filename}`, error)
+    }
+  }
+
+  return success
+}
 ```
 
 ## License
