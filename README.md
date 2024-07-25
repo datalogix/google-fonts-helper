@@ -147,7 +147,7 @@ Use this function if you'd like more control over font download caching for your
 const fontsPath = './fonts'
 const cssPath = './css'
 
-const [localCSS, fontsMap] = await getFontInfo('https://fonts.googleapis.com/css2?family=Roboto', {
+const [fontsMap, localCSS] = await getFontInfo('https://fonts.googleapis.com/css2?family=Roboto', {
   base64: false,
   fontsPath: fontsPath
 })
