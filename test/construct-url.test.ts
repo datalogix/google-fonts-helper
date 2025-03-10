@@ -178,6 +178,18 @@ describe('constructURL', () => {
     })).toEqual('https://fonts.googleapis.com/css2?family=Open+Sans:ital,wdth,wght@0,75,400;0,75,700;0,100,400;0,100,700;1,75,400;1,100,400')
   })
 
+  test('icons', () => {
+    expect(constructURL({
+      families: {
+        'Material Symbols Outlined': {
+          opsz: '20..48',
+          FILL: '0..1',
+          GRAD: '-25..0'
+        }
+      }
+    })).toEqual('https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,FILL,GRAD@20..48,0..1,-25..0')
+  })
+
   test('invalid', () => {
     expect(constructURL()).toBe(false)
     expect(constructURL({})).toBe(false)

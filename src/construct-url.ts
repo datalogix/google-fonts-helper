@@ -88,7 +88,15 @@ function convertFamiliesToArray (families: Families): string[] {
       }
 
       const axisTagList = Object.keys(axes)
-        .sort(([axisA], [axisB]) => axisA.localeCompare(axisB))
+        .sort((axisA, axisB) => {
+          const isLowerA = axisA[0] === axisA[0].toLowerCase()
+          const isLowerB = axisB[0] === axisB[0].toLowerCase()
+
+          if (isLowerA && !isLowerB) { return -1 }
+          if (!isLowerA && isLowerB) { return 1 }
+
+          return axisA.localeCompare(axisB)
+        })
 
       if (axisTagList.length === 1 && axisTagList.includes('ital')) {
         result.push(`${name}:ital@1`)
