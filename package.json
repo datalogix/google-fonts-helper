@@ -43,5 +43,6 @@
     "typescript": "latest",
     "unbuild": "latest",
     "vitest": "latest"
-  }
+  },
+  "packageManager": "pnpm@9.10.0"
 }
