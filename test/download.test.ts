@@ -22,6 +22,41 @@ describe('download', () => {
     rmSync(outputDir, { recursive: true, force: true })
   }, 60000)
 
+  test('styles', async () => {
+    const outputDir = temporaryDirectory()
+    const stylePath = 'font.css'
+    const fontsDir = 'fonts'
+
+    await download('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,400;1,400', {
+      outputDir,
+      stylePath,
+      fontsDir
+    }).execute()
+
+    expect(existsSync(join(outputDir, stylePath))).toBe(true)
+    expect(existsSync(join(outputDir, fontsDir))).toBe(true)
+    expect(existsSync(join(outputDir, fontsDir, 'Roboto-italic-400-1.woff2'))).toBe(true)
+    expect(existsSync(join(outputDir, fontsDir, 'Roboto-italic-400-2.woff2'))).toBe(true)
+    expect(existsSync(join(outputDir, fontsDir, 'Roboto-italic-400-3.woff2'))).toBe(true)
+    expect(existsSync(join(outputDir, fontsDir, 'Roboto-italic-400-4.woff2'))).toBe(true)
+    expect(existsSync(join(outputDir, fontsDir, 'Roboto-italic-400-5.woff2'))).toBe(true)
+    expect(existsSync(join(outputDir, fontsDir, 'Roboto-italic-400-6.woff2'))).toBe(true)
+    expect(existsSync(join(outputDir, fontsDir, 'Roboto-italic-400-7.woff2'))).toBe(true)
+    expect(existsSync(join(outputDir, fontsDir, 'Roboto-italic-400-8.woff2'))).toBe(true)
+    expect(existsSync(join(outputDir, fontsDir, 'Roboto-italic-400-9.woff2'))).toBe(true)
+    expect(existsSync(join(outputDir, fontsDir, 'Roboto-normal-400-10.woff2'))).toBe(true)
+    expect(existsSync(join(outputDir, fontsDir, 'Roboto-normal-400-11.woff2'))).toBe(true)
+    expect(existsSync(join(outputDir, fontsDir, 'Roboto-normal-400-12.woff2'))).toBe(true)
+    expect(existsSync(join(outputDir, fontsDir, 'Roboto-normal-400-13.woff2'))).toBe(true)
+    expect(existsSync(join(outputDir, fontsDir, 'Roboto-normal-400-14.woff2'))).toBe(true)
+    expect(existsSync(join(outputDir, fontsDir, 'Roboto-normal-400-15.woff2'))).toBe(true)
+    expect(existsSync(join(outputDir, fontsDir, 'Roboto-normal-400-16.woff2'))).toBe(true)
+    expect(existsSync(join(outputDir, fontsDir, 'Roboto-normal-400-17.woff2'))).toBe(true)
+    expect(existsSync(join(outputDir, fontsDir, 'Roboto-normal-400-18.woff2'))).toBe(true)
+
+    rmSync(outputDir, { recursive: true, force: true })
+  }, 60000)
+
   test('variable fonts', async () => {
     const outputDir = temporaryDirectory()
     const stylePath = 'font.css'
@@ -35,12 +70,12 @@ describe('download', () => {
 
     expect(existsSync(join(outputDir, stylePath))).toBe(true)
     expect(existsSync(join(outputDir, fontsDir))).toBe(true)
-    expect(existsSync(join(outputDir, fontsDir, 'Manrope-200_800-1.woff2'))).toBe(true)
-    expect(existsSync(join(outputDir, fontsDir, 'Manrope-200_800-2.woff2'))).toBe(true)
-    expect(existsSync(join(outputDir, fontsDir, 'Manrope-200_800-3.woff2'))).toBe(true)
-    expect(existsSync(join(outputDir, fontsDir, 'Manrope-200_800-4.woff2'))).toBe(true)
-    expect(existsSync(join(outputDir, fontsDir, 'Manrope-200_800-5.woff2'))).toBe(true)
-    expect(existsSync(join(outputDir, fontsDir, 'Manrope-200_800-6.woff2'))).toBe(true)
+    expect(existsSync(join(outputDir, fontsDir, 'Manrope-normal-200_800-1.woff2'))).toBe(true)
+    expect(existsSync(join(outputDir, fontsDir, 'Manrope-normal-200_800-2.woff2'))).toBe(true)
+    expect(existsSync(join(outputDir, fontsDir, 'Manrope-normal-200_800-3.woff2'))).toBe(true)
+    expect(existsSync(join(outputDir, fontsDir, 'Manrope-normal-200_800-4.woff2'))).toBe(true)
+    expect(existsSync(join(outputDir, fontsDir, 'Manrope-normal-200_800-5.woff2'))).toBe(true)
+    expect(existsSync(join(outputDir, fontsDir, 'Manrope-normal-200_800-6.woff2'))).toBe(true)
 
     rmSync(outputDir, { recursive: true, force: true })
   }, 60000)
@@ -58,8 +93,8 @@ describe('download', () => {
 
     expect(existsSync(join(outputDir, stylePath))).toBe(true)
     expect(existsSync(join(outputDir, fontsDir))).toBe(true)
-    expect(existsSync(join(outputDir, fontsDir, 'Poppins-400-1.woff2'))).toBe(true)
-    expect(existsSync(join(outputDir, fontsDir, 'Poppins-400-2.woff2'))).toBe(false)
+    expect(existsSync(join(outputDir, fontsDir, 'Poppins-normal-400-1.woff2'))).toBe(true)
+    expect(existsSync(join(outputDir, fontsDir, 'Poppins-normal-400-2.woff2'))).toBe(false)
 
     rmSync(outputDir, { recursive: true, force: true })
   }, 60000)
@@ -77,9 +112,9 @@ describe('download', () => {
 
     expect(existsSync(join(outputDir, stylePath))).toBe(true)
     expect(existsSync(join(outputDir, fontsDir))).toBe(true)
-    expect(existsSync(join(outputDir, fontsDir, 'Poppins-400-1.woff2'))).toBe(true)
-    expect(existsSync(join(outputDir, fontsDir, 'Poppins-600-2.woff2'))).toBe(true)
-    expect(existsSync(join(outputDir, fontsDir, 'Poppins-700-3.woff2'))).toBe(true)
+    expect(existsSync(join(outputDir, fontsDir, 'Poppins-normal-400-1.woff2'))).toBe(true)
+    expect(existsSync(join(outputDir, fontsDir, 'Poppins-normal-600-2.woff2'))).toBe(true)
+    expect(existsSync(join(outputDir, fontsDir, 'Poppins-normal-700-3.woff2'))).toBe(true)
 
     rmSync(outputDir, { recursive: true, force: true })
   }, 60000)
@@ -97,9 +132,9 @@ describe('download', () => {
 
     expect(existsSync(join(outputDir, stylePath))).toBe(true)
     expect(existsSync(join(outputDir, fontsDir))).toBe(true)
-    expect(existsSync(join(outputDir, fontsDir, 'Poppins-400-1.woff2'))).toBe(true)
-    expect(existsSync(join(outputDir, fontsDir, 'Poppins-600-2.woff2'))).toBe(true)
-    expect(existsSync(join(outputDir, fontsDir, 'Poppins-700-3.woff2'))).toBe(true)
+    expect(existsSync(join(outputDir, fontsDir, 'Poppins-normal-400-1.woff2'))).toBe(true)
+    expect(existsSync(join(outputDir, fontsDir, 'Poppins-normal-600-2.woff2'))).toBe(true)
+    expect(existsSync(join(outputDir, fontsDir, 'Poppins-normal-700-3.woff2'))).toBe(true)
 
     rmSync(outputDir, { recursive: true, force: true })
   }, 60000)
@@ -174,7 +209,7 @@ describe('download', () => {
 
     expect(existsSync(join(outputDir, stylePath))).toBe(true)
     expect(existsSync(join(outputDir, fontsDir))).toBe(false)
-    expect(existsSync(join(outputDir, fontsDir, 'Roboto-400-1.woff2'))).toBe(false)
+    expect(existsSync(join(outputDir, fontsDir, 'Roboto-normal-400-1.woff2'))).toBe(false)
 
     rmSync(outputDir, { recursive: true, force: true })
   }, 60000)

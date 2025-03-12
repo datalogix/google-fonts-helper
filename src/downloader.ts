@@ -140,7 +140,7 @@ export class Downloader extends Hookable<DownloaderHooks> {
         const fontPath = resolve(outputDir, fontsDir, font.outputFont)
 
         mkdirSync(dirname(fontPath), { recursive: true })
-        writeFileSync(fontPath, buffer, 'utf-8')
+        writeFileSync(fontPath, buffer.toString(), 'utf-8')
       }
 
       _fonts.push(font)
@@ -174,6 +174,7 @@ function parseFontsFromCss (content: string, fontsPath: string, subsets?: FontSu
   const re = {
     face: /\s*(?:\/\*\s*(.*?)\s*\*\/)?[^@]*?@font-face\s*{(?:[^}]*?)}\s*/gi,
     family: /font-family\s*:\s*(?:'|")?([^;]*?)(?:'|")?\s*;/i,
+    style: /font-style\s*:\s*([^;]*?)\s*;/i,
     weight: /font-weight\s*:\s*([^;]*?)\s*;/i,
     url: /url\s*\(\s*(?:'|")?\s*([^]*?)\s*(?:'|")?\s*\)\s*?/gi
   }
@@ -187,6 +188,8 @@ function parseFontsFromCss (content: string, fontsPath: string, subsets?: FontSu
     const family = familyRegExpArray ? familyRegExpArray[1] : ''
     const weightRegExpArray = re.weight.exec(fontface)
     const weight = weightRegExpArray ? weightRegExpArray[1] : ''
+    const styleRegExpArray = re.style.exec(fontface)
+    const style = styleRegExpArray ? styleRegExpArray[1] : ''
 
     if (subsets && subsets.length && !subsets.includes(subset as FontSubset)) {
       continue
@@ -199,8 +202,9 @@ function parseFontsFromCss (content: string, fontsPath: string, subsets?: FontSu
       const [forReplace, url] = match2
       const ext = extname(url).replace(/^\./, '') || 'woff2'
 
-      const newFilename = formatFontFileName('{family}-{weight}-{i}.{ext}', {
+      const newFilename = formatFontFileName('{family}-{style}-{weight}-{i}.{ext}', {
         family: family.replace(/\s+/g, '_'),
+        style: style.replace(/\s+/g, '_') || 'normal',
         weight: weight.replace(/\s+/g, '_') || '',
         i: String(i++),
         ext
