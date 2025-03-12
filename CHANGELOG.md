@@ -2,6 +2,32 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## v3.7.0
+
+[compare changes](https://github.com/datalogix/google-fonts-helper/compare/v3.6.0...v3.7.0)
+
+### 🚀 Enhancements
+
+- Add font style in filename ([4da2a49](https://github.com/datalogix/google-fonts-helper/commit/4da2a49))
+
+### 🏡 Chore
+
+- Update deps ([57f0f8b](https://github.com/datalogix/google-fonts-helper/commit/57f0f8b))
+- Remove `packageManager` ([304f2fa](https://github.com/datalogix/google-fonts-helper/commit/304f2fa))
+- Add `packageManager` ([ad568d0](https://github.com/datalogix/google-fonts-helper/commit/ad568d0))
+- Add codecov config ([57cc96f](https://github.com/datalogix/google-fonts-helper/commit/57cc96f))
+- Update `packageManager` ([bd70158](https://github.com/datalogix/google-fonts-helper/commit/bd70158))
+
+### 🤖 CI
+
+- Workaround corepack issue with actions ([7d3a84f](https://github.com/datalogix/google-fonts-helper/commit/7d3a84f))
+- Update codecov ([8ca7e17](https://github.com/datalogix/google-fonts-helper/commit/8ca7e17))
+- Pass codecov token ([1ebbec9](https://github.com/datalogix/google-fonts-helper/commit/1ebbec9))
+
+### ❤️ Contributors
+
+- Ricardo Gobbo De Souza ([@ricardogobbosouza](http://github.com/ricardogobbosouza))
+
 ## v3.6.0
 
 [compare changes](https://github.com/datalogix/google-fonts-helper/compare/v3.5.0...v3.6.0)
