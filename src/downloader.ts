@@ -111,13 +111,16 @@ export class Downloader extends Hookable<DownloaderHooks> {
       const downloadedFont = downloadedFonts.find(f => f.inputFont === font.inputFont)
 
       if (downloadedFont) {
-        copyFileSync(
-          resolve(outputDir, fontsDir, downloadedFont.outputFont),
-          resolve(outputDir, fontsDir, font.outputFont)
-        )
+        if (base64) {
+          font.outputText = downloadedFont.outputText
+        } else {
+          copyFileSync(
+            resolve(outputDir, fontsDir, downloadedFont.outputFont),
+            resolve(outputDir, fontsDir, font.outputFont)
+          )
+        }
 
         _fonts.push(font)
-
         continue
       }
 
