@@ -2,6 +2,23 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## v3.7.2
+
+[compare changes](https://github.com/datalogix/google-fonts-helper/compare/v3.7.1...v3.7.2)
+
+### 🩹 Fixes
+
+- Clone font file when as same ([e5dd3ed](https://github.com/datalogix/google-fonts-helper/commit/e5dd3ed))
+- Prevent copy fonts as base64 ([13e7ed8](https://github.com/datalogix/google-fonts-helper/commit/13e7ed8))
+
+### 🏡 Chore
+
+- Update coverage ([ddb038c](https://github.com/datalogix/google-fonts-helper/commit/ddb038c))
+
+### ❤️ Contributors
+
+- Ricardo Gobbo De Souza ([@ricardogobbosouza](http://github.com/ricardogobbosouza))
+
 ## v3.7.1
 
 [compare changes](https://github.com/datalogix/google-fonts-helper/compare/v3.7.0...v3.7.1)
