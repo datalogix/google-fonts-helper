@@ -27,7 +27,7 @@ describe('download', () => {
     const stylePath = 'font.css'
     const fontsDir = 'fonts'
 
-    await download('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,400;1,400', {
+    await download('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,400;0,700;1,400', {
       outputDir,
       stylePath,
       fontsDir
@@ -44,6 +44,15 @@ describe('download', () => {
     expect(existsSync(join(outputDir, fontsDir, 'Roboto-italic-400-math.woff2'))).toBe(true)
     expect(existsSync(join(outputDir, fontsDir, 'Roboto-italic-400-symbols.woff2'))).toBe(true)
     expect(existsSync(join(outputDir, fontsDir, 'Roboto-italic-400-vietnamese.woff2'))).toBe(true)
+    expect(existsSync(join(outputDir, fontsDir, 'Roboto-italic-700-latin.woff2'))).toBe(false)
+    expect(existsSync(join(outputDir, fontsDir, 'Roboto-italic-700-latin-ext.woff2'))).toBe(false)
+    expect(existsSync(join(outputDir, fontsDir, 'Roboto-italic-700-cyrillic-ext.woff2'))).toBe(false)
+    expect(existsSync(join(outputDir, fontsDir, 'Roboto-italic-700-cyrillic.woff2'))).toBe(false)
+    expect(existsSync(join(outputDir, fontsDir, 'Roboto-italic-700-greek-ext.woff2'))).toBe(false)
+    expect(existsSync(join(outputDir, fontsDir, 'Roboto-italic-700-greek.woff2'))).toBe(false)
+    expect(existsSync(join(outputDir, fontsDir, 'Roboto-italic-700-math.woff2'))).toBe(false)
+    expect(existsSync(join(outputDir, fontsDir, 'Roboto-italic-700-symbols.woff2'))).toBe(false)
+    expect(existsSync(join(outputDir, fontsDir, 'Roboto-italic-700-vietnamese.woff2'))).toBe(false)
     expect(existsSync(join(outputDir, fontsDir, 'Roboto-normal-400-latin.woff2'))).toBe(true)
     expect(existsSync(join(outputDir, fontsDir, 'Roboto-normal-400-latin-ext.woff2'))).toBe(true)
     expect(existsSync(join(outputDir, fontsDir, 'Roboto-normal-400-cyrillic-ext.woff2'))).toBe(true)
@@ -53,6 +62,15 @@ describe('download', () => {
     expect(existsSync(join(outputDir, fontsDir, 'Roboto-normal-400-math.woff2'))).toBe(true)
     expect(existsSync(join(outputDir, fontsDir, 'Roboto-normal-400-symbols.woff2'))).toBe(true)
     expect(existsSync(join(outputDir, fontsDir, 'Roboto-normal-400-vietnamese.woff2'))).toBe(true)
+    expect(existsSync(join(outputDir, fontsDir, 'Roboto-normal-700-latin.woff2'))).toBe(true)
+    expect(existsSync(join(outputDir, fontsDir, 'Roboto-normal-700-latin-ext.woff2'))).toBe(true)
+    expect(existsSync(join(outputDir, fontsDir, 'Roboto-normal-700-cyrillic-ext.woff2'))).toBe(true)
+    expect(existsSync(join(outputDir, fontsDir, 'Roboto-normal-700-cyrillic.woff2'))).toBe(true)
+    expect(existsSync(join(outputDir, fontsDir, 'Roboto-normal-700-greek-ext.woff2'))).toBe(true)
+    expect(existsSync(join(outputDir, fontsDir, 'Roboto-normal-700-greek.woff2'))).toBe(true)
+    expect(existsSync(join(outputDir, fontsDir, 'Roboto-normal-700-math.woff2'))).toBe(true)
+    expect(existsSync(join(outputDir, fontsDir, 'Roboto-normal-700-symbols.woff2'))).toBe(true)
+    expect(existsSync(join(outputDir, fontsDir, 'Roboto-normal-700-vietnamese.woff2'))).toBe(true)
 
     rmSync(outputDir, { recursive: true, force: true })
   }, 60000)

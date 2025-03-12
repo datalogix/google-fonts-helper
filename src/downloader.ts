@@ -1,4 +1,4 @@
-import { existsSync, readFileSync, mkdirSync, writeFileSync } from 'node:fs'
+import { existsSync, readFileSync, mkdirSync, writeFileSync, copyFileSync } from 'node:fs'
 import { extname, posix, resolve, dirname } from 'node:path'
 import { ofetch } from 'ofetch'
 import { Hookable } from 'hookable'
@@ -111,7 +111,10 @@ export class Downloader extends Hookable<DownloaderHooks> {
       const downloadedFont = downloadedFonts.find(f => f.inputFont === font.inputFont)
 
       if (downloadedFont) {
-        font.outputText = downloadedFont.outputText
+        copyFileSync(
+          resolve(outputDir, fontsDir, downloadedFont.outputFont),
+          resolve(outputDir, fontsDir, font.outputFont)
+        )
 
         _fonts.push(font)
 
@@ -185,10 +188,10 @@ function parseFontsFromCss (content: string, fontsPath: string, subsets?: FontSu
     const [fontface, subset] = match1
     const familyRegExpArray = re.family.exec(fontface)
     const family = familyRegExpArray ? familyRegExpArray[1] : ''
-    const weightRegExpArray = re.weight.exec(fontface)
-    const weight = weightRegExpArray ? weightRegExpArray[1] : ''
     const styleRegExpArray = re.style.exec(fontface)
     const style = styleRegExpArray ? styleRegExpArray[1] : ''
+    const weightRegExpArray = re.weight.exec(fontface)
+    const weight = weightRegExpArray ? weightRegExpArray[1] : ''
 
     if (subsets && subsets.length && !subsets.includes(subset as FontSubset)) {
       continue
