@@ -179,7 +179,6 @@ function parseFontsFromCss (content: string, fontsPath: string, subsets?: FontSu
     url: /url\s*\(\s*(?:'|")?\s*([^]*?)\s*(?:'|")?\s*\)\s*?/gi
   }
 
-  let i = 1
   let match1
 
   while ((match1 = re.face.exec(content)) !== null) {
@@ -202,11 +201,11 @@ function parseFontsFromCss (content: string, fontsPath: string, subsets?: FontSu
       const [forReplace, url] = match2
       const ext = extname(url).replace(/^\./, '') || 'woff2'
 
-      const newFilename = formatFontFileName('{family}-{style}-{weight}-{i}.{ext}', {
+      const newFilename = formatFontFileName('{family}-{style}-{weight}-{subset}.{ext}', {
         family: family.replace(/\s+/g, '_'),
         style: style.replace(/\s+/g, '_') || 'normal',
         weight: weight.replace(/\s+/g, '_') || '',
-        i: String(i++),
+        subset: subset || 'text',
         ext
       }).replace(/\.$/, '')
 
