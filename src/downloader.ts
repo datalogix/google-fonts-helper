@@ -146,7 +146,7 @@ export class Downloader extends Hookable<DownloaderHooks> {
         const fontPath = resolve(outputDir, fontsDir, font.outputFont)
 
         mkdirSync(dirname(fontPath), { recursive: true })
-        writeFileSync(fontPath, buffer.toString(), 'utf-8')
+        writeFileSync(fontPath, buffer)
       }
 
       _fonts.push(font)
