@@ -138,6 +138,50 @@ downloader.hook('download:complete', () => {
 await downloader.execute()
 ```
 
+### `getFontInfo(url: string, options?: DownloadOptions): [ Map<string, string>, string ]`
+
+Use this function if you'd like more control over font download caching for your project. For example, using [Eleventy Fetch](https://www.11ty.dev/docs/plugins/fetch/#fetch), which incorporates local caching.
+
+```ts
+// fontsPath is the path prepended to the local font name in the @font-face url()
+const fontsPath = './fonts'
+const cssPath = './css'
+
+const [fontsMap, localCSS] = await getFontInfo('https://fonts.googleapis.com/css2?family=Roboto', {
+  base64: false,
+  fontsPath: fontsPath
+})
+
+const result = async function () {
+  let success: boolean = true
+
+  try {
+    await fs.writeFile(cssPath, localCSS) 
+  } catch (error) {
+    success = false
+    console.error(`Failed to save CSS`, error)
+  }
+
+  return success
+}
+
+const result = async function () {
+  let success: boolean = true
+
+  for (const [url, filename] of fontsMap) {
+    try {
+      // Save locally to `fontsPath/filename`
+      await yourDownloadFunction(url, `${fontsPath}/${filename}`)
+    } catch (error) {
+      success = false
+      console.error(`Failed to save font: ${filename}`, error)
+    }
+  }
+
+  return success
+}
+```
+
 ## License
 
 [MIT License](./LICENSE)
