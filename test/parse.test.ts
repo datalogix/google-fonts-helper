@@ -5,47 +5,47 @@ describe('parse', () => {
   test('single family', () => {
     expect(parse('https://fonts.googleapis.com/css?family=Droid+Serif')).toStrictEqual({
       families: {
-        'Droid Serif': true
-      }
+        'Droid Serif': true,
+      },
     })
 
     expect(parse('https://fonts.googleapis.com/css2?family=Roboto')).toStrictEqual({
       families: {
-        Roboto: true
-      }
+        Roboto: true,
+      },
     })
 
     expect(parse('https://fonts.googleapis.com/css2?family=Inter')).toStrictEqual({
       families: {
-        Inter: true
-      }
+        Inter: true,
+      },
     })
   })
 
   test('multiple families', () => {
     expect(parse('https://fonts.googleapis.com/css?family=Cantarell|Droid+Serif')).toStrictEqual({
       families: {
-        Cantarell: true,
-        'Droid Serif': true
-      }
+        'Cantarell': true,
+        'Droid Serif': true,
+      },
     })
 
     expect(parse('https://fonts.googleapis.com/css?family=Cantarell:italic|Droid+Serif:bold')).toStrictEqual({
       families: {
-        Cantarell: {
-          ital: true
+        'Cantarell': {
+          ital: true,
         },
         'Droid Serif': {
-          wght: 700
-        }
-      }
+          wght: 700,
+        },
+      },
     })
 
     expect(parse('https://fonts.googleapis.com/css2?family=Roboto&family=Roboto+Mono')).toStrictEqual({
       families: {
-        Roboto: true,
-        'Roboto Mono': true
-      }
+        'Roboto': true,
+        'Roboto Mono': true,
+      },
     })
   })
 
@@ -53,33 +53,33 @@ describe('parse', () => {
     expect(parse('https://fonts.googleapis.com/css?family=Droid+Serif:bolditalic')).toStrictEqual({
       families: {
         'Droid Serif': {
-          ital: 700
-        }
-      }
+          ital: 700,
+        },
+      },
     })
 
     expect(parse('https://fonts.googleapis.com/css2?family=Roboto:100')).toStrictEqual({
       families: {
         Roboto: {
-          wght: [100]
-        }
-      }
+          wght: [100],
+        },
+      },
     })
 
     expect(parse('https://fonts.googleapis.com/css2?family=Roboto:100,300')).toStrictEqual({
       families: {
         Roboto: {
-          wght: [100, 300]
-        }
-      }
+          wght: [100, 300],
+        },
+      },
     })
 
     expect(parse('https://fonts.googleapis.com/css2?family=Roboto:ital@1')).toStrictEqual({
       families: {
         Roboto: {
-          ital: true
-        }
-      }
+          ital: true,
+        },
+      },
     })
   })
 
@@ -88,35 +88,43 @@ describe('parse', () => {
       families: {
         'Droid Serif': {
           wght: true,
-          ital: true
-        }
-      }
+          ital: true,
+        },
+      },
     })
 
     expect(parse('https://fonts.googleapis.com/css2?family=Roboto:ital@0;1')).toStrictEqual({
       families: {
         Roboto: {
           wght: true,
-          ital: true
-        }
-      }
+          ital: true,
+        },
+      },
     })
 
     expect(parse('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,300;0,400;0,700;1,400')).toStrictEqual({
       families: {
         Roboto: {
           wght: [300, 400, 700],
-          ital: [400]
-        }
-      }
+          ital: [400],
+        },
+      },
     })
 
     expect(parse('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@1,400')).toStrictEqual({
       families: {
         Roboto: {
-          ital: [400]
-        }
-      }
+          ital: [400],
+        },
+      },
+    })
+
+    expect(parse('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@1,400;1,700')).toStrictEqual({
+      families: {
+        Roboto: {
+          ital: [400, 700],
+        },
+      },
     })
   })
 
@@ -125,13 +133,13 @@ describe('parse', () => {
       families: {
         Roboto: true,
         Lato: {
-          wght: [100, 400]
+          wght: [100, 400],
         },
         Raleway: {
           wght: [400],
-          ital: [100, 400]
-        }
-      }
+          ital: [100, 400],
+        },
+      },
     })
   })
 
@@ -139,44 +147,44 @@ describe('parse', () => {
     expect(parse('https://fonts.googleapis.com/css2?family=Crimson+Pro:wght@200..900')).toStrictEqual({
       families: {
         'Crimson Pro': {
-          wght: '200..900'
-        }
-      }
+          wght: '200..900',
+        },
+      },
     })
 
     expect(parse('https://fonts.googleapis.com/css2?family=Crimson+Pro:ital,wght@1,200..900')).toStrictEqual({
       families: {
         'Crimson Pro': {
-          ital: '200..900'
-        }
-      }
+          ital: '200..900',
+        },
+      },
     })
 
     expect(parse('https://fonts.googleapis.com/css2?family=Crimson+Pro:ital,wght@0,200..900;1,200..700')).toStrictEqual({
       families: {
         'Crimson Pro': {
           wght: '200..900',
-          ital: '200..700'
-        }
-      }
+          ital: '200..700',
+        },
+      },
     })
   })
 
   test('display', () => {
     expect(parse('https://fonts.googleapis.com/css2?family=Roboto&display=swap')).toStrictEqual({
       families: {
-        Roboto: true
+        Roboto: true,
       },
-      display: 'swap'
+      display: 'swap',
     })
   })
 
   test('text', () => {
     expect(parse('https://fonts.googleapis.com/css2?family=Roboto&text=Foo%20Bar')).toStrictEqual({
       families: {
-        Roboto: true
+        Roboto: true,
       },
-      text: 'Foo Bar'
+      text: 'Foo Bar',
     })
   })
 

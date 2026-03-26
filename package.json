@@ -22,27 +22,29 @@
   "scripts": {
     "build": "unbuild",
     "dev": "vitest",
-    "lint": "eslint --ext .ts,.js .",
+    "lint": "eslint",
     "prepack": "unbuild",
     "release": "pnpm test && pnpm build && changelogen --release --push && pnpm publish",
     "test": "pnpm lint && vitest run --coverage"
   },
   "dependencies": {
     "deepmerge": "^4.3.1",
-    "hookable": "^5.5.3",
-    "ofetch": "^1.4.1",
-    "ufo": "^1.5.4"
+    "hookable": "^6.1.0",
+    "ofetch": "^1.5.1",
+    "ufo": "^1.6.3"
   },
   "devDependencies": {
-    "@nuxtjs/eslint-config-typescript": "latest",
-    "@types/fs-extra": "latest",
-    "@vitest/coverage-v8": "latest",
-    "changelogen": "latest",
-    "eslint": "latest",
-    "tempy": "latest",
-    "typescript": "latest",
-    "unbuild": "latest",
-    "vitest": "latest"
+    "@eslint/js": "^10.0.1",
+    "@stylistic/eslint-plugin": "^5.10.0",
+    "@types/fs-extra": "^11.0.4",
+    "@vitest/coverage-v8": "^4.1.2",
+    "changelogen": "^0.6.2",
+    "eslint": "^10.1.0",
+    "tempy": "^3.2.0",
+    "typescript": "^5.9.3",
+    "typescript-eslint": "^8.57.2",
+    "unbuild": "^3.6.1",
+    "vitest": "^4.1.2"
   },
-  "packageManager": "pnpm@10.6.2"
+  "packageManager": "pnpm@10.33.0"
 }

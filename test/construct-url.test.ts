@@ -4,7 +4,7 @@ import { constructURL } from '../src'
 describe('constructURL', () => {
   test('single family', () => {
     expect(constructURL({
-      families: { Roboto: true }
+      families: { Roboto: true },
     })).toEqual('https://fonts.googleapis.com/css2?family=Roboto')
   })
 
@@ -13,8 +13,8 @@ describe('constructURL', () => {
       families: {
         'Droid+Serif': true,
         'Open Sans': true,
-        'Roboto%2BMono': true
-      }
+        'Roboto%2BMono': true,
+      },
     })).toEqual('https://fonts.googleapis.com/css2?family=Droid+Serif&family=Open+Sans&family=Roboto+Mono')
   })
 
@@ -22,41 +22,41 @@ describe('constructURL', () => {
     expect(constructURL({
       families: {
         Roboto: {
-          italic: true
-        }
-      }
+          italic: true,
+        },
+      },
     })).toEqual('https://fonts.googleapis.com/css2?family=Roboto:ital@1')
 
     expect(constructURL({
       families: {
         Roboto: {
-          ital: [400]
-        }
-      }
+          ital: [400],
+        },
+      },
     })).toEqual('https://fonts.googleapis.com/css2?family=Roboto:ital@1')
 
     expect(constructURL({
       families: {
         Roboto: {
-          ital: [400, 700]
-        }
-      }
+          ital: [400, 700],
+        },
+      },
     })).toEqual('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@1,400;1,700')
 
     expect(constructURL({
       families: {
         Roboto: {
-          wght: [700, 400, 300]
-        }
-      }
+          wght: [700, 400, 300],
+        },
+      },
     })).toEqual('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700')
 
     expect(constructURL({
       families: {
         'Roboto Flex': {
-          wght: [1000, 400, 300]
-        }
-      }
+          wght: [1000, 400, 300],
+        },
+      },
     })).toEqual('https://fonts.googleapis.com/css2?family=Roboto+Flex:wght@300;400;1000')
   })
 
@@ -64,113 +64,113 @@ describe('constructURL', () => {
     expect(constructURL({
       families: {
         '': true,
-        Roboto: true,
-        Lato: {
-          wght: 100
+        'Roboto': true,
+        'Lato': {
+          wght: 100,
         },
-        Raleway: {
+        'Raleway': {
           wght: [400],
-          ital: [100, 400]
-        }
-      }
+          ital: [100, 400],
+        },
+      },
     })).toEqual('https://fonts.googleapis.com/css2?family=Roboto&family=Lato:wght@100&family=Raleway:ital,wght@0,400;1,100;1,400')
 
     expect(constructURL({
       families: {
         '': true,
-        Roboto: true,
-        Lato: {
-          normal: 100
+        'Roboto': true,
+        'Lato': {
+          normal: 100,
         },
-        Raleway: {
+        'Raleway': {
           regular: [400],
-          italic: [100, 400]
-        }
-      }
+          italic: [100, 400],
+        },
+      },
     })).toEqual('https://fonts.googleapis.com/css2?family=Roboto&family=Lato:wght@100&family=Raleway:ital,wght@0,400;1,100;1,400')
   })
 
   test('multiple styles', () => {
     expect(constructURL({
       families: {
-        Roboto: [100, 300, 400]
-      }
+        Roboto: [100, 300, 400],
+      },
     })).toEqual('https://fonts.googleapis.com/css2?family=Roboto:wght@100;300;400')
 
     expect(constructURL({
       families: {
         Roboto: {
           wght: true,
-          ital: true
-        }
-      }
+          ital: true,
+        },
+      },
     })).toEqual('https://fonts.googleapis.com/css2?family=Roboto:ital@0;1')
 
     expect(constructURL({
       families: {
         Roboto: {
           wght: true,
-          ital: [400]
-        }
-      }
+          ital: [400],
+        },
+      },
     })).toEqual('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,400;1,400')
 
     expect(constructURL({
       families: {
         Roboto: {
           wght: [300, 400, 700],
-          ital: [400]
-        }
-      }
+          ital: [400],
+        },
+      },
     })).toEqual('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,300;0,400;0,700;1,400')
 
     expect(constructURL({
       families: {
         'Roboto Flex': {
           wght: [300, 400, 700],
-          ital: [1000, 400]
-        }
-      }
+          ital: [1000, 400],
+        },
+      },
     })).toEqual('https://fonts.googleapis.com/css2?family=Roboto+Flex:ital,wght@0,300;0,400;0,700;1,400;1,1000')
   })
 
   test('axis', () => {
     expect(constructURL({
       families: {
-        'Crimson Pro': '200..400'
-      }
+        'Crimson Pro': '200..400',
+      },
     })).toEqual('https://fonts.googleapis.com/css2?family=Crimson+Pro:wght@200..400')
 
     expect(constructURL({
       families: {
         'Crimson Pro': {
-          wght: '200..400'
-        }
-      }
+          wght: '200..400',
+        },
+      },
     })).toEqual('https://fonts.googleapis.com/css2?family=Crimson+Pro:wght@200..400')
 
     expect(constructURL({
       families: {
         'Crimson Pro': {
-          italic: '200..400'
-        }
-      }
+          italic: '200..400',
+        },
+      },
     })).toEqual('https://fonts.googleapis.com/css2?family=Crimson+Pro:ital,wght@1,200..400')
 
     expect(constructURL({
       families: {
         'Crimson Pro': {
           wght: '200..900',
-          italic: '200..700'
-        }
-      }
+          italic: '200..700',
+        },
+      },
     })).toEqual('https://fonts.googleapis.com/css2?family=Crimson+Pro:ital,wght@0,200..900;1,200..700')
   })
 
   test('text', () => {
     expect(constructURL({
       families: { Roboto: true },
-      text: 'Foo Bar'
+      text: 'Foo Bar',
     })).toEqual('https://fonts.googleapis.com/css2?family=Roboto&text=Foo+Bar')
   })
 
@@ -180,9 +180,9 @@ describe('constructURL', () => {
         'Open Sans': {
           wght: '400..800',
           wdth: '75..100',
-          ital: '400..800'
-        }
-      }
+          ital: '400..800',
+        },
+      },
     })).toEqual('https://fonts.googleapis.com/css2?family=Open+Sans:ital,wdth,wght@0,75..100,400..800;1,75..100,400..800')
 
     expect(constructURL({
@@ -190,9 +190,9 @@ describe('constructURL', () => {
         'Open Sans': {
           wght: [400, 700],
           wdth: [75, 100],
-          ital: [400]
-        }
-      }
+          ital: [400],
+        },
+      },
     })).toEqual('https://fonts.googleapis.com/css2?family=Open+Sans:ital,wdth,wght@0,75,400;0,75,700;0,100,400;0,100,700;1,75,400;1,100,400')
   })
 
@@ -202,9 +202,9 @@ describe('constructURL', () => {
         'Material Symbols Outlined': {
           opsz: '20..48',
           FILL: '0..1',
-          GRAD: '-25..0'
-        }
-      }
+          GRAD: '-25..0',
+        },
+      },
     })).toEqual('https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,FILL,GRAD@20..48,0..1,-25..0')
   })
 
@@ -213,8 +213,10 @@ describe('constructURL', () => {
     expect(constructURL({})).toBe(false)
     expect(constructURL({ families: {} })).toBe(false)
     expect(constructURL({ display: 'swap' })).toBe(false)
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
     expect(constructURL({ subsets: 'foo' })).toBe(false)
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
     expect(constructURL({ subsets: ['foo', 'bar'] })).toBe(false)
   })

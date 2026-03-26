@@ -2,7 +2,7 @@ import { isValidURL } from './is-valid-url'
 import { isValidDisplay, parseFamilyName, parseStyle } from './utils'
 import type { GoogleFonts, Families, FontDisplay, FontSubset } from './types'
 
-export function parse (url: string): GoogleFonts {
+export function parse(url: string): GoogleFonts {
   const result: GoogleFonts = {}
 
   if (!isValidURL(url)) {
@@ -41,7 +41,7 @@ export function parse (url: string): GoogleFonts {
   return result
 }
 
-function convertFamiliesObject (families: string[], v2 = true): Families {
+function convertFamiliesObject(families: string[], v2 = true): Families {
   const result: Families = {}
 
   families.flatMap(family => family.split('|')).forEach((family) => {
@@ -102,7 +102,7 @@ function convertFamiliesObject (families: string[], v2 = true): Families {
         const styleParsed = parseStyle(style)
 
         if (listStyles.length === 1 && styleParsed === 'ital' && weights === '0;1') {
-          values.wght = true
+          values['wght'] = true
         }
 
         const weightsList = weights.split(';').map((weight) => {

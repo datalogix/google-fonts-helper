@@ -6,8 +6,8 @@ export default defineConfig({
       include: ['src/**'],
       exclude: [
         'src/google-fonts-metadata.ts',
-        ...coverageConfigDefaults.exclude
-      ]
-    }
-  }
+        ...coverageConfigDefaults.exclude,
+      ],
+    },
+  },
 })

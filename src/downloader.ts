@@ -36,9 +36,9 @@ export interface DownloaderHooks {
 export class Downloader extends Hookable<DownloaderHooks> {
   private config: DownloadOptions
 
-  public constructor (
+  public constructor(
     private url: string,
-    options?: Partial<DownloadOptions>
+    options?: Partial<DownloadOptions>,
   ) {
     super()
 
@@ -52,20 +52,20 @@ export class Downloader extends Hookable<DownloaderHooks> {
       headers: [['user-agent', [
         'Mozilla/5.0 (Windows NT 10.0; Win64; x64)',
         'AppleWebKit/537.36 (KHTML, like Gecko)',
-        'Chrome/98.0.4758.102 Safari/537.36'
+        'Chrome/98.0.4758.102 Safari/537.36',
       ].join(' ')]],
-      ...options
+      ...options,
     }
   }
 
-  async execute (): Promise<boolean> {
+  async execute(): Promise<boolean> {
     if (!isValidURL(this.url)) {
       throw new Error('Invalid Google Fonts URL')
     }
 
     const { outputDir, stylePath, headers, fontsPath } = this.config
     const cssPath = resolve(outputDir, stylePath)
-    let overwriting = this.config.overwriting
+    const overwriting = this.config.overwriting
 
     if (!overwriting && existsSync(cssPath)) {
       const currentCssContent = readFileSync(cssPath, 'utf-8')
@@ -74,8 +74,6 @@ export class Downloader extends Hookable<DownloaderHooks> {
       if (currentUrl === this.url) {
         return false
       }
-
-      overwriting = true
     }
 
     await this.callHook('download:start')
@@ -102,10 +100,10 @@ export class Downloader extends Hookable<DownloaderHooks> {
     return true
   }
 
-  private async downloadFonts (fonts: FontInputOutput[]) {
+  private async downloadFonts(fonts: FontInputOutput[]) {
     const { headers, base64, outputDir, fontsDir } = this.config
     const downloadedFonts: FontInputOutput[] = []
-    const _fonts:FontInputOutput[] = []
+    const _fonts: FontInputOutput[] = []
 
     for (const font of fonts) {
       const downloadedFont = downloadedFonts.find(f => f.inputFont === font.inputFont)
@@ -116,7 +114,7 @@ export class Downloader extends Hookable<DownloaderHooks> {
         } else {
           copyFileSync(
             resolve(outputDir, fontsDir, downloadedFont.outputFont),
-            resolve(outputDir, fontsDir, font.outputFont)
+            resolve(outputDir, fontsDir, font.outputFont),
           )
         }
 
@@ -159,7 +157,7 @@ export class Downloader extends Hookable<DownloaderHooks> {
     return _fonts
   }
 
-  private writeCss (path: string, content: string, fonts: FontInputOutput[]) {
+  private writeCss(path: string, content: string, fonts: FontInputOutput[]) {
     for (const font of fonts) {
       content = content.replace(font.inputText, font.outputText)
     }
@@ -171,7 +169,7 @@ export class Downloader extends Hookable<DownloaderHooks> {
   }
 }
 
-function parseFontsFromCss (content: string, fontsPath: string, subsets?: FontSubset[]): {
+function parseFontsFromCss(content: string, fontsPath: string, subsets?: FontSubset[]): {
   fonts: FontInputOutput[]
   css: string
 } {
@@ -182,7 +180,7 @@ function parseFontsFromCss (content: string, fontsPath: string, subsets?: FontSu
     family: /font-family\s*:\s*(?:'|")?([^;]*?)(?:'|")?\s*;/i,
     style: /font-style\s*:\s*([^;]*?)\s*;/i,
     weight: /font-weight\s*:\s*([^;]*?)\s*;/i,
-    url: /url\s*\(\s*(?:'|")?\s*([^]*?)\s*(?:'|")?\s*\)\s*?/gi
+    url: /url\s*\(\s*(?:'|")?\s*([^]*?)\s*(?:'|")?\s*\)\s*?/gi,
   }
 
   let match1
@@ -212,25 +210,25 @@ function parseFontsFromCss (content: string, fontsPath: string, subsets?: FontSu
         style: style.replace(/\s+/g, '_') || 'normal',
         weight: weight.replace(/\s+/g, '_') || '',
         subset: subset || 'text',
-        ext
+        ext,
       }).replace(/\.$/, '')
 
       fonts.push({
         inputFont: url,
         outputFont: newFilename,
         inputText: forReplace,
-        outputText: `url('${posix.join(fontsPath, newFilename)}')`
+        outputText: `url('${posix.join(fontsPath, newFilename)}')`,
       })
     }
   }
 
   return {
     css: css.join('\n'),
-    fonts
+    fonts,
   }
 }
 
-function formatFontFileName (template: string, values: { [s: string]: string } | ArrayLike<string>): string {
+function formatFontFileName(template: string, values: { [s: string]: string } | ArrayLike<string>): string {
   return Object.entries(values)
     .filter(([key]) => /^[a-z0-9_-]+$/gi.test(key))
     .map(([key, value]) => [new RegExp(`([^{]|^){${key}}([^}]|$)`, 'g'), `$1${value}$2`])

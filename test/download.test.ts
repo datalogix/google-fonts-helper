@@ -13,7 +13,7 @@ describe('download', () => {
     await download('https://fonts.googleapis.com/css2?family=Roboto&family=Lato:wght@100;400&family=Raleway:ital,wght@0,100;0,400;1,400', {
       outputDir,
       stylePath,
-      fontsDir
+      fontsDir,
     }).execute()
 
     expect(existsSync(join(outputDir, stylePath))).toBe(true)
@@ -30,7 +30,7 @@ describe('download', () => {
     await download('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,400;0,700;1,400', {
       outputDir,
       stylePath,
-      fontsDir
+      fontsDir,
     }).execute()
 
     expect(existsSync(join(outputDir, stylePath))).toBe(true)
@@ -83,7 +83,7 @@ describe('download', () => {
     await download('https://fonts.googleapis.com/css2?family=Manrope:wght@200..800', {
       outputDir,
       stylePath,
-      fontsDir
+      fontsDir,
     }).execute()
 
     expect(existsSync(join(outputDir, stylePath))).toBe(true)
@@ -106,7 +106,7 @@ describe('download', () => {
     await download('https://fonts.googleapis.com/css2?family=Poppins&subset=latin', {
       outputDir,
       stylePath,
-      fontsDir
+      fontsDir,
     }).execute()
 
     expect(existsSync(join(outputDir, stylePath))).toBe(true)
@@ -125,7 +125,7 @@ describe('download', () => {
     await download('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&text=example', {
       outputDir,
       stylePath,
-      fontsDir
+      fontsDir,
     }).execute()
 
     expect(existsSync(join(outputDir, stylePath))).toBe(true)
@@ -145,7 +145,7 @@ describe('download', () => {
     await download('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&text=A%C4%84BC%C4%86DE%C4%98FGHIJKL%C5%81MN%C5%83O%C3%93PRSTUWXYZ%C5%BB%C5%B9a%C4%85bc%C4%87de%C4%99fghijkl%C5%82mn%C5%84o%C3%B3prstuwxyz%C5%BC%C5%BA1234567890+`!@%23$%25^%26*()-=_%2B%5B%5D%7B%7D%5C|;\':%22,./%3C%3E?', {
       outputDir,
       stylePath,
-      fontsDir
+      fontsDir,
     }).execute()
 
     expect(existsSync(join(outputDir, stylePath))).toBe(true)
@@ -163,8 +163,8 @@ describe('download', () => {
     const fontsDir = 'fonts'
     const config: GoogleFonts = {
       families: {
-        Roboto: true
-      }
+        Roboto: true,
+      },
     }
 
     let url = constructURL(config) || ''
@@ -192,8 +192,8 @@ describe('download', () => {
     const fontsDir = 'fonts'
     const config: GoogleFonts = {
       families: {
-        Roboto: true
-      }
+        Roboto: true,
+      },
     }
 
     const url = constructURL(config) || ''
@@ -222,7 +222,7 @@ describe('download', () => {
       base64: true,
       outputDir,
       stylePath,
-      fontsDir
+      fontsDir,
     }).execute()
 
     expect(existsSync(join(outputDir, stylePath))).toBe(true)

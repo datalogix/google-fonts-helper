@@ -7,7 +7,7 @@ const families = fontData.items.map((font) => {
   return {
     family: font.family,
     variants: font.variants,
-    subsets: font.subsets
+    subsets: font.subsets,
   }
 }).map((font) => {
   const normal = font.variants.filter(v => !v.includes('italic')).map(r => parseInt(r.replace('regular', 400)))
@@ -29,13 +29,13 @@ const families = fontData.items.map((font) => {
     display?: GoogleFontsDisplay
     subsets?: '${font.subsets.join('\' | \'')}' | ('${font.subsets.join('\' | \'')}')[]
     [key: string]: undefined | GoogleFontsWeight${
-    wght.length
-  ? `\r\n    wght?: GoogleFontsWeight
+  wght.length
+    ? `\r\n    wght?: GoogleFontsWeight
     normal?: GoogleFontsWeight
     regular?: GoogleFontsWeight`
     : ''}${
-    ital.length
-  ? `\r\n    ital?: GoogleFontsWeight
+  ital.length
+    ? `\r\n    ital?: GoogleFontsWeight
     italic?: GoogleFontsWeight
     i?: GoogleFontsWeight`
     : ''}

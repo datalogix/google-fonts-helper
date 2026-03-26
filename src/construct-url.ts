@@ -2,11 +2,11 @@ import { QueryObject, resolveURL, withHttps, withQuery } from 'ufo'
 import { cartesianProduct, GOOGLE_FONTS_DOMAIN, isValidDisplay, parseFamilyName, parseStyle } from './utils'
 import type { Families, GoogleFonts } from './types'
 
-export function constructURL ({
+export function constructURL({
   families,
   display,
   subsets,
-  text
+  text,
 }: GoogleFonts = {}): string | false {
   const _subsets = (Array.isArray(subsets) ? subsets : [subsets]).filter(Boolean)
   const family = convertFamiliesToArray(families ?? {})
@@ -16,7 +16,7 @@ export function constructURL ({
   }
 
   const query: QueryObject = {
-    family
+    family,
   }
 
   if (display && isValidDisplay(display)) {
@@ -34,7 +34,7 @@ export function constructURL ({
   return withHttps(withQuery(resolveURL(GOOGLE_FONTS_DOMAIN, 'css2'), query))
 }
 
-function convertFamiliesToArray (families: Families): string[] {
+function convertFamiliesToArray(families: Families): string[] {
   const result: string[] = []
 
   Object.entries(families).forEach(([name, values]) => {
@@ -99,8 +99,13 @@ function convertFamiliesToArray (families: Families): string[] {
           const isLowerA = axisA[0] === axisA[0].toLowerCase()
           const isLowerB = axisB[0] === axisB[0].toLowerCase()
 
-          if (isLowerA && !isLowerB) { return -1 }
-          if (!isLowerA && isLowerB) { return 1 }
+          if (isLowerA && !isLowerB) {
+            return -1
+          }
+
+          if (!isLowerA && isLowerB) {
+            return 1
+          }
 
           return axisA.localeCompare(axisB)
         })
@@ -116,8 +121,8 @@ function convertFamiliesToArray (families: Families): string[] {
         const weightIndex = axisTagList.findIndex(i => i === 'wght')
         if (weightIndex !== -1) {
           axisTupleArrays = axisTupleArrays
-            .filter((axisTuple: string[]) => (axisTuple[italicIndex] === '0' && !strictlyItalic.includes(axisTuple[weightIndex])) ||
-              (axisTuple[italicIndex] === '1' && italicWeights.includes(axisTuple[weightIndex])))
+            .filter((axisTuple: string[]) => (axisTuple[italicIndex] === '0' && !strictlyItalic.includes(axisTuple[weightIndex]))
+              || (axisTuple[italicIndex] === '1' && italicWeights.includes(axisTuple[weightIndex])))
         }
       }
 
