@@ -93,6 +93,15 @@ describe('parse', () => {
       }
     })
 
+    expect(parse('https://fonts.googleapis.com/css2?family=Roboto:ital@0;1')).toStrictEqual({
+      families: {
+        Roboto: {
+          wght: true,
+          ital: true
+        }
+      }
+    })
+
     expect(parse('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,300;0,400;0,700;1,400')).toStrictEqual({
       families: {
         Roboto: {
@@ -105,7 +114,6 @@ describe('parse', () => {
     expect(parse('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@1,400')).toStrictEqual({
       families: {
         Roboto: {
-          wght: true,
           ital: [400]
         }
       }
@@ -139,7 +147,6 @@ describe('parse', () => {
     expect(parse('https://fonts.googleapis.com/css2?family=Crimson+Pro:ital,wght@1,200..900')).toStrictEqual({
       families: {
         'Crimson Pro': {
-          wght: true,
           ital: '200..900'
         }
       }

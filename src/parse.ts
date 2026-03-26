@@ -96,10 +96,16 @@ function convertFamiliesObject (families: string[], v2 = true): Families {
         styles = 'wght'
       }
 
-      styles.split(',').forEach((style) => {
+      const listStyles = styles.split(',')
+
+      listStyles.forEach((style) => {
         const styleParsed = parseStyle(style)
 
-        values[styleParsed] = weights.split(';').map((weight) => {
+        if (listStyles.length === 1 && styleParsed === 'ital' && weights === '0;1') {
+          values.wght = true
+        }
+
+        const weightsList = weights.split(';').map((weight) => {
           if (/^\+?\d+$/.test(weight)) {
             return parseInt(weight)
           }
@@ -122,10 +128,11 @@ function convertFamiliesObject (families: string[], v2 = true): Families {
           return w
         }).filter(v => parseInt(v.toString()) > 0 || v.toString().includes('..'))
 
-        if (!values[styleParsed].length) {
-          values[styleParsed] = true
+        if (!weightsList.length) {
           return
         }
+
+        values[styleParsed] = weightsList
 
         if (values[styleParsed].length > 1) {
           return

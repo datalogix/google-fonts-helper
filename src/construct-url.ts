@@ -57,6 +57,7 @@ function convertFamiliesToArray (families: Families): string[] {
     if (Object.keys(values).length > 0) {
       const axes: Record<string, Array<string>> = {}
       let italicWeights: string[] = []
+      let hasNonItalBooleanTrue = false
 
       Object
         .entries(values)
@@ -70,6 +71,8 @@ function convertFamiliesToArray (families: Families): string[] {
             } else {
               italicWeights = Array.isArray(weight) ? weight.map(w => String(w)) : [weight]
             }
+          } else if (weight === true) {
+            hasNonItalBooleanTrue = true
           } else {
             axes[parseStyle(style)] = Array.isArray(weight) ? weight.map(w => String(w)) : [weight]
           }
@@ -78,7 +81,11 @@ function convertFamiliesToArray (families: Families): string[] {
       const strictlyItalic: string[] = []
 
       if (Object.keys(axes).length === 1 && Object.hasOwn(axes, 'ital')) {
-        if (!(italicWeights.includes('*') || (italicWeights.length === 1 && italicWeights.includes('400')))) {
+        if (hasNonItalBooleanTrue) {
+          if (!italicWeights.includes('*')) {
+            axes.wght = italicWeights
+          }
+        } else if (!(italicWeights.includes('*') || (italicWeights.length === 1 && italicWeights.includes('400')))) {
           axes.wght = italicWeights
           strictlyItalic.push(...italicWeights)
         }
@@ -99,7 +106,7 @@ function convertFamiliesToArray (families: Families): string[] {
         })
 
       if (axisTagList.length === 1 && axisTagList.includes('ital')) {
-        result.push(`${name}:ital@1`)
+        result.push(`${name}:ital@${hasNonItalBooleanTrue ? '0;1' : '1'}`)
         return
       }
 

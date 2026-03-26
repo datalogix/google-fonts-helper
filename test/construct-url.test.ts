@@ -100,6 +100,24 @@ describe('constructURL', () => {
     expect(constructURL({
       families: {
         Roboto: {
+          wght: true,
+          ital: true
+        }
+      }
+    })).toEqual('https://fonts.googleapis.com/css2?family=Roboto:ital@0;1')
+
+    expect(constructURL({
+      families: {
+        Roboto: {
+          wght: true,
+          ital: [400]
+        }
+      }
+    })).toEqual('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,400;1,400')
+
+    expect(constructURL({
+      families: {
+        Roboto: {
           wght: [300, 400, 700],
           ital: [400]
         }
