@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## v3.7.4
+
+[compare changes](https://github.com/datalogix/google-fonts-helper/compare/v3.7.3...v3.7.4)
+
+### 🩹 Fixes
+
+- Font style handling in constructURL and parse functions ([#81](https://github.com/datalogix/google-fonts-helper/pull/81))
+
+### ❤️ Contributors
+
+- Ricardo Gobbo De Souza ([@ricardogobbosouza](http://github.com/ricardogobbosouza))
+
 ## v3.7.3
 
 [compare changes](https://github.com/datalogix/google-fonts-helper/compare/v3.7.2...v3.7.3)
